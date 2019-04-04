@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flutter", "Flutter\Flutter.csproj", "{28802BFA-2BE1-43D8-BF2E-F1F87A625958}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{28802BFA-2BE1-43D8-BF2E-F1F87A625958}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28802BFA-2BE1-43D8-BF2E-F1F87A625958}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28802BFA-2BE1-43D8-BF2E-F1F87A625958}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28802BFA-2BE1-43D8-BF2E-F1F87A625958}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {18B90180-D302-4DD0-8BBE-869EE852C59D}
+	EndGlobalSection
+EndGlobal
