@@ -1,4 +1,4 @@
-﻿namespace Flutter
+﻿namespace FlUnit
 {
     using System;
 

@@ -48,13 +48,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Flutter.Adapters.VS.TestAdapter\Flutter.Adapters.VS.TestAdapter.csproj">
+    <ProjectReference Include="..\FlUnit.Adapters.VS.TestAdapter\FlUnit.Adapters.VS.TestAdapter.csproj">
       <Project>{352ba863-fe5b-429c-95da-3a676bd8f99b}</Project>
-      <Name>Flutter.Adapters.VS.TestAdapter</Name>
+      <Name>FlUnit.Adapters.VS.TestAdapter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Flutter\Flutter.csproj">
+    <ProjectReference Include="..\FlUnit\FlUnit.csproj">
       <Project>{28802bfa-2be1-43d8-bf2e-f1f87a625958}</Project>
-      <Name>Flutter</Name>
+      <Name>FlUnit</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace Flutter.Adapters.VSTest
+﻿namespace FlUnit.Adapters.VSTest
 {
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -6,7 +6,7 @@
     using System.Collections.Generic;
 
     [FileExtension(".xml")]
-    [DefaultExecutorUri("executor://FlutterTestExecutor")]
+    [DefaultExecutorUri("executor://FlUnitTestExecutor")]
     class TestDiscoverer : ITestDiscoverer
     {
         public void DiscoverTests(IEnumerable<string> containers, IDiscoveryContext discoveryContext, IMessageLogger logger, ITestCaseDiscoverySink discoverySink)
@@ -22,7 +22,7 @@
         }
     }
 
-    [ExtensionUri("executor://FlutterTestExecutor")]
+    [ExtensionUri("executor://FlUnitTestExecutor")]
     class TestExecutor : ITestExecutor
     {
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)

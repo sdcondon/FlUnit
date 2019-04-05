@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flutter", "Flutter\Flutter.csproj", "{28802BFA-2BE1-43D8-BF2E-F1F87A625958}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit", "FlUnit\FlUnit.csproj", "{28802BFA-2BE1-43D8-BF2E-F1F87A625958}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flutter.Adapters.VS.TestAdapter", "Flutter.Adapters.VS.TestAdapter\Flutter.Adapters.VS.TestAdapter.csproj", "{352BA863-FE5B-429C-95DA-3A676BD8F99B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit.Adapters.VS.TestAdapter", "FlUnit.Adapters.VS.TestAdapter\FlUnit.Adapters.VS.TestAdapter.csproj", "{352BA863-FE5B-429C-95DA-3A676BD8F99B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.TestProject", "Example.TestProject\Example.TestProject.csproj", "{E5A56ACA-CB64-42D7-94F6-1D21EB6195E3}"
 EndProject

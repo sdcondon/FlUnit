@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Flutter
+namespace FlUnit
 {
     public class TestThat
     {

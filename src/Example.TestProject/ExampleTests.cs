@@ -1,6 +1,6 @@
 ﻿namespace Example.TestProject
 {
-    using Flutter;
+    using FlUnit;
     using FluentAssertions;
 
     public class TestSubject
