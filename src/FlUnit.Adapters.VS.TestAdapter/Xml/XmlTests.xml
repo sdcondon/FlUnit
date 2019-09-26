@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Tests>
+  <Test name="test1" outcome="Passed" />
+  <Test name="test2" outcome="Passed" />
+</Tests>

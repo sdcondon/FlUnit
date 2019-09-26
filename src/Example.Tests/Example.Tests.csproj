@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FlUnit.Adapters.VS.TestAdapter\FlUnit.Adapters.VSTest.csproj" />
+    <ProjectReference Include="..\FlUnit\FlUnit.csproj" />
+  </ItemGroup>
+
+</Project>

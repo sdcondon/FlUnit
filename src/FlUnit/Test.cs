@@ -4,11 +4,6 @@ using System.Threading.Tasks;
 
 namespace FlUnit
 {
-    public class TestThat
-    {
-        public static TestPrerequisite<T> Given<T>(T prerequisite) => new TestPrerequisite<T>(prerequisite);
-    }
-
     public interface ITest
     {
         Task Invocation { get; }

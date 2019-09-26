@@ -1,8 +1,8 @@
-﻿using FlUnit;
-using FluentAssertions;
-
-namespace Example.TestProject
+﻿namespace Example.TestProject
 {
+    using FlUnit;
+    using FluentAssertions;
+
     public class TestSubject
     {
         public bool HasFooed { get; private set; }
@@ -20,7 +20,7 @@ namespace Example.TestProject
         public bool HasBeenFooed { get; set; }
     }
 
-    public static class ExampleTests
+    public class ExampleTests
     {
         public static ITest FooShouldWork => TestThat
             .Given(new TestSubject())

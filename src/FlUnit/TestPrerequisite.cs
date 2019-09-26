@@ -1,7 +1,7 @@
-﻿namespace FlUnit
-{
-    using System;
+﻿using System;
 
+namespace FlUnit
+{
     public class TestPrerequisite<T1>
     {
         private readonly T1 prereq;

@@ -1,8 +1,8 @@
-﻿namespace FlUnit
-{
-    using System;
-    using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
+namespace FlUnit
+{
     public class TestFunction<T1, TResult>
     {
         private readonly T1 prereq;
