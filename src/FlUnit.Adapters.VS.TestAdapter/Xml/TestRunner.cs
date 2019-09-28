@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Xml;
 
 namespace FlUnit.Adapters.VSTest.Xml
-{   
+{
     [FileExtension(".xml")]
     [DefaultExecutorUri(ExecutorUriString)]
     [ExtensionUri(ExecutorUriString)]

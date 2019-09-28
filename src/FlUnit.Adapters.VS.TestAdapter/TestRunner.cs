@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace FlUnit.Adapters.VSTest
 {
@@ -26,7 +27,7 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             ITestCaseDiscoverySink discoverySink)
         {
-            FindTestCases(sources, discoveryContext).ForEach(tc => discoverySink.SendTestCase(tc));
+            GetTestCases(sources, discoveryContext).ForEach(tc => discoverySink.SendTestCase(tc));
         }
 
         public void RunTests(
@@ -34,7 +35,7 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            RunTests(FindTestCases(sources, runContext), runContext, frameworkHandle);
+            RunTests(GetTestCases(sources, runContext), runContext, frameworkHandle);
         }
 
         public void RunTests(
@@ -60,15 +61,31 @@ namespace FlUnit.Adapters.VSTest
             isCancelled = true;
         }
 
-        private List<TestCase> FindTestCases(IEnumerable<string> sources, IDiscoveryContext discoveryContext)
+        private static List<TestCase> GetTestCases(IEnumerable<string> sources, IDiscoveryContext discoveryContext)
         {
-            return sources.Select(s => new TestCase("Foo.Bar.DUMMY TC", ExecutorUri, s)
+            return sources.SelectMany(s => GetTestCases(s, discoveryContext)).ToList();
+        }
+
+        private static List<TestCase> GetTestCases(string source, IDiscoveryContext discoveryContext)
+        {
+            var assembly = Assembly.LoadFile(source);
+
+            var testProps = assembly.ExportedTypes
+                .SelectMany(c => c.GetProperties())
+                .Where(p => p.PropertyType == typeof(ITest));
+
+            return testProps.Select(p =>
             {
-                CodeFilePath = s,
+                var testCase = new TestCase($"{p.DeclaringType.FullName}.{p.Name}", ExecutorUri, source)
+                {
+                    CodeFilePath = source,
+                };
+
+                return testCase;
             }).ToList();
         }
 
-        private TestResult RunTestCase(TestCase testCase)
+        private static TestResult RunTestCase(TestCase testCase)
         {
             return new TestResult(testCase)
             {
