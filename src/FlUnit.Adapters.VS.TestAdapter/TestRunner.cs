@@ -8,7 +8,10 @@ using System.Reflection;
 
 namespace FlUnit.Adapters.VSTest
 {
-    // https://github.com/xunit/visualstudio.xunit
+    // References:
+    // https://github.com/microsoft/vstest
+    // https://github.com/microsoft/vstest/tree/master/src/Microsoft.TestPlatform.ObjectModel
+    // https://github.com/xunit/visualstudio.xunit/tree/master/src/xunit.runner.visualstudio
 
     [FileExtension(".exe")]
     [FileExtension(".dll")]
@@ -19,6 +22,10 @@ namespace FlUnit.Adapters.VSTest
         public const string ExecutorUriString = "executor://FlUnitTestRunner";
         public static readonly Uri ExecutorUri = new Uri(ExecutorUriString);
 
+        // NB: for some unfathomable reason, ID has to be Pascal-cased, with the framework throwing an unguessable error message for camel-casing.
+        // But not until after the property has been registered. A violated assumption during the serialization process?
+        private static readonly TestProperty FlUnitTestProp = TestProperty.Register("FlUnitTestCase", "flUnit Test Case", typeof(string), typeof(TestRunner));
+
         private bool isCancelled = false;
 
         public void DiscoverTests(
@@ -27,7 +34,7 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             ITestCaseDiscoverySink discoverySink)
         {
-            GetTestCases(sources, discoveryContext).ForEach(tc => discoverySink.SendTestCase(tc));
+            GetTestCases(sources, discoveryContext, logger).ForEach(tc => discoverySink.SendTestCase(tc));
         }
 
         public void RunTests(
@@ -35,7 +42,7 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            RunTests(GetTestCases(sources, runContext), runContext, frameworkHandle);
+            RunTests(GetTestCases(sources, runContext, null), runContext, frameworkHandle);
         }
 
         public void RunTests(
@@ -52,7 +59,10 @@ namespace FlUnit.Adapters.VSTest
                     break;
                 }
 
-                frameworkHandle.RecordResult(RunTestCase(test));
+                frameworkHandle.RecordStart(test);
+                var testResult = RunTestCase(test);
+                frameworkHandle.RecordEnd(test, testResult.Outcome);
+                frameworkHandle.RecordResult(testResult);
             }
         }
 
@@ -61,12 +71,12 @@ namespace FlUnit.Adapters.VSTest
             isCancelled = true;
         }
 
-        private static List<TestCase> GetTestCases(IEnumerable<string> sources, IDiscoveryContext discoveryContext)
+        private static List<TestCase> GetTestCases(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger)
         {
-            return sources.SelectMany(s => GetTestCases(s, discoveryContext)).ToList();
+            return sources.SelectMany(s => GetTestCases(s, discoveryContext, logger)).ToList();
         }
 
-        private static List<TestCase> GetTestCases(string source, IDiscoveryContext discoveryContext)
+        private static List<TestCase> GetTestCases(string source, IDiscoveryContext discoveryContext, IMessageLogger logger)
         {
             var assembly = Assembly.LoadFile(source);
 
@@ -74,24 +84,57 @@ namespace FlUnit.Adapters.VSTest
                 .SelectMany(c => c.GetProperties())
                 .Where(p => p.PropertyType == typeof(ITest));
 
-            return testProps.Select(p =>
+            var testCases = new List<TestCase>();
+            foreach (var p in testProps)
             {
                 var testCase = new TestCase($"{p.DeclaringType.FullName}.{p.Name}", ExecutorUri, source)
                 {
-                    CodeFilePath = source,
+                    //CodeFilePath = source,
+                    //LineNumber = 1,
                 };
+                testCase.SetPropertyValue(FlUnitTestProp, $"{assembly.GetName()}:{p.DeclaringType.FullName}:{p.Name}"); // Perhaps better to use JSON or similar..
+                testCases.Add(testCase);
 
-                return testCase;
-            }).ToList();
+                logger?.SendMessage(TestMessageLevel.Informational, $"Found test case {testCase.FullyQualifiedName}");
+            }
+
+            return testCases;
         }
 
         private static TestResult RunTestCase(TestCase testCase)
         {
-            return new TestResult(testCase)
+            var result = new TestResult(testCase);
+
+            try
             {
-                //Outcome = (TestOutcome)test.GetPropertyValue(TestResultProperties.Outcome),
-                Outcome = TestOutcome.Passed
-            };
+                var propertyDetails = ((string)testCase.GetPropertyValue(FlUnitTestProp)).Split(':');
+                var assembly = Assembly.Load(propertyDetails[0]);
+                var type = assembly.GetType(propertyDetails[1]);
+                var propertyInfo = type.GetProperty(propertyDetails[2]);
+                var test = (ITest)propertyInfo.GetValue(null);
+
+                result.StartTime = DateTimeOffset.Now;
+                test.Run();
+
+                foreach (var assertion in test.Assertions)
+                {
+                    assertion();
+                }
+
+                result.Outcome = TestOutcome.Passed;
+            }
+            catch (Exception e)
+            {
+                result.Outcome = TestOutcome.Failed;
+                result.ErrorMessage = e.Message;
+                result.ErrorStackTrace = e.StackTrace;
+            }
+            finally
+            {
+                result.EndTime = DateTimeOffset.Now;
+            }
+
+            return result;
         }
     }
 }

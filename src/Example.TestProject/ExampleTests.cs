@@ -10,6 +10,7 @@ namespace Example.TestProject
 
         public bool Foo(Collaborator collaborator)
         {
+            if (collaborator == null) throw new ArgumentNullException();
             HasFooed = true;
             collaborator.HasBeenFooed = true;
             return true;
