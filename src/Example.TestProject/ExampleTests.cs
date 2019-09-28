@@ -40,7 +40,7 @@ namespace Example.TestProject
             .Then((sut, collaborator, task) => task.Result.Should().BeTrue())
             .And((sut, collaborator, task) => sut.HasFooed.Should().BeTrue())
             .And((sut, collaborator, task) => collaborator.HasBeenFooed.Should().BeTrue());
-
+         
         public static ITest AltFooHasAppropriateSideEffects => TestThat
             .Given(new { sut = new TestSubject(), collaborator = new Collaborator() })
             .When(test => test.sut.Foo(test.collaborator))
@@ -49,3 +49,4 @@ namespace Example.TestProject
             .And((test, task) => test.collaborator.HasBeenFooed.Should().BeTrue());
     }
 }
+ 

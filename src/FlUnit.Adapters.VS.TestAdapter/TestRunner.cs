@@ -59,10 +59,7 @@ namespace FlUnit.Adapters.VSTest
                     break;
                 }
 
-                frameworkHandle.RecordStart(test);
-                var testResult = RunTestCase(test);
-                frameworkHandle.RecordEnd(test, testResult.Outcome);
-                frameworkHandle.RecordResult(testResult);
+                RunTestCase(test, frameworkHandle);
             }
         }
 
@@ -95,14 +92,15 @@ namespace FlUnit.Adapters.VSTest
                 testCase.SetPropertyValue(FlUnitTestProp, $"{assembly.GetName()}:{p.DeclaringType.FullName}:{p.Name}"); // Perhaps better to use JSON or similar..
                 testCases.Add(testCase);
 
-                logger?.SendMessage(TestMessageLevel.Informational, $"Found test case {testCase.FullyQualifiedName}");
+                logger?.SendMessage(TestMessageLevel.Informational, $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}");
             }
 
             return testCases;
         }
 
-        private static TestResult RunTestCase(TestCase testCase)
+        private static void RunTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
         {
+            frameworkHandle.RecordStart(testCase);
             var result = new TestResult(testCase);
 
             try
@@ -118,7 +116,7 @@ namespace FlUnit.Adapters.VSTest
 
                 foreach (var assertion in test.Assertions)
                 {
-                    assertion();
+                    assertion.Item1();
                 }
 
                 result.Outcome = TestOutcome.Passed;
@@ -134,7 +132,8 @@ namespace FlUnit.Adapters.VSTest
                 result.EndTime = DateTimeOffset.Now;
             }
 
-            return result;
+            frameworkHandle.RecordEnd(testCase, result.Outcome);
+            frameworkHandle.RecordResult(result);
         }
     }
 }
