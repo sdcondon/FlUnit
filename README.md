@@ -1,18 +1,23 @@
-# Flutter
+# FlUnit
 
-An experimental **flu**en**t te**st f**r**amework.
+Prototype for a test framework where tests are defined using a fluent builder. Includes a skeleton VSTest adapter. 
 
 ```
-Test WidgetCanFlooABarble => TestThat
-    .Given(new Widget("widget1", 4))
-    .And(new Barble("warbly"))
-    .When((w, b) => w.Floo(b))
-    .Then((w, b, t) => t.Result.ShouldBe(true))
-    .And((w, b, t) => b.IsFlooed.ShouldBe(true))
-    .And((w, b, t) => w.HasFlooed.ShouldBe(true));
+using FlUnit;
+using FluentAssertions;
+
+pubic static class MyTests
+{
+  ..
+
+  public static ITest WidgetCanProcessAThingy => TestThat
+    .Given(new Widget("widget1"))
+    .And(new Thingy("thingy1"))
+    .When((wi, th) => wi.Process(th))
+    .Then((wi, th, t) => t.Result.ShouldBe(true))
+    .And((wi, th, t) => th.IsProcessed.ShouldBe(true))
+    .And((wi, th, t) => wi.HasProcessed.ShouldBe(true));
+
+  ..
+}
 ```
-
-## References
-
-* https://github.com/microsoft/vstest-docs/blob/master/RFCs/0004-Adapter-Extensibility.md
-* https://devblogs.microsoft.com/devops/writing-a-visual-studio-2012-unit-test-adapter/

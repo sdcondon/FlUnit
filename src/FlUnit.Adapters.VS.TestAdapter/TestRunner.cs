@@ -97,12 +97,13 @@ namespace FlUnit.Adapters.VSTest
         {
             var testCase = new TestCase($"{p.DeclaringType.FullName}.{p.Name}", ExecutorUri, source)
             {
+                // TODO: How to use System.Diagnostics.SymbolStore..?
                 //CodeFilePath = ..,
                 //LineNumber = ..,
             };
             testCase.SetPropertyValue(
                 FlUnitTestProp,
-                $"{p.DeclaringType.Assembly.GetName()}:{p.DeclaringType.FullName}:{p.Name}"); // Perhaps better to use JSON or similar..
+                $"{p.DeclaringType.Assembly.GetName().Name}:{p.DeclaringType.FullName}:{p.Name}"); // Perhaps better to use JSON or similar..
             return testCase;
         }
 
@@ -131,6 +132,7 @@ namespace FlUnit.Adapters.VSTest
             }
             catch (Exception e)
             {
+                // TODO: would need to do a bit more work for good failure messages..
                 result.Outcome = TestOutcome.Failed;
                 result.ErrorMessage = e.Message;
                 result.ErrorStackTrace = e.StackTrace;
