@@ -33,7 +33,7 @@ namespace Example.TestProject
             .When(sut => sut.Foo(null))
             .Then((sut, task) => task.Exception.Should().BeOfType(typeof(ArgumentNullException)));
 
-        public static ITest FooHasAppropriateSideEffects => TestThat
+        public static ITest FooHasSideEffects => TestThat
             .Given(new TestSubject())
             .And(new Collaborator())
             .When((sut, collaborator) => sut.Foo(collaborator))

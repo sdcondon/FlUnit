@@ -22,8 +22,8 @@ namespace FlUnit.Adapters.VSTest
         public const string ExecutorUriString = "executor://FlUnitTestRunner";
         public static readonly Uri ExecutorUri = new Uri(ExecutorUriString);
 
-        // NB: for some unfathomable reason, ID has to be Pascal-cased, with the framework throwing an unguessable error message for camel-casing.
-        // But not until after the property has been registered. A violated assumption during the serialization process?
+        // NB: for some unfathomable reason, property ID has to be Pascal-cased, with the framework raising an unguessable error message for camel-casing.
+        // But not until after the property has been registered. A violated assumption during the serialization process, maybe?
         private static readonly TestProperty FlUnitTestProp = TestProperty.Register("FlUnitTestCase", "flUnit Test Case", typeof(string), typeof(TestRunner));
 
         private bool isCancelled = false;
@@ -34,7 +34,7 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             ITestCaseDiscoverySink discoverySink)
         {
-            GetTestCases(sources, discoveryContext, logger).ForEach(tc => discoverySink.SendTestCase(tc));
+            MakeTestCases(sources, discoveryContext, logger).ForEach(tc => discoverySink.SendTestCase(tc));
         }
 
         public void RunTests(
@@ -42,7 +42,7 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            RunTests(GetTestCases(sources, runContext, null), runContext, frameworkHandle);
+            RunTests(MakeTestCases(sources, runContext, null), runContext, frameworkHandle);
         }
 
         public void RunTests(
@@ -68,34 +68,42 @@ namespace FlUnit.Adapters.VSTest
             isCancelled = true;
         }
 
-        private static List<TestCase> GetTestCases(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger)
+        private static List<TestCase> MakeTestCases(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger)
         {
-            return sources.SelectMany(s => GetTestCases(s, discoveryContext, logger)).ToList();
+            return sources.SelectMany(s => MakeTestCases(s, discoveryContext, logger)).ToList();
         }
 
-        private static List<TestCase> GetTestCases(string source, IDiscoveryContext discoveryContext, IMessageLogger logger)
+        private static List<TestCase> MakeTestCases(string source, IDiscoveryContext discoveryContext, IMessageLogger logger)
         {
             var assembly = Assembly.LoadFile(source);
 
             var testProps = assembly.ExportedTypes
                 .SelectMany(c => c.GetProperties())
                 .Where(p => p.PropertyType == typeof(ITest));
-
             var testCases = new List<TestCase>();
             foreach (var p in testProps)
             {
-                var testCase = new TestCase($"{p.DeclaringType.FullName}.{p.Name}", ExecutorUri, source)
-                {
-                    //CodeFilePath = source,
-                    //LineNumber = 1,
-                };
-                testCase.SetPropertyValue(FlUnitTestProp, $"{assembly.GetName()}:{p.DeclaringType.FullName}:{p.Name}"); // Perhaps better to use JSON or similar..
+                var testCase = MakeTestCase(source, p);
                 testCases.Add(testCase);
-
-                logger?.SendMessage(TestMessageLevel.Informational, $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}");
+                logger?.SendMessage(
+                    TestMessageLevel.Informational,
+                    $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}");
             }
 
             return testCases;
+        }
+
+        private static TestCase MakeTestCase(string source, PropertyInfo p)
+        {
+            var testCase = new TestCase($"{p.DeclaringType.FullName}.{p.Name}", ExecutorUri, source)
+            {
+                //CodeFilePath = ..,
+                //LineNumber = ..,
+            };
+            testCase.SetPropertyValue(
+                FlUnitTestProp,
+                $"{p.DeclaringType.Assembly.GetName()}:{p.DeclaringType.FullName}:{p.Name}"); // Perhaps better to use JSON or similar..
+            return testCase;
         }
 
         private static void RunTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
