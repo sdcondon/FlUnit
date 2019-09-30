@@ -123,6 +123,11 @@ namespace FlUnit.Adapters.VSTest
                 result.StartTime = DateTimeOffset.Now;
                 test.Run();
 
+                // TODO: Wondering if each assertion should be treated as a different data point
+                // (and so show up as a separate sub-result as data-driven tests do).
+                // Can accomplish by giving each its own RecordStart/End/Result. But how to name? 
+                // Could require lambdas and convert them to strings - but too constraining..
+                // Also, how to combine with actual data-driven stuff (e.g. GivenEachOf..?)
                 foreach (var assertion in test.Assertions)
                 {
                     assertion.Item1();
