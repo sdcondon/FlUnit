@@ -5,22 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="TestPrerequisite.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TestPrerequisite.tt</DependentUpon>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="TestPrerequisite.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestPrerequisite.cs</LastGenOutput>
-    </None>
   </ItemGroup>
 
 </Project>

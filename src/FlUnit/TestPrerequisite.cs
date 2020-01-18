@@ -13,6 +13,11 @@ namespace FlUnit
             return new TestPrerequisite<T1, T2>((prereq, prereq2));
         }
 
+        public TestAction<T1> When(Action<T1> testAction)
+        {
+            return new TestAction<T1>(prereq, testAction);
+        }
+
         public TestFunction<T1, TResult> When<TResult>(Func<T1, TResult> testFunction)
         {
             return new TestFunction<T1, TResult>(prereq, testFunction);
@@ -28,6 +33,11 @@ namespace FlUnit
         public TestPrerequisite<T1, T2, T3> And<T3>(T3 prereq3)
         {
             return new TestPrerequisite<T1, T2, T3>((prereqs.Item1, prereqs.Item2, prereq3));
+        }
+
+        public TestAction<T1, T2> When(Action<T1, T2> testAction)
+        {
+            return new TestAction<T1, T2>(prereqs, testAction);
         }
 
         public TestFunction<T1, T2, TResult> When<TResult>(Func<T1, T2, TResult> testFunction)
@@ -46,6 +56,11 @@ namespace FlUnit
         //{
         //    return new TestPrerequisite<T1, T2, T3, T4>((prereqs.Item1, prereqs.Item2, prereqs.Item3, prereq4));
         //}
+
+        public TestAction<T1, T2, T3> When(Action<T1, T2, T3> testAction)
+        {
+            return new TestAction<T1, T2, T3>(prereqs, testAction);
+        }
 
         public TestFunction<T1, T2, T3, TResult> When<TResult>(Func<T1, T2, T3, TResult> testFunction)
         {

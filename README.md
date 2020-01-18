@@ -21,3 +21,14 @@ pubic static class MyTests
   ..
 }
 ```
+
+## TODO
+
+In no particular order..
+
+- [ ] Better tests
+- [ ] T4 templates to reduce duplication
+- [ ] Figure out how to use the source stuff in VSTest
+- [ ] GivenEachOf..
+- [ ] Threading concerns
+- [ ] 

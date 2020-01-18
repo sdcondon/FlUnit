@@ -24,6 +24,21 @@ namespace Example.TestProject
 
     public static class ExampleTests
     {
+        public static ITest ExtendedBodies => TestThat
+            .Given(new
+            {
+                sut = new TestSubject(),
+                c = new Collaborator()
+            })
+            .When(arr =>
+            {
+                arr.sut.Foo(arr.c);
+            })
+            .Then((arr, t) =>
+            {
+                t.Exception.Should().BeNull();
+            });
+
         public static ITest TestWithNoPrerequisites => TestThat
             .When(() => new TestSubject())
             .Then(task => task.Exception.Should().BeNull());
