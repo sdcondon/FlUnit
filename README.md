@@ -22,13 +22,12 @@ pubic static class MyTests
 }
 ```
 
-## TODO
+Pros
+- Succinct, readable (sorta - better than MSpec, anyway..)
+- Easy to do separate evaluation of each assertion if the runner supports it, can even have the option naming them automatically via ToString of expression bodies..
+- Should be easy enough to extend to data driven (GivenEachOf..), even in combo (AndEachOf..)
 
-In no particular order..
-
-- [ ] Better tests
-- [ ] T4 templates to reduce duplication
-- [ ] Figure out how to use the source stuff in VSTest
-- [ ] GivenEachOf..
-- [ ] Threading concerns
-- [ ] 
+Cons
+- Pushes you towards using lambdas for stuff, BUT for the "When", if exceptions are thrown the stack trace isn't gonna be fun.
+- delegate params aren't intuitive..
+  

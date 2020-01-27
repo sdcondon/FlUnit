@@ -30,14 +30,16 @@ namespace Example.TestProject
                 sut = new TestSubject(),
                 c = new Collaborator()
             })
+
             .When(arr =>
             {
                 arr.sut.Foo(arr.c);
             })
+
             .Then((arr, t) =>
             {
                 t.Exception.Should().BeNull();
-            });
+            }, "Exception should be null");
 
         public static ITest TestWithNoPrerequisites => TestThat
             .When(() => new TestSubject())
@@ -51,7 +53,9 @@ namespace Example.TestProject
         public static ITest FooHasSideEffects => TestThat
             .Given(new TestSubject())
             .And(new Collaborator())
+
             .When((sut, collaborator) => sut.Foo(collaborator))
+
             .Then((sut, collaborator, task) => task.Result.Should().BeTrue())
             .And((sut, collaborator, task) => sut.HasFooed.Should().BeTrue())
             .And((sut, collaborator, task) => collaborator.HasBeenFooed.Should().BeTrue());

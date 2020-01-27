@@ -1,0 +1,29 @@
+name: Push NuGet Packages
+
+on: 
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - uses: actions/setup-dotnet@v1
+
+    - uses: nuget/setup-nuget@v1
+
+    - name: Add GitHub registry to NuGet
+      run: nuget sources add -name github -Source "https://nuget.pkg.github.com/sdcondon/index.json" -Username sdcondon -Password ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get release tag
+      id: getReleaseTag
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+    - name: Build
+      run: dotnet build -c Release -p:Version=${{ steps.getReleaseTag.outputs.VERSION }}
+
+    - name: Push packages
+      run: nuget push "**/*.nupkg" -Source github

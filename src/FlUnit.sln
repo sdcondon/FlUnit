@@ -7,7 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit", "FlUnit\FlUnit.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit.Adapters.VS.TestAdapter", "FlUnit.Adapters.VS.TestAdapter\FlUnit.Adapters.VS.TestAdapter.csproj", "{352BA863-FE5B-429C-95DA-3A676BD8F99B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.TestProject", "Example.TestProject\Example.TestProject.csproj", "{E5A56ACA-CB64-42D7-94F6-1D21EB6195E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.TestProject", "Example.TestProject\Example.TestProject.csproj", "{E5A56ACA-CB64-42D7-94F6-1D21EB6195E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{2471716F-EF7B-4977-8C1C-DDCAC4BDDB42}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

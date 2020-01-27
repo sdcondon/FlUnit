@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Simon Condon</Authors>
+    <Company />
+    <Product>FlUnit - A fluent unit test framework</Product>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/sdcondon/FlUnit</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/sdcondon/FlUnit</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!--<IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Version>0.0.0+localbuild</Version>
+  </PropertyGroup>
+</Project>
