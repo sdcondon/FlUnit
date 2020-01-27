@@ -23,7 +23,9 @@ jobs:
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
     - name: Build
+      working-directory: ./src
       run: dotnet build -c Release -p:Version=${{ steps.getReleaseTag.outputs.VERSION }}
 
     - name: Push packages
+      working-directory: ./src
       run: nuget push "**/*.nupkg" -Source github
