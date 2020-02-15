@@ -121,19 +121,35 @@ namespace FlUnit.Adapters.VSTest
         private static void RunTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
         {
             frameworkHandle.RecordStart(testCase);
-            var testResult = new TestResult(testCase);
 
-            if (TryMakeTestInstance(testCase, testResult, out var test))
+            //// TODO: same number of results should always be recorded - just with "None" result if it didn't get that far..
+
+            if (!TryMakeTestInstance(testCase, frameworkHandle, out var test))
             {
-                RunTestInstance(test, testResult);
+                frameworkHandle.RecordEnd(testCase, TestOutcome.None);
+                return;
             }
 
-            frameworkHandle.RecordEnd(testCase, testResult.Outcome);
-            frameworkHandle.RecordResult(testResult);
+            if(!RunTestInstance(testCase, test, frameworkHandle))
+            {
+                frameworkHandle.RecordEnd(testCase, TestOutcome.Failed);
+            }
+
+            var passed = true;
+            foreach (var assertion in test.Assertions)
+            {
+                passed &= CheckTestAssertion(testCase, assertion, frameworkHandle);
+            }
+            frameworkHandle.RecordEnd(testCase, passed ? TestOutcome.Passed : TestOutcome.Failed);
         }
 
-        private static bool TryMakeTestInstance(TestCase testCase, TestResult testResult, out ITest test)
+        private static bool TryMakeTestInstance(TestCase testCase, IFrameworkHandle frameworkHandle, out ITest test)
         {
+            var result = new TestResult(testCase)
+            {
+                DisplayName = "[Test Arrangement Shouldn't Fail]"
+            };
+
             try
             {
                 var propertyDetails = ((string)testCase.GetPropertyValue(FlUnitTestProp)).Split(':');
@@ -141,50 +157,85 @@ namespace FlUnit.Adapters.VSTest
                 var type = assembly.GetType(propertyDetails[1]);
                 var propertyInfo = type.GetProperty(propertyDetails[2]);
 
+                result.StartTime = DateTimeOffset.Now;
                 test = (ITest)propertyInfo.GetValue(null);
+                result.Outcome = TestOutcome.Passed;
                 return true;
             }
             catch (Exception e)
             {
                 // TODO: would need to do a bit more work for good failure messages..
-                testResult.Outcome = TestOutcome.None;
-                testResult.ErrorMessage = e.Message;
-                testResult.ErrorStackTrace = e.StackTrace;
+                result.Outcome = TestOutcome.None;
+                result.ErrorMessage = e.Message;
+                result.ErrorStackTrace = e.StackTrace;
 
                 test = null;
                 return false;
             }
+            finally
+            {
+                result.EndTime = DateTimeOffset.Now;
+                frameworkHandle.RecordResult(result);
+            }
         }
 
-        private static void RunTestInstance(ITest test, TestResult testResult)
+        private static bool RunTestInstance(TestCase testCase, ITest test, IFrameworkHandle frameworkHandle)
         {
+            var result = new TestResult(testCase)
+            {
+                DisplayName = "[Test Action Shouldn't Fail]"
+            };
+
             try
             {
-                testResult.StartTime = DateTimeOffset.Now;
+                result.StartTime = DateTimeOffset.Now;
                 test.Act();
 
-                // TODO: Each assertion should be treated as a different data point
-                // (and so show up as a separate sub-result as data-driven tests do).
-                // Can accomplish by giving each its own RecordStart/End/Result. But how to name? 
-                // Could require lambdas and convert them to strings - but too constraining..
-                // Also, how to combine with actual data-driven stuff (e.g. GivenEachOf..?)
-                foreach (var assertion in test.Assertions)
-                {
-                    assertion.Invoke();
-                }
-
-                testResult.Outcome = TestOutcome.Passed;
+                result.Outcome = TestOutcome.Passed;
+                return true;
             }
             catch (Exception e)
             {
                 // TODO: would need to do a bit more work for good failure messages..
-                testResult.Outcome = TestOutcome.Failed;
-                testResult.ErrorMessage = e.Message;
-                testResult.ErrorStackTrace = e.StackTrace;
+                result.Outcome = TestOutcome.Failed;
+                result.ErrorMessage = e.Message;
+                result.ErrorStackTrace = e.StackTrace;
+                return false;
             }
             finally
             {
-                testResult.EndTime = DateTimeOffset.Now;
+                result.EndTime = DateTimeOffset.Now;
+                frameworkHandle.RecordResult(result);
+            }
+        }
+
+        private static bool CheckTestAssertion(TestCase testCase, TestAssertion testAssertion, IFrameworkHandle frameworkHandle)
+        {
+            var result = new TestResult(testCase)
+            {
+                DisplayName = testAssertion.Description
+            };
+
+            try
+            {
+                result.StartTime = DateTimeOffset.Now;
+                testAssertion.Invoke();
+
+                result.Outcome = TestOutcome.Passed;
+                return true;
+            }
+            catch (Exception e)
+            {
+                // TODO: would need to do a bit more work for good failure messages..
+                result.Outcome = TestOutcome.Failed;
+                result.ErrorMessage = e.Message;
+                result.ErrorStackTrace = e.StackTrace;
+                return false;
+            }
+            finally
+            {
+                result.EndTime = DateTimeOffset.Now;
+                frameworkHandle.RecordResult(result);
             }
         }
     }
