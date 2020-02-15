@@ -165,7 +165,7 @@ namespace FlUnit.Adapters.VSTest
             }
             catch (Exception e)
             {
-                // TODO: would need to do a bit more work for good failure messages..
+                // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
                 result.Outcome = TestOutcome.Failed;
                 result.ErrorMessage = e.Message;
                 result.ErrorStackTrace = e.StackTrace;
@@ -197,7 +197,7 @@ namespace FlUnit.Adapters.VSTest
             }
             catch (Exception e)
             {
-                // TODO: would need to do a bit more work for good failure messages..
+                // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
                 result.Outcome = TestOutcome.Failed;
                 result.ErrorMessage = e.Message;
                 result.ErrorStackTrace = e.StackTrace;
@@ -227,7 +227,7 @@ namespace FlUnit.Adapters.VSTest
             }
             catch (Exception e)
             {
-                // TODO: would need to do a bit more work for good failure messages..
+                // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
                 result.Outcome = TestOutcome.Failed;
                 result.ErrorMessage = e.Message;
                 result.ErrorStackTrace = e.StackTrace;

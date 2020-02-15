@@ -4,9 +4,10 @@
     <Company />
     <Product>FlUnit - A fluent unit test framework</Product>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/sdcondon/FlUnit</RepositoryUrl>
+    <RepositoryUrl>https://github.com/sdcondon/FlUnit.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/sdcondon/FlUnit</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>unit test fluent</PackageTags>
     <!--<IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>

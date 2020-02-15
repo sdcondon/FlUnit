@@ -1,6 +1,6 @@
 # FlUnit
 
-Prototype for a test framework where tests are defined using a fluent builder. Includes a skeleton VSTest adapter. 
+Prototype for a test framework where tests are defined using a fluent builder. Includes a skeleton VSTest adapter which records each assertion in a separate result of the test. 
 
 ```
 using FlUnit;
