@@ -39,6 +39,7 @@ namespace FlUnit
 
         public void Act()
         {
+            // TODO: Exceptions are gonna be aggregates... Don't use a Task..
             invocationResult = new Task<TResult>(invoke);
             invocationResult.RunSynchronously();
         }
@@ -83,7 +84,8 @@ namespace FlUnit
 
         public void Act()
         {
-            // TODO: Exceptions are gonna be aggregates...
+            // TODO: Exceptions are gonna be aggregates... Don't use a Task..
+            // TODO: Also prob worth not using a lambda here
             invocationResult = new Task<TResult>(() => testFunction(prereq));
             invocationResult.RunSynchronously();
         }
@@ -128,6 +130,8 @@ namespace FlUnit
 
         public void Act()
         {
+            // TODO: Exceptions are gonna be aggregates... Don't use a Task..
+            // TODO: Also prob worth not using a lambda here
             invocationResult = new Task<TResult>(() => testFunction(prereqs.Item1, prereqs.Item2));
             invocationResult.RunSynchronously();
         }
@@ -172,6 +176,8 @@ namespace FlUnit
 
         public void Act()
         {
+            // TODO: Exceptions are gonna be aggregates... Don't use a Task..
+            // TODO: Also prob worth not using a lambda here
             invocationResult = new Task<TResult>(() => testFunction(prereqs.Item1, prereqs.Item2, prereqs.Item3));
             invocationResult.RunSynchronously();
         }

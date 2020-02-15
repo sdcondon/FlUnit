@@ -39,13 +39,14 @@ namespace FlUnit
 
         public void Act()
         {
-            // TODO: Exceptions are gonna be aggregates...
+            // TODO: Exceptions are gonna be aggregates... Don't use a Task..
             invocationResult = new Task(invoke);
             invocationResult.RunSynchronously();
         }
 
         private void AddAssertion(Action<Task> assertion, string description)
         {
+            // TODO: Try to avoid lambda here, too
             assertions.Add(new TestAssertion(() => assertion(invocationResult), description));
         }
     }
@@ -84,12 +85,15 @@ namespace FlUnit
 
         public void Act()
         {
+            // TODO: Exceptions are gonna be aggregates... Don't use a Task..
+            // TODO: Also prob worth not using a lambda here
             invocationResult = new Task(() => testAction(prereq));
             invocationResult.RunSynchronously();
         }
 
         private void AddAssertion(Action<T1, Task> assertion, string description)
         {
+            // TODO: Try to avoid lambda here, too
             assertions.Add(new TestAssertion(() => assertion(prereq, invocationResult), description));
         }
     }
@@ -128,12 +132,15 @@ namespace FlUnit
 
         public void Act()
         {
+            // TODO: Exceptions are gonna be aggregates... Don't use a Task..
+            // TODO: Also prob worth not using a lambda here
             invocationResult = new Task(() => testAction(prereqs.Item1, prereqs.Item2));
             invocationResult.RunSynchronously();
         }
 
         private void AddAssertion(Action<T1, T2, Task> assertion, string description)
         {
+            // TODO: Try to avoid lambda here, too
             assertions.Add(new TestAssertion(() => assertion(prereqs.Item1, prereqs.Item2, invocationResult), description));
         }
     }
@@ -172,12 +179,15 @@ namespace FlUnit
 
         public void Act()
         {
+            // TODO: Exceptions are gonna be aggregates... Don't use a Task..
+            // TODO: Also prob worth not using a lambda here
             invocationResult = new Task(() => testAction(prereqs.Item1, prereqs.Item2, prereqs.Item3));
             invocationResult.RunSynchronously();
         }
 
         private void AddAssertion(Action<T1, T2, T3, Task> assertion, string description)
         {
+            // TODO: Try to avoid lambda here, too
             assertions.Add(new TestAssertion(() => assertion(prereqs.Item1, prereqs.Item2, prereqs.Item3, invocationResult), description));
         }
     }
