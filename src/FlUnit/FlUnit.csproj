@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>FlUnit framework</Description>
+    <Description>Prototype for a test framework where tests are defined using a fluent builder.
+</Description>
   </PropertyGroup>
 
   <ItemGroup>

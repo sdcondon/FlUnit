@@ -8,8 +8,8 @@
     <PackageProjectUrl>https://github.com/sdcondon/FlUnit</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>unit test fluent</PackageTags>
-    <!--<IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Version>0.0.0-localbuild+localbuild</Version>
   </PropertyGroup>
