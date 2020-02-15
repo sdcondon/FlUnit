@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 namespace FlUnit
 {
+    //// TODO: T4 template me!!
+
     public class TestFunctionAndAssertions<TResult> : ITest
     {
         private readonly Func<TResult> invoke;
@@ -24,10 +26,10 @@ namespace FlUnit
 
         public IEnumerable<TestAssertion> Assertions => assertions;
 
-        //public TestFunctionAndAssertions<TResult> And(Expression<Action<Task<TResult>>> assertion)
-        //{
-        //    return And(assertion.Compile(), assertion.Body.ToString());
-        //}
+        public TestFunctionAndAssertions<TResult> And(Expression<Action<Task<TResult>>> assertion)
+        {
+            return And(assertion.Compile(), assertion.Body.ToString());
+        }
 
         public TestFunctionAndAssertions<TResult> And(Action<Task<TResult>> assertion, string description = null)
         {
@@ -35,7 +37,7 @@ namespace FlUnit
             return this;
         }
 
-        public void Run()
+        public void Act()
         {
             invocationResult = new Task<TResult>(invoke);
             invocationResult.RunSynchronously();
@@ -68,10 +70,10 @@ namespace FlUnit
 
         public IEnumerable<TestAssertion> Assertions => assertions;
 
-        //public TestFunctionAndAssertions<T1, TResult> And(Expression<Action<T1, Task<TResult>>> assertion)
-        //{
-        //    return And(assertion.Compile(), assertion.Body.ToString());
-        //}
+        public TestFunctionAndAssertions<T1, TResult> And(Expression<Action<T1, Task<TResult>>> assertion)
+        {
+            return And(assertion.Compile(), assertion.Body.ToString());
+        }
 
         public TestFunctionAndAssertions<T1, TResult> And(Action<T1, Task<TResult>> assertion, string description = null)
         {
@@ -79,8 +81,9 @@ namespace FlUnit
             return this;
         }
 
-        public void Run()
+        public void Act()
         {
+            // TODO: Exceptions are gonna be aggregates...
             invocationResult = new Task<TResult>(() => testFunction(prereq));
             invocationResult.RunSynchronously();
         }
@@ -112,10 +115,10 @@ namespace FlUnit
 
         public IEnumerable<TestAssertion> Assertions => assertions;
 
-        //public TestFunctionAndAssertions<T1, T2, TResult> And(Expression<Action<T1, T2, Task<TResult>>> assertion)
-        //{
-        //    return And(assertion.Compile(), assertion.Body.ToString());
-        //}
+        public TestFunctionAndAssertions<T1, T2, TResult> And(Expression<Action<T1, T2, Task<TResult>>> assertion)
+        {
+            return And(assertion.Compile(), assertion.Body.ToString());
+        }
 
         public TestFunctionAndAssertions<T1, T2, TResult> And(Action<T1, T2, Task<TResult>> assertion, string description = null)
         {
@@ -123,7 +126,7 @@ namespace FlUnit
             return this;
         }
 
-        public void Run()
+        public void Act()
         {
             invocationResult = new Task<TResult>(() => testFunction(prereqs.Item1, prereqs.Item2));
             invocationResult.RunSynchronously();
@@ -156,10 +159,10 @@ namespace FlUnit
 
         public IEnumerable<TestAssertion> Assertions => assertions;
 
-        //public TestFunctionAndAssertions<T1, T2, T3, TResult> And(Expression<Action<T1, T2, T3, Task<TResult>>> assertion)
-        //{
-        //    return And(assertion.Compile(), assertion.Body.ToString());
-        //}
+        public TestFunctionAndAssertions<T1, T2, T3, TResult> And(Expression<Action<T1, T2, T3, Task<TResult>>> assertion)
+        {
+            return And(assertion.Compile(), assertion.Body.ToString());
+        }
 
         public TestFunctionAndAssertions<T1, T2, T3, TResult> And(Action<T1, T2, T3, Task<TResult>> assertion, string description = null)
         {
@@ -167,7 +170,7 @@ namespace FlUnit
             return this;
         }
 
-        public void Run()
+        public void Act()
         {
             invocationResult = new Task<TResult>(() => testFunction(prereqs.Item1, prereqs.Item2, prereqs.Item3));
             invocationResult.RunSynchronously();

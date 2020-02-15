@@ -119,6 +119,7 @@ namespace FlUnit.Adapters.VSTest
         private static void RunTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
         {
             frameworkHandle.RecordStart(testCase);
+
             var result = new TestResult(testCase);
 
             try
@@ -126,7 +127,7 @@ namespace FlUnit.Adapters.VSTest
                 var test = MakeTestInstance(testCase);
 
                 result.StartTime = DateTimeOffset.Now;
-                test.Run();
+                test.Act();
 
                 // TODO: Each assertion should be treated as a different data point
                 // (and so show up as a separate sub-result as data-driven tests do).

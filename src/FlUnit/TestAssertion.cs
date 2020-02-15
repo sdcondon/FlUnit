@@ -5,22 +5,19 @@ namespace FlUnit
 {
     public class TestAssertion
     {
+        private readonly Action action;
+
         internal TestAssertion(Action action, string description)
         {
-            Action = action;
+            this.action = action;
             Description = description;
         }
 
         internal TestAssertion(Expression<Action> expression)
         {
-            Action = expression.Compile();
+            this.action = expression.Compile();
             Description = expression.Body.ToString();
         }
-
-        /// <summary>
-        /// Gets the assertion action to be invoked.
-        /// </summary>
-        public Action Action { get; }
 
         /// <summary>
         /// Gets the description of this assertion.
@@ -30,6 +27,6 @@ namespace FlUnit
         /// <summary>
         /// Invokes the assertion.
         /// </summary>
-        public void Invoke() => Action.Invoke();
+        public void Invoke() => action.Invoke();
     }
 }

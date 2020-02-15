@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 namespace FlUnit
 {
+    //// TODO: T4 template me!!
+
     public class TestAction
     {
         private readonly Action testAction;

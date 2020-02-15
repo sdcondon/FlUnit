@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="5.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Shouldly" Version="3.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FlUnit.Adapters.VS.TestAdapter\FlUnit.Adapters.VSTest.csproj" />
+    <ProjectReference Include="..\FlUnit.Adapters.VSTest\FlUnit.Adapters.VSTest.csproj" />
     <ProjectReference Include="..\FlUnit\FlUnit.csproj" />
   </ItemGroup>
 

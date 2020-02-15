@@ -1,71 +1,74 @@
 ﻿using FlUnit;
-using FluentAssertions;
+using Shouldly;
 using System;
 
 namespace Example.TestProject
 {
-    public class TestSubject
-    {
-        public bool HasFooed { get; private set; }
-
-        public bool Foo(Collaborator collaborator)
-        {
-            if (collaborator == null) throw new ArgumentNullException();
-            HasFooed = true;
-            collaborator.HasBeenFooed = true;
-            return true;
-        }
-    }
-
-    public class Collaborator
-    {
-        public bool HasBeenFooed { get; set; }
-    }
-
     public static class ExampleTests
     {
-        public static ITest ExtendedBodies => TestThat
-            .Given(new
-            {
-                sut = new TestSubject(),
-                c = new Collaborator()
-            })
-
-            .When(arr =>
-            {
-                arr.sut.Foo(arr.c);
-            })
-
-            .Then((arr, t) =>
-            {
-                t.Exception.Should().BeNull();
-            }, "Exception should be null");
-
-        public static ITest TestWithNoPrerequisites => TestThat
-            .When(() => new TestSubject())
-            .Then(task => task.Exception.Should().BeNull());
-
-        public static ITest FooThrowsOnNullCollaborator => TestThat
-            .Given(new TestSubject())
-            .When(sut => sut.Foo(null))
-            .Then((sut, task) => task.Exception.Should().BeOfType(typeof(ArgumentNullException)));
-
-        public static ITest FooHasSideEffects => TestThat
+        // Basic example
+        public static ITest ProcessHasSideEffects => TestThat
             .Given(new TestSubject())
             .And(new Collaborator())
 
-            .When((sut, collaborator) => sut.Foo(collaborator))
+            .When((sut, collaborator) => sut.Process(collaborator))
 
-            .Then((sut, collaborator, task) => task.Result.Should().BeTrue())
-            .And((sut, collaborator, task) => sut.HasFooed.Should().BeTrue())
-            .And((sut, collaborator, task) => collaborator.HasBeenFooed.Should().BeTrue());
+            .Then((sut, collaborator, task) => task.Result.ShouldBeTrue())
+            .And((sut, collaborator, task) => sut.HasProcessed.ShouldBeTrue())
+            .And((sut, collaborator, task) => collaborator.HasBeenProcessed.ShouldBeTrue());
          
-        public static ITest AltFooHasAppropriateSideEffects => TestThat
+        // Basic example with single anonymous object-valued 'Given' clause
+        public static ITest ProcessHasSideEffects2 => TestThat
             .Given(new { sut = new TestSubject(), collaborator = new Collaborator() })
-            .When(test => test.sut.Foo(test.collaborator))
-            .Then((test, task) => task.Result.Should().BeTrue())
-            .And((test, task) => test.sut.HasFooed.Should().BeTrue())
-            .And((test, task) => test.collaborator.HasBeenFooed.Should().BeTrue());
+            .When(given => given.sut.Process(given.collaborator))
+            .Then((given, when) => when.Result.ShouldBeTrue())
+            .And((given, when) => given.sut.HasProcessed.ShouldBeTrue())
+            .And((given, when) => given.collaborator.HasBeenProcessed.ShouldBeTrue());
+
+        // Negative test
+        public static ITest ProcessThrowsOnNullCollaborator => TestThat
+            .Given(new TestSubject())
+            .When(sut => sut.Process(null))
+            .Then((sut, task) => task.Exception.ShouldBeOfType(typeof(ArgumentNullException)));
+
+        // Test with no prereqs
+        public static ITest CtorDoesntThrow => TestThat
+            .When(() => new TestSubject())
+            .Then(task => task.Exception.ShouldBeNull());
+
+        // Block bodies
+        public static ITest BlockBodies => TestThat
+            .Given(new
+            {
+                sut = new TestSubject(),
+                collaborator = new Collaborator()
+            })
+            .When(given =>
+            {
+                given.sut.Process(given.collaborator);
+            })
+            .Then((given, when) =>
+            {
+                when.Exception.ShouldBeNull();
+            }, "Exception should be null");
+
+        private class TestSubject
+        {
+            public bool HasProcessed { get; private set; }
+
+            public bool Process(Collaborator collaborator)
+            {
+                if (collaborator == null) throw new ArgumentNullException();
+                HasProcessed = true;
+                collaborator.HasBeenProcessed = true;
+                return true;
+            }
+        }
+
+        private class Collaborator
+        {
+            public bool HasBeenProcessed { get; set; }
+        }
     }
 }
  

@@ -2,6 +2,8 @@
 
 namespace FlUnit
 {
+    //// TODO: T4 template me!!
+
     public class TestPrerequisite<T1>
     {
         private readonly T1 prereq;

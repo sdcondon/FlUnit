@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 namespace FlUnit
 {
+    //// TODO: T4 template me!!
+
     public class TestActionAndAssertions : ITest
     {
         private readonly Action invoke;
@@ -24,19 +26,20 @@ namespace FlUnit
 
         public IEnumerable<TestAssertion> Assertions => assertions;
 
-        //public TestActionAndAssertions And(Expression<Action<Task>> assertion)
-        //{
-        //    return And(assertion.Compile(), assertion.Body.ToString());
-        //}
+        public TestActionAndAssertions And(Expression<Action<Task>> assertion)
+        {
+            return And(assertion.Compile(), assertion.Body.ToString());
+        }
 
-        public TestActionAndAssertions And(Action<Task> assertion, string description = null)
+        public TestActionAndAssertions And(Action<Task> assertion, string description)
         {
             AddAssertion(assertion, description);
             return this;
         }
 
-        public void Run()
+        public void Act()
         {
+            // TODO: Exceptions are gonna be aggregates...
             invocationResult = new Task(invoke);
             invocationResult.RunSynchronously();
         }
@@ -68,18 +71,18 @@ namespace FlUnit
 
         public IEnumerable<TestAssertion> Assertions => assertions;
 
-        //public TestActionAndAssertions<T1> And(Expression<Action<T1, Task>> assertion)
-        //{
-        //    return And(assertion.Compile(), assertion.Body.ToString());
-        //}
+        public TestActionAndAssertions<T1> And(Expression<Action<T1, Task>> assertion)
+        {
+            return And(assertion.Compile(), assertion.Body.ToString());
+        }
 
-        public TestActionAndAssertions<T1> And(Action<T1, Task> assertion, string description = null)
+        public TestActionAndAssertions<T1> And(Action<T1, Task> assertion, string description)
         {
             AddAssertion(assertion, description);
             return this;
         }
 
-        public void Run()
+        public void Act()
         {
             invocationResult = new Task(() => testAction(prereq));
             invocationResult.RunSynchronously();
@@ -123,7 +126,7 @@ namespace FlUnit
             return this;
         }
 
-        public void Run()
+        public void Act()
         {
             invocationResult = new Task(() => testAction(prereqs.Item1, prereqs.Item2));
             invocationResult.RunSynchronously();
@@ -156,18 +159,18 @@ namespace FlUnit
 
         public IEnumerable<TestAssertion> Assertions => assertions;
 
-        //public TestActionAndAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3, Task>> assertion)
-        //{
-        //    return And(assertion.Compile(), assertion.Body.ToString());
-        //}
+        public TestActionAndAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3, Task>> assertion)
+        {
+            return And(assertion.Compile(), assertion.Body.ToString());
+        }
 
-        public TestActionAndAssertions<T1, T2, T3> And(Action<T1, T2, T3, Task> assertion, string description = null)
+        public TestActionAndAssertions<T1, T2, T3> And(Action<T1, T2, T3, Task> assertion, string description)
         {
             AddAssertion(assertion, description);
             return this;
         }
 
-        public void Run()
+        public void Act()
         {
             invocationResult = new Task(() => testAction(prereqs.Item1, prereqs.Item2, prereqs.Item3));
             invocationResult.RunSynchronously();
