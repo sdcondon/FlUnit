@@ -19,7 +19,11 @@ namespace Example.TestProject
          
         // Basic example with single anonymous object-valued 'Given' clause
         public static ITest ProcessHasSideEffects2 => TestThat
-            .Given(new { sut = new TestSubject(), collaborator = new Collaborator() })
+            .Given(new
+            {
+                sut = new TestSubject(),
+                collaborator = new Collaborator()
+            })
             .When(given => given.sut.Process(given.collaborator))
             .Then((given, when) => when.Result.ShouldBeTrue())
             .And((given, when) => given.sut.HasProcessed.ShouldBeTrue())
