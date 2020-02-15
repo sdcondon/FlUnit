@@ -130,11 +130,7 @@ namespace FlUnit.Adapters.VSTest
                 return;
             }
 
-            if(!RunTestInstance(testCase, test, frameworkHandle))
-            {
-                frameworkHandle.RecordEnd(testCase, TestOutcome.Failed);
-                return;
-            }
+            test.Act();
 
             var passed = true;
             foreach (var assertion in test.Assertions)
@@ -146,6 +142,11 @@ namespace FlUnit.Adapters.VSTest
 
         private static bool TryMakeTestInstance(TestCase testCase, IFrameworkHandle frameworkHandle, out ITest test)
         {
+            // We add a result for arrangement for two reasons:
+            // (1) So that it's not an extra result when arrangement fails - consistency is good..
+            // (2) So that there's always at least two results, so that we don't have to do different stuff when there's
+            // only a single assertion to account for VSTests behaviour in naming the tests.. 
+            // Having said that, I'm not sure I like this and might change it so that we only include it when it fails..
             var result = new TestResult(testCase)
             {
                 DisplayName = "[Test Arrangement]"
@@ -171,36 +172,6 @@ namespace FlUnit.Adapters.VSTest
                 result.ErrorStackTrace = e.StackTrace;
 
                 test = null;
-                return false;
-            }
-            finally
-            {
-                result.EndTime = DateTimeOffset.Now;
-                frameworkHandle.RecordResult(result);
-            }
-        }
-
-        private static bool RunTestInstance(TestCase testCase, ITest test, IFrameworkHandle frameworkHandle)
-        {
-            var result = new TestResult(testCase)
-            {
-                DisplayName = "[Test Action]"
-            };
-
-            try
-            {
-                result.StartTime = DateTimeOffset.Now;
-                test.Act();
-
-                result.Outcome = TestOutcome.Passed;
-                return true;
-            }
-            catch (Exception e)
-            {
-                // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
-                result.Outcome = TestOutcome.Failed;
-                result.ErrorMessage = e.Message;
-                result.ErrorStackTrace = e.StackTrace;
                 return false;
             }
             finally
