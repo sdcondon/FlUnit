@@ -10,6 +10,6 @@
     <!--<IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <Version>0.0.0+localbuild</Version>
+    <Version>0.0.0-localbuild+localbuild</Version>
   </PropertyGroup>
 </Project>

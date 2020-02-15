@@ -11,6 +11,7 @@ namespace FlUnit.Adapters.VSTest
     // References:
     // https://github.com/microsoft/vstest
     // https://github.com/microsoft/vstest/tree/master/src/Microsoft.TestPlatform.ObjectModel
+    // https://github.com/microsoft/testfx (MSTest)
     // https://github.com/xunit/visualstudio.xunit/tree/master/src/xunit.runner.visualstudio
 
     [FileExtension(".exe")]
@@ -76,30 +77,38 @@ namespace FlUnit.Adapters.VSTest
         private static List<TestCase> MakeTestCases(string source, IDiscoveryContext discoveryContext, IMessageLogger logger)
         {
             var assembly = Assembly.LoadFile(source);
+            logger?.SendMessage(
+                TestMessageLevel.Informational,
+                $"Test discovery started for {assembly.FullName}");
 
             var testProps = assembly.ExportedTypes
                 .SelectMany(c => c.GetProperties())
                 .Where(p => p.PropertyType == typeof(ITest));
+
             var testCases = new List<TestCase>();
-            foreach (var p in testProps)
+            using (var diaSession = new DiaSession(source))
             {
-                var testCase = MakeTestCase(source, p);
-                testCases.Add(testCase);
-                logger?.SendMessage(
-                    TestMessageLevel.Informational,
-                    $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}");
+                foreach (var p in testProps)
+                {
+                    var testCase = MakeTestCase(source, p, diaSession);
+                    testCases.Add(testCase);
+                    logger?.SendMessage(
+                        TestMessageLevel.Informational,
+                        $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}");
+                }
             }
 
             return testCases;
         }
 
-        private static TestCase MakeTestCase(string source, PropertyInfo p)
+        private static TestCase MakeTestCase(string source, PropertyInfo p, DiaSession diaSession)
         {
+            var navigationData = diaSession.GetNavigationData(p.DeclaringType.FullName, p.GetGetMethod().Name);
+
             var testCase = new TestCase($"{p.DeclaringType.FullName}.{p.Name}", ExecutorUri, source)
             {
-                // TODO: How to use System.Diagnostics.SymbolStore..?
-                //CodeFilePath = ..,
-                //LineNumber = ..,
+                CodeFilePath = navigationData.FileName,
+                LineNumber = navigationData.MinLineNumber
             };
             testCase.SetPropertyValue(
                 FlUnitTestProp,
@@ -123,14 +132,14 @@ namespace FlUnit.Adapters.VSTest
                 result.StartTime = DateTimeOffset.Now;
                 test.Run();
 
-                // TODO: Wondering if each assertion should be treated as a different data point
+                // TODO: Each assertion should be treated as a different data point
                 // (and so show up as a separate sub-result as data-driven tests do).
                 // Can accomplish by giving each its own RecordStart/End/Result. But how to name? 
                 // Could require lambdas and convert them to strings - but too constraining..
                 // Also, how to combine with actual data-driven stuff (e.g. GivenEachOf..?)
                 foreach (var assertion in test.Assertions)
                 {
-                    assertion.Item1();
+                    assertion.Invoke();
                 }
 
                 result.Outcome = TestOutcome.Passed;

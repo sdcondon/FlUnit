@@ -8,7 +8,7 @@ namespace FlUnit
     public class TestFunctionAndAssertions<TResult> : ITest
     {
         private readonly Func<TResult> invoke;
-        private readonly List<(Action, string)> assertions = new List<(Action, string)>();
+        private readonly List<TestAssertion> assertions = new List<TestAssertion>();
         private Task<TResult> invocationResult;
 
         internal TestFunctionAndAssertions(Func<TResult> testFunction, Expression<Action<Task<TResult>>> assertion)
@@ -22,7 +22,7 @@ namespace FlUnit
             AddAssertion(assertion, assertionDescription);
         }
 
-        public IEnumerable<(Action, string)> Assertions => assertions;
+        public IEnumerable<TestAssertion> Assertions => assertions;
 
         //public TestFunctionAndAssertions<TResult> And(Expression<Action<Task<TResult>>> assertion)
         //{
@@ -43,7 +43,7 @@ namespace FlUnit
 
         private void AddAssertion(Action<Task<TResult>> assertion, string description)
         {
-            assertions.Add(((Action)(() => assertion(invocationResult)), description));
+            assertions.Add(new TestAssertion(() => assertion(invocationResult), description));
         }
     }
 
@@ -51,7 +51,7 @@ namespace FlUnit
     {
         private readonly T1 prereq;
         private readonly Func<T1, TResult> testFunction;
-        private readonly List<(Action, string)> assertions = new List<(Action, string)>();
+        private readonly List<TestAssertion> assertions = new List<TestAssertion>();
         private Task<TResult> invocationResult;
 
         internal TestFunctionAndAssertions(T1 prereq, Func<T1, TResult> testFunction, Expression<Action<T1, Task<TResult>>> assertion)
@@ -66,7 +66,7 @@ namespace FlUnit
             AddAssertion(assertion, description);
         }
 
-        public IEnumerable<(Action, string)> Assertions => assertions;
+        public IEnumerable<TestAssertion> Assertions => assertions;
 
         //public TestFunctionAndAssertions<T1, TResult> And(Expression<Action<T1, Task<TResult>>> assertion)
         //{
@@ -87,7 +87,7 @@ namespace FlUnit
 
         private void AddAssertion(Action<T1, Task<TResult>> assertion, string description)
         {
-            assertions.Add(((Action)(() => assertion(prereq, invocationResult)), description));
+            assertions.Add(new TestAssertion(() => assertion(prereq, invocationResult), description));
         }
     }
 
@@ -95,7 +95,7 @@ namespace FlUnit
     {
         private readonly (T1, T2) prereqs;
         private readonly Func<T1, T2, TResult> testFunction;
-        private readonly List<(Action, string)> assertions = new List<(Action, string)>();
+        private readonly List<TestAssertion> assertions = new List<TestAssertion>();
         private Task<TResult> invocationResult;
 
         internal TestFunctionAndAssertions((T1, T2) prereqs, Func<T1, T2, TResult> testFunction, Expression<Action<T1, T2, Task<TResult>>> assertion)
@@ -110,7 +110,7 @@ namespace FlUnit
             AddAssertion(assertion, description);
         }
 
-        public IEnumerable<(Action, string)> Assertions => assertions;
+        public IEnumerable<TestAssertion> Assertions => assertions;
 
         //public TestFunctionAndAssertions<T1, T2, TResult> And(Expression<Action<T1, T2, Task<TResult>>> assertion)
         //{
@@ -131,7 +131,7 @@ namespace FlUnit
 
         private void AddAssertion(Action<T1, T2, Task<TResult>> assertion, string description)
         {
-            assertions.Add(((Action)(() => assertion(prereqs.Item1, prereqs.Item2, invocationResult)), description));
+            assertions.Add(new TestAssertion(() => assertion(prereqs.Item1, prereqs.Item2, invocationResult), description));
         }
     }
 
@@ -139,7 +139,7 @@ namespace FlUnit
     {
         private readonly (T1, T2, T3) prereqs;
         private readonly Func<T1, T2, T3, TResult> testFunction;
-        private readonly List<(Action, string)> assertions = new List<(Action, string)>();
+        private readonly List<TestAssertion> assertions = new List<TestAssertion>();
         private Task<TResult> invocationResult;
 
         internal TestFunctionAndAssertions((T1, T2, T3) prereqs, Func<T1, T2, T3, TResult> testFunction, Expression<Action<T1, T2, T3, Task<TResult>>> assertion)
@@ -154,7 +154,7 @@ namespace FlUnit
             AddAssertion(assertion, description);
         }
 
-        public IEnumerable<(Action, string)> Assertions => assertions;
+        public IEnumerable<TestAssertion> Assertions => assertions;
 
         //public TestFunctionAndAssertions<T1, T2, T3, TResult> And(Expression<Action<T1, T2, T3, Task<TResult>>> assertion)
         //{
@@ -175,7 +175,7 @@ namespace FlUnit
 
         private void AddAssertion(Action<T1, T2, T3, Task<TResult>> assertion, string description)
         {
-            assertions.Add(((Action)(() => assertion(prereqs.Item1, prereqs.Item2, prereqs.Item3, invocationResult)), description));
+            assertions.Add(new TestAssertion(() => assertion(prereqs.Item1, prereqs.Item2, prereqs.Item3, invocationResult), description));
         }
     }
 }

@@ -29,5 +29,5 @@ Pros
 
 Cons
 - Pushes you towards using lambdas for stuff, BUT for the "When", if exceptions are thrown the stack trace isn't gonna be fun.
-- delegate params aren't intuitive, and would get unwiedly for even a modest number of separate pre-reqs. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it..
+- delegate params aren't intuitive, and would get unwieldy for even a modest number of separate pre-reqs. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it..
   
