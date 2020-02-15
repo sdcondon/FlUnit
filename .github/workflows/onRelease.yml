@@ -14,9 +14,8 @@ jobs:
     - uses: actions/setup-dotnet@v1
 
     - uses: nuget/setup-nuget@v1
-
-    - name: Add GitHub registry to NuGet
-      run: nuget sources add -name github -Source "https://nuget.pkg.github.com/sdcondon/index.json" -Username sdcondon -Password ${{ secrets.GITHUB_TOKEN }}
+      with:
+        nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
     - name: Get release tag
       id: getReleaseTag
@@ -28,4 +27,4 @@ jobs:
 
     - name: Push packages
       working-directory: ./src
-      run: nuget push "**/*.nupkg" -Source github
+      run: nuget push "**/*.nupkg"
