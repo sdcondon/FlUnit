@@ -148,7 +148,7 @@ namespace FlUnit.Adapters.VSTest
         {
             var result = new TestResult(testCase)
             {
-                DisplayName = "[Test Arrangement Shouldn't Fail]"
+                DisplayName = "[Test Arrangement]"
             };
 
             try
@@ -184,7 +184,7 @@ namespace FlUnit.Adapters.VSTest
         {
             var result = new TestResult(testCase)
             {
-                DisplayName = "[Test Action Shouldn't Fail]"
+                DisplayName = "[Test Action]"
             };
 
             try
