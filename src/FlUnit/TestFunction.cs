@@ -20,7 +20,7 @@ namespace FlUnit
             return new TestFunctionAndAssertions<TResult>(testFunction, assertion);
         }
 
-        public TestFunctionAndAssertions<TResult> Then(Action<Task<TResult>> assertion, string description = null)
+        public TestFunctionAndAssertions<TResult> Then(Action<Task<TResult>> assertion, string description)
         {
             return new TestFunctionAndAssertions<TResult>(testFunction, assertion, description);
         }
@@ -42,7 +42,7 @@ namespace FlUnit
             return new TestFunctionAndAssertions<T1, TResult>(prereq, testFunction, assertion);
         }
 
-        public TestFunctionAndAssertions<T1, TResult> Then(Action<T1, Task<TResult>> assertion, string description = null)
+        public TestFunctionAndAssertions<T1, TResult> Then(Action<T1, Task<TResult>> assertion, string description)
         {
             return new TestFunctionAndAssertions<T1, TResult>(prereq, testFunction, assertion, description);
         }
@@ -64,7 +64,7 @@ namespace FlUnit
             return new TestFunctionAndAssertions<T1, T2, TResult>(prereqs, testFunction, assertion);
         }
 
-        public TestFunctionAndAssertions<T1, T2, TResult> Then(Action<T1, T2, Task<TResult>> assertion, string description = null)
+        public TestFunctionAndAssertions<T1, T2, TResult> Then(Action<T1, T2, Task<TResult>> assertion, string description)
         {
             return new TestFunctionAndAssertions<T1, T2, TResult>(prereqs, testFunction, assertion, description);
         }
@@ -86,7 +86,7 @@ namespace FlUnit
             return new TestFunctionAndAssertions<T1, T2, T3, TResult>(prereqs, testFunction, assertion);
         }
 
-        public TestFunctionAndAssertions<T1, T2, T3, TResult> Then(Action<T1, T2, T3, Task<TResult>> assertion, string description = null)
+        public TestFunctionAndAssertions<T1, T2, T3, TResult> Then(Action<T1, T2, T3, Task<TResult>> assertion, string description)
         {
             return new TestFunctionAndAssertions<T1, T2, T3, TResult>(prereqs, testFunction, assertion, description);
         }

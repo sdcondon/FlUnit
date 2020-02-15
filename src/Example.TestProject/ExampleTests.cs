@@ -54,7 +54,7 @@ namespace Example.TestProject
             .Then((given, process) =>
             {
                 process.Exception.ShouldBeNull();
-            });
+            }, "Exception should be null");
 
         private class TestSubject
         {

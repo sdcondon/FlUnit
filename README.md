@@ -4,7 +4,7 @@ Prototype for a test framework where tests are defined using a fluent builder. I
 
 ```
 using FlUnit;
-using FluentAssertions;
+using Shouldly;
 
 pubic static class MyTests
 {
@@ -14,9 +14,9 @@ pubic static class MyTests
     .Given(new Widget("widget1"))
     .And(new Thingy("thingy1"))
     .When((wi, th) => wi.TryProcess(th))
-    .Then((wi, th, t) => t.Result.ShouldBe(true))
-    .And((wi, th, t) => th.IsProcessed.ShouldBe(true))
-    .And((wi, th, t) => wi.HasProcessed.ShouldBe(true));
+    .Then((wi, th, t) => t.Result.ShouldBeTrue())
+    .And((wi, th, t) => th.IsProcessed.ShouldBeTrue())
+    .And((wi, th, t) => wi.HasProcessed.ShouldBeTrue());
 
   ..
 }

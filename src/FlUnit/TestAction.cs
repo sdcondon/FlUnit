@@ -15,12 +15,12 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
-        //public TestActionAndAssertions Then(Expression<Action<Task>> assertion)
-        //{
-        //    return new TestActionAndAssertions(testAction, assertion);
-        //}
+        public TestActionAndAssertions Then(Expression<Action<Task>> assertion)
+        {
+            return new TestActionAndAssertions(testAction, assertion);
+        }
 
-        public TestActionAndAssertions Then(Action<Task> assertion, string description = null)
+        public TestActionAndAssertions Then(Action<Task> assertion, string description)
         {
             return new TestActionAndAssertions(testAction, assertion, description);
         }
@@ -37,12 +37,12 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
-        //public TestActionAndAssertions<T1> Then(Expression<Action<T1, Task>> assertion)
-        //{
-        //    return new TestActionAndAssertions<T1>(prereq, testAction, assertion);
-        //}
+        public TestActionAndAssertions<T1> Then(Expression<Action<T1, Task>> assertion)
+        {
+            return new TestActionAndAssertions<T1>(prereq, testAction, assertion);
+        }
 
-        public TestActionAndAssertions<T1> Then(Action<T1, Task> assertion, string description = null)
+        public TestActionAndAssertions<T1> Then(Action<T1, Task> assertion, string description)
         {
             return new TestActionAndAssertions<T1>(prereq, testAction, assertion, description);
         }
@@ -59,12 +59,12 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
-        //public TestActionAndAssertions<T1, T2> Then(Expression<Action<T1, T2, Task>> assertion)
-        //{
-        //    return new TestActionAndAssertions<T1, T2>(prereqs, testAction, assertion);
-        //}
+        public TestActionAndAssertions<T1, T2> Then(Expression<Action<T1, T2, Task>> assertion)
+        {
+            return new TestActionAndAssertions<T1, T2>(prereqs, testAction, assertion);
+        }
 
-        public TestActionAndAssertions<T1, T2> Then(Action<T1, T2, Task> assertion, string description = null)
+        public TestActionAndAssertions<T1, T2> Then(Action<T1, T2, Task> assertion, string description)
         {
             return new TestActionAndAssertions<T1, T2>(prereqs, testAction, assertion, description);
         }
@@ -81,12 +81,12 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
-        //public TestActionAndAssertions<T1, T2, T3> Then(Expression<Action<T1, T2, T3, Task>> assertion)
-        //{
-        //    return new TestActionAndAssertions<T1, T2, T3>(prereqs, testAction, assertion);
-        //}
+        public TestActionAndAssertions<T1, T2, T3> Then(Expression<Action<T1, T2, T3, Task>> assertion)
+        {
+            return new TestActionAndAssertions<T1, T2, T3>(prereqs, testAction, assertion);
+        }
 
-        public TestActionAndAssertions<T1, T2, T3> Then(Action<T1, T2, T3, Task> assertion, string description = null)
+        public TestActionAndAssertions<T1, T2, T3> Then(Action<T1, T2, T3, Task> assertion, string description)
         {
             return new TestActionAndAssertions<T1, T2, T3>(prereqs, testAction, assertion, description);
         }

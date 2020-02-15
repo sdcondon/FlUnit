@@ -31,7 +31,7 @@ namespace FlUnit
             return And(assertion.Compile(), assertion.Body.ToString());
         }
 
-        public TestFunctionAndAssertions<TResult> And(Action<Task<TResult>> assertion, string description = null)
+        public TestFunctionAndAssertions<TResult> And(Action<Task<TResult>> assertion, string description)
         {
             AddAssertion(assertion, description);
             return this;
@@ -75,7 +75,7 @@ namespace FlUnit
             return And(assertion.Compile(), assertion.Body.ToString());
         }
 
-        public TestFunctionAndAssertions<T1, TResult> And(Action<T1, Task<TResult>> assertion, string description = null)
+        public TestFunctionAndAssertions<T1, TResult> And(Action<T1, Task<TResult>> assertion, string description)
         {
             AddAssertion(assertion, description);
             return this;
@@ -120,7 +120,7 @@ namespace FlUnit
             return And(assertion.Compile(), assertion.Body.ToString());
         }
 
-        public TestFunctionAndAssertions<T1, T2, TResult> And(Action<T1, T2, Task<TResult>> assertion, string description = null)
+        public TestFunctionAndAssertions<T1, T2, TResult> And(Action<T1, T2, Task<TResult>> assertion, string description)
         {
             AddAssertion(assertion, description);
             return this;
@@ -164,7 +164,7 @@ namespace FlUnit
             return And(assertion.Compile(), assertion.Body.ToString());
         }
 
-        public TestFunctionAndAssertions<T1, T2, T3, TResult> And(Action<T1, T2, T3, Task<TResult>> assertion, string description = null)
+        public TestFunctionAndAssertions<T1, T2, T3, TResult> And(Action<T1, T2, T3, Task<TResult>> assertion, string description)
         {
             AddAssertion(assertion, description);
             return this;

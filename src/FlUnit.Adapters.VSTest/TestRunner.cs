@@ -122,7 +122,7 @@ namespace FlUnit.Adapters.VSTest
         {
             frameworkHandle.RecordStart(testCase);
 
-            //// TODO: same number of results should always be recorded - just with "None" result if it didn't get that far..
+            //// TODO: the same number of results should always be recorded - just with a "None" outcome if it didn't get that far..
 
             if (!TryMakeTestInstance(testCase, frameworkHandle, out var test))
             {
@@ -133,6 +133,7 @@ namespace FlUnit.Adapters.VSTest
             if(!RunTestInstance(testCase, test, frameworkHandle))
             {
                 frameworkHandle.RecordEnd(testCase, TestOutcome.Failed);
+                return;
             }
 
             var passed = true;
@@ -165,7 +166,7 @@ namespace FlUnit.Adapters.VSTest
             catch (Exception e)
             {
                 // TODO: would need to do a bit more work for good failure messages..
-                result.Outcome = TestOutcome.None;
+                result.Outcome = TestOutcome.Failed;
                 result.ErrorMessage = e.Message;
                 result.ErrorStackTrace = e.StackTrace;
 
