@@ -27,4 +27,4 @@ jobs:
 
     - name: Push packages
       working-directory: ./src
-      run: nuget push "**/*.nupkg"
+      run: nuget push "**/*.nupkg" -Source nuget.org
