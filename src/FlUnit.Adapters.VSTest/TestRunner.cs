@@ -8,6 +8,8 @@ using System.Reflection;
 
 namespace FlUnit.Adapters.VSTest
 {
+    // TODO: This class probably needs splitting up - want to take a closer look at how MSTest V2 runner is structured (it looks quite a bit more organised than XUnit one..)
+    //
     // References:
     // https://github.com/microsoft/vstest
     // https://github.com/microsoft/vstest/tree/master/src/Microsoft.TestPlatform.ObjectModel

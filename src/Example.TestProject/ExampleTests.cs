@@ -13,9 +13,9 @@ namespace Example.TestProject
 
             .When((sut, collaborator) => sut.Process(collaborator))
 
-            .Then((sut, collaborator, task) => task.Result.ShouldBeTrue())
-            .And((sut, collaborator, task) => sut.HasProcessed.ShouldBeTrue())
-            .And((sut, collaborator, task) => collaborator.HasBeenProcessed.ShouldBeTrue());
+            .Then((sut, collaborator, process) => process.Result.ShouldBeTrue())
+            .And((sut, collaborator, process) => sut.HasProcessed.ShouldBeTrue())
+            .And((sut, collaborator, process) => collaborator.HasBeenProcessed.ShouldBeTrue());
          
         // Basic example with single anonymous object-valued 'Given' clause
         public static ITest ProcessHasSideEffects2 => TestThat
@@ -25,20 +25,20 @@ namespace Example.TestProject
                 collaborator = new Collaborator()
             })
             .When(given => given.sut.Process(given.collaborator))
-            .Then((given, when) => when.Result.ShouldBeTrue())
-            .And((given, when) => given.sut.HasProcessed.ShouldBeTrue())
-            .And((given, when) => given.collaborator.HasBeenProcessed.ShouldBeTrue());
+            .Then((given, process) => process.Result.ShouldBeTrue())
+            .And((given, process) => given.sut.HasProcessed.ShouldBeTrue())
+            .And((given, process) => given.collaborator.HasBeenProcessed.ShouldBeTrue());
 
         // Negative test
         public static ITest ProcessThrowsOnNullCollaborator => TestThat
             .Given(new TestSubject())
             .When(sut => sut.Process(null))
-            .Then((sut, task) => task.Exception.ShouldBeOfType(typeof(ArgumentNullException)));
+            .Then((sut, process) => process.Exception.ShouldBeOfType(typeof(ArgumentNullException)));
 
         // Test with no prereqs
         public static ITest CtorDoesntThrow => TestThat
             .When(() => new TestSubject())
-            .Then(task => task.Exception.ShouldBeNull());
+            .Then(ctor => ctor.Exception.ShouldBeNull());
 
         // Block bodies
         public static ITest BlockBodies => TestThat
@@ -51,10 +51,10 @@ namespace Example.TestProject
             {
                 given.sut.Process(given.collaborator);
             })
-            .Then((given, when) =>
+            .Then((given, process) =>
             {
-                when.Exception.ShouldBeNull();
-            }, "Exception should be null");
+                process.Exception.ShouldBeNull();
+            });
 
         private class TestSubject
         {

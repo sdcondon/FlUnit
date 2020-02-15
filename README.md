@@ -22,6 +22,8 @@ pubic static class MyTests
 }
 ```
 
+More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
+
 Pros
 - Succinct, readable (sorta - better than MSpec, anyway..)
 - Easy to do separate evaluation of each assertion if the runner supports it, can even have the option naming them automatically via ToString of expression bodies..
