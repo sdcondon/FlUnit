@@ -4,6 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>FlUnit adapter for VSTest</Description>
+    <AssemblyName>FlUnit.VS.TestAdapter</AssemblyName>
+    <RootNamespace>FlUnit.Adapters.VSTest</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

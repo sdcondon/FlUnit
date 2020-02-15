@@ -123,11 +123,7 @@ namespace FlUnit.Adapters.VSTest
 
             try
             {
-                var propertyDetails = ((string)testCase.GetPropertyValue(FlUnitTestProp)).Split(':');
-                var assembly = Assembly.Load(propertyDetails[0]);
-                var type = assembly.GetType(propertyDetails[1]);
-                var propertyInfo = type.GetProperty(propertyDetails[2]);
-                var test = (ITest)propertyInfo.GetValue(null);
+                var test = MakeTestInstance(testCase);
 
                 result.StartTime = DateTimeOffset.Now;
                 test.Run();
@@ -158,6 +154,15 @@ namespace FlUnit.Adapters.VSTest
 
             frameworkHandle.RecordEnd(testCase, result.Outcome);
             frameworkHandle.RecordResult(result);
+        }
+
+        private static ITest MakeTestInstance(TestCase testCase)
+        {
+            var propertyDetails = ((string)testCase.GetPropertyValue(FlUnitTestProp)).Split(':');
+            var assembly = Assembly.Load(propertyDetails[0]);
+            var type = assembly.GetType(propertyDetails[1]);
+            var propertyInfo = type.GetProperty(propertyDetails[2]);
+            return (ITest)propertyInfo.GetValue(null);
         }
     }
 }

@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FlUnit.Adapters.VS.TestAdapter\FlUnit.Adapters.VS.TestAdapter.csproj" />
+    <ProjectReference Include="..\FlUnit.Adapters.VS.TestAdapter\FlUnit.Adapters.VSTest.csproj" />
     <ProjectReference Include="..\FlUnit\FlUnit.csproj" />
   </ItemGroup>
 
