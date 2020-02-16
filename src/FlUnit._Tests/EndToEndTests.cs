@@ -6,10 +6,10 @@ using System.Linq;
 namespace FlUnit._Tests
 {
     [TestClass]
-    public class TestThatTests
+    public class EndToEndTests
     {
         [TestMethod]
-        public void ActAndAssert_WithMinimalTest()
+        public void MinimalTest()
         {
             // Arrange
             var test = TestThat
@@ -26,7 +26,7 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
-        public void ActAndAssert_WithSimpleTest()
+        public void SimpleTest()
         {
             // Arrange
             var test = TestThat
@@ -44,7 +44,7 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
-        public void ActAndAssert_WithMultiplePrereqsAndAssertions()
+        public void TestWithMultiplePrereqsAndAssertions()
         {
             // Arrange
             var test = TestThat
@@ -68,7 +68,7 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
-        public void ActAndAssert_WithExceptionExpected()
+        public void TestWithExceptionExpected()
         {
             // Arrange
             var test = TestThat
@@ -87,7 +87,7 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
-        public void ActAndAssert_WithFailingAssertion()
+        public void TestWithFailingAssertion()
         {
             // Arrange
             var test = TestThat

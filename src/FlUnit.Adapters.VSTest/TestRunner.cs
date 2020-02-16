@@ -13,8 +13,7 @@ namespace FlUnit.Adapters.VSTest
     // References:
     // https://github.com/microsoft/vstest
     // https://github.com/microsoft/vstest/tree/master/src/Microsoft.TestPlatform.ObjectModel
-    // https://github.com/microsoft/testfx (MSTest)
-    // https://github.com/xunit/visualstudio.xunit/tree/master/src/xunit.runner.visualstudio
+    // https://github.com/microsoft/testfx/tree/master/src/Adapter (MSTest adapter for VSTest)
 
     [FileExtension(".exe")]
     [FileExtension(".dll")]
