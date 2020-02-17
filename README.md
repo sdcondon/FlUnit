@@ -18,6 +18,19 @@ pubic static class MyTests
     .And((wi, th, t) => th.IsProcessed.ShouldBeTrue())
     .And((wi, th, t) => wi.HasProcessed.ShouldBeTrue());
 
+  // or..
+
+  public static ITest WidgetCanProcessAThingy => TestThat
+    .Given(new
+    {
+      widget = new Widget("widget1"),
+      thingy = new Thingy("thingy1")
+    })
+    .When(given => given.widget.TryProcess(given.thingy))
+    .Then((given, tryProcess) => tryProcess.Result.ShouldBeTrue())
+    .And((given, tryProcess) => given.thingy.IsProcessed.ShouldBeTrue())
+    .And((given, tryProcess) => given.widget.HasProcessed.ShouldBeTrue());
+
   ..
 }
 ```
@@ -26,10 +39,10 @@ More examples can be found in the [example test project](./src/Example.TestProje
 
 Pros
 - Succinct, readable (sorta - better than MSpec, anyway..)
-- Easy to do separate evaluation of each assertion if the runner supports it, can even have the option naming them automatically via ToString of expression bodies..
+- Easy to do separate evaluation of each assertion if the runner supports it. Even have the option naming them automatically via ToString of expression bodies.
 - Should be easy enough to extend to data driven (GivenEachOf..), even in combo (AndEachOf..)
 
 Cons
 - Pushes you towards using lambdas for stuff, BUT for the "When", if exceptions are thrown the stack trace isn't gonna be fun.
-- Delegate params get unwieldy for even a modest number of separate pre-reqs. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it..
+- Delegate params get unwieldy for even a modest number of separate pre-reqs. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it.
   
