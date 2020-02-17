@@ -5,7 +5,13 @@ using System.Linq.Expressions;
 namespace FlUnit
 {
     //// TODO: T4 template me!!
+    //// TODO: Probably want to separate the builder from the ITest implementation so that Act() and Assertions
+    //// isn't mixed in with the builder stuff. Doing so will likely require sorting out the prereq situation, though..
 
+    /// <summary>
+    /// Builder for providing additional assertions for a test with no "Given" clauses
+    /// and for which the "When" clause does not return a value.
+    /// </summary>
     public class TestActionAndAssertions : ITest
     {
         private readonly Action testAction;
@@ -61,6 +67,10 @@ namespace FlUnit
         }
     }
 
+    /// <summary>
+    /// Builder for providing additional assertions for a test with a single "Given" clauses
+    /// and for which the "When" clause does not return a value.
+    /// </summary>
     public class TestActionAndAssertions<T1> : ITest
     {
         private readonly T1 prereq;
@@ -118,6 +128,10 @@ namespace FlUnit
         }
     }
 
+    /// <summary>
+    /// Builder for providing additional assertions for a test with a two "Given" clauses
+    /// and for which the "When" clause does not return a value.
+    /// </summary>
     public class TestActionAndAssertions<T1, T2> : ITest
     {
         private readonly (T1, T2) prereqs;
@@ -175,6 +189,10 @@ namespace FlUnit
         }
     }
 
+    /// <summary>
+    /// Builder for providing additional assertions for a test with a three "Given" clauses
+    /// and for which the "When" clause does not return a value.
+    /// </summary>
     public class TestActionAndAssertions<T1, T2, T3> : ITest
     {
         private readonly (T1, T2, T3) prereqs;

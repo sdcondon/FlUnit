@@ -5,7 +5,14 @@ using System.Linq.Expressions;
 namespace FlUnit
 {
     //// TODO: T4 template me!!
+    //// TODO: Probably want to separate the builder from the ITest implementation so that Act() and Assertions
+    //// isn't mixed in with the builder stuff. Doing so will likely require sorting out the prereq situation, though..
 
+    /// <summary>
+    /// Builder for providing the additional assertions for a test with no "Given" clauses
+    /// and for which the "When" clause returns a value.
+    /// </summary>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public class TestFunctionAndAssertions<TResult> : ITest
     {
         private readonly Func<TResult> testFunction;
@@ -59,6 +66,11 @@ namespace FlUnit
         }
     }
 
+    /// <summary>
+    /// Builder for providing the additional assertions for a test with one "Given" clause
+    /// and for which the "When" clause returns a value.
+    /// </summary>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public class TestFunctionAndAssertions<T1, TResult> : ITest
     {
         private readonly T1 prereq;
@@ -114,6 +126,11 @@ namespace FlUnit
         }
     }
 
+    /// <summary>
+    /// Builder for providing the additional assertions for a test with two "Given" clauses
+    /// and for which the "When" clause returns a value.
+    /// </summary>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public class TestFunctionAndAssertions<T1, T2, TResult> : ITest
     {
         private readonly (T1, T2) prereqs;
@@ -169,6 +186,11 @@ namespace FlUnit
         }
     }
 
+    /// <summary>
+    /// Builder for providing the additional assertions for a test with three "Given" clauses
+    /// and for which the "When" clause returns a value.
+    /// </summary>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public class TestFunctionAndAssertions<T1, T2, T3, TResult> : ITest
     {
         private readonly (T1, T2, T3) prereqs;

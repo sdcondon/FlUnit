@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace FlUnit
 {
     /// <summary>
     /// Interface for types representing a runnable test.
+    /// <para/>
+    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
     /// </summary>
-    /// <remarks>
-    /// NB: No arrange method. The way it's desgined so far, arrangement happens as the test itself is built.. Makes for a few fewer delegates when building tests, but not sure I like this..
-    /// </remarks>
     public interface ITest
     {
         /// <summary>
-        /// Invokes the test action. A thrown exception should be treated as test failure.
+        /// Invokes the test action.
         /// </summary>
         void Act();
 

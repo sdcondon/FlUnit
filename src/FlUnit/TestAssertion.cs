@@ -3,6 +3,9 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
+    /// <summary>
+    /// Container for the details of an assertion for a test.
+    /// </summary>
     public class TestAssertion
     {
         private readonly Action action;
