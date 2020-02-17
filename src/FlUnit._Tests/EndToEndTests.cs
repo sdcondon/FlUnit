@@ -9,7 +9,7 @@ namespace FlUnit._Tests
     public class EndToEndTests
     {
         [TestMethod]
-        public void MinimalTest()
+        public void ValidInvocationOf_MinimalTest()
         {
             // Arrange
             var test = TestThat
@@ -26,7 +26,7 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
-        public void SimpleTest()
+        public void ValidInvocationOf_SimpleTest()
         {
             // Arrange
             var test = TestThat
@@ -44,7 +44,7 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
-        public void TestWithMultiplePrereqsAndAssertions()
+        public void ValidInvocationOf_TestWithMultiplePrereqsAndAssertions()
         {
             // Arrange
             var test = TestThat
@@ -68,26 +68,25 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
-        public void TestWithExceptionExpected()
+        public void ValidInvocationOf_TestWithExceptionExpected()
         {
             // Arrange
             var test = TestThat
                 .Given(new { x = 1, y = 0 })
                 .When(given => given.x / given.y)
-                .Then((given, division) => division.Exception.GetBaseException().ShouldBeOfType(typeof(DivideByZeroException)));
-                //.Then((given, division) => division.Exception.ShouldBeOfType(typeof(DivideByZeroException))); // Don't use Task..
+                .Then((given, division) => division.Exception.ShouldBeOfType(typeof(DivideByZeroException)));
 
             // Act & Assert
             ((Action)test.Act).ShouldNotThrow();
             test.Assertions.Count().ShouldBe(1);
 
             var assertion = test.Assertions.Single();
-            assertion.Description.ShouldBe("division.Exception.GetBaseException().ShouldBeOfType(System.DivideByZeroException)");
+            assertion.Description.ShouldBe("division.Exception.ShouldBeOfType(System.DivideByZeroException)");
             ((Action)assertion.Invoke).ShouldNotThrow();
         }
 
         [TestMethod]
-        public void TestWithFailingAssertion()
+        public void ValidInvocationOf_TestWithFailingAssertion()
         {
             // Arrange
             var test = TestThat
@@ -102,6 +101,17 @@ namespace FlUnit._Tests
             var assertion = test.Assertions.Single();
             assertion.Description.ShouldBe("sum.Result.ShouldBe(3)");
             ((Action)assertion.Invoke).ShouldThrow(typeof(ShouldAssertException));
+        }
+
+        [TestMethod]
+        public void InvalidInvocation_MultipleTimes()
+        {
+            var test = TestThat
+                .When(() => { })
+                .Then(a => { }, "Empty assertion");
+
+            test.Act();
+            Assert.ThrowsException<InvalidOperationException>(test.Act);
         }
     }
 }

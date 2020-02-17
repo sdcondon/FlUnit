@@ -18,12 +18,17 @@ namespace FlUnit
         //public static IEnumerable<TestPrerequisite<T>> GivenEachOf<T>(IEnumerable<T> prerequisites) => prerequisites.Select(p => Given(p));
 
         /// <summary>
-        /// Starts building a test with no arrangement steps.
+        /// Starts building a test with no arrangement steps and an act step that does not return a value.
         /// </summary>
         /// <param name="testAction"></param>
         /// <returns></returns>
         public static TestAction When(Action testAction) => new TestAction(testAction);
 
+        /// <summary>
+        /// Starts building a test with no arrangement steps and an act step that returns a value.
+        /// </summary>
+        /// <param name="testAction"></param>
+        /// <returns></returns>
         public static TestFunction<T> When<T>(Func<T> testFunction) => new TestFunction<T>(testFunction);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace FlUnit
 {
@@ -15,12 +14,12 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
-        public TestActionAndAssertions Then(Expression<Action<Task>> assertion)
+        public TestActionAndAssertions Then(Expression<Action<TestActionResult>> assertion)
         {
             return new TestActionAndAssertions(testAction, assertion);
         }
 
-        public TestActionAndAssertions Then(Action<Task> assertion, string description)
+        public TestActionAndAssertions Then(Action<TestActionResult> assertion, string description)
         {
             return new TestActionAndAssertions(testAction, assertion, description);
         }
@@ -37,12 +36,12 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
-        public TestActionAndAssertions<T1> Then(Expression<Action<T1, Task>> assertion)
+        public TestActionAndAssertions<T1> Then(Expression<Action<T1, TestActionResult>> assertion)
         {
             return new TestActionAndAssertions<T1>(prereq, testAction, assertion);
         }
 
-        public TestActionAndAssertions<T1> Then(Action<T1, Task> assertion, string description)
+        public TestActionAndAssertions<T1> Then(Action<T1, TestActionResult> assertion, string description)
         {
             return new TestActionAndAssertions<T1>(prereq, testAction, assertion, description);
         }
@@ -59,12 +58,12 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
-        public TestActionAndAssertions<T1, T2> Then(Expression<Action<T1, T2, Task>> assertion)
+        public TestActionAndAssertions<T1, T2> Then(Expression<Action<T1, T2, TestActionResult>> assertion)
         {
             return new TestActionAndAssertions<T1, T2>(prereqs, testAction, assertion);
         }
 
-        public TestActionAndAssertions<T1, T2> Then(Action<T1, T2, Task> assertion, string description)
+        public TestActionAndAssertions<T1, T2> Then(Action<T1, T2, TestActionResult> assertion, string description)
         {
             return new TestActionAndAssertions<T1, T2>(prereqs, testAction, assertion, description);
         }
@@ -81,12 +80,12 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
-        public TestActionAndAssertions<T1, T2, T3> Then(Expression<Action<T1, T2, T3, Task>> assertion)
+        public TestActionAndAssertions<T1, T2, T3> Then(Expression<Action<T1, T2, T3, TestActionResult>> assertion)
         {
             return new TestActionAndAssertions<T1, T2, T3>(prereqs, testAction, assertion);
         }
 
-        public TestActionAndAssertions<T1, T2, T3> Then(Action<T1, T2, T3, Task> assertion, string description)
+        public TestActionAndAssertions<T1, T2, T3> Then(Action<T1, T2, T3, TestActionResult> assertion, string description)
         {
             return new TestActionAndAssertions<T1, T2, T3>(prereqs, testAction, assertion, description);
         }

@@ -83,8 +83,8 @@ namespace FlUnit.Adapters.VSTest
                 $"Test discovery started for {assembly.FullName}");
 
             var testProps = assembly.ExportedTypes
-                .SelectMany(c => c.GetProperties())
-                .Where(p => p.PropertyType == typeof(ITest));
+                .SelectMany(c => c.GetProperties(BindingFlags.Public | BindingFlags.Static))
+                .Where(p => p.PropertyType == typeof(ITest) && p.CanRead);
 
             var testCases = new List<TestCase>();
             using (var diaSession = new DiaSession(source))
