@@ -35,14 +35,13 @@ pubic static class MyTests
 }
 ```
 
-More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
+As shown above, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them. More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
 
 Pros
-- Succinct, readable (sorta - better than MSpec, anyway..)
-- Easy to do separate evaluation of each assertion if the runner supports it. Even have the option naming them automatically via ToString of expression bodies.
-- Should be easy enough to extend to data driven (GivenEachOf..), even in combo (AndEachOf..)
+- Succinct, readable
+- Each assertion can be recorded as a separate result of the test. LINQ Expression-valued assertions are named automatically via ToString of expression bodies.
+- Should be easy enough to extend to data driven (GivenEachOf..), even in combination (AndEachOf..)
 
 Cons
-- Pushes you towards using lambdas for stuff, BUT for the "When", if exceptions are thrown the stack trace isn't gonna be fun.
-- Delegate params get unwieldy for even a modest number of separate pre-reqs. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it.
+- Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above.
   
