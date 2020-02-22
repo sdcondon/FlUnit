@@ -2,7 +2,7 @@
 
 namespace FlUnit
 {
-    //// TODO: T4 template me!!
+    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
 
     /// <summary>
     /// Builder for providing additional pre-requisites for a test.

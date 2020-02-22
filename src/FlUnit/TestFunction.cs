@@ -4,12 +4,10 @@ using System.Linq;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me to eliminate repitition and allow for more prereqs with no effort
+    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
 
     /// <summary>
-    /// 
-    /// <para/>
-    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
+    /// Represents a test with no "Given" clauses and a "When" clause that returns a value.
     /// </summary>
     public sealed class TestFunction<TResult> : Test
     {
@@ -71,9 +69,7 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// 
-    /// <para/>
-    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
+    /// Represents a test with one "Given" clause and a "When" clause that returns a value.
     /// </summary>
     public sealed class TestFunction<T1, TResult> : Test
     {
@@ -84,6 +80,7 @@ namespace FlUnit
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
         /// </summary>
+        /// <param name="prereq"></param>
         /// <param name="act"></param>
         /// <param name="assertions"></param>
         internal TestFunction(T1 prereq, Func<T1, TResult> act, IEnumerable<TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion> assertions)
@@ -137,9 +134,7 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// 
-    /// <para/>
-    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
+    /// Represents a test with two "Given" clauses and a "When" clause that returns a value.
     /// </summary>
     public sealed class TestFunction<T1, T2, TResult> : Test
     {
@@ -150,6 +145,7 @@ namespace FlUnit
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
         /// </summary>
+        /// <param name="prereqs"></param>
         /// <param name="act"></param>
         /// <param name="assertions"></param>
         internal TestFunction((T1, T2) prereqs, Func<T1, T2, TResult> act, IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion> assertions)
@@ -203,9 +199,7 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// 
-    /// <para/>
-    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
+    /// Represents a test with three "Given" clauses and a "When" clause that returns a value.
     /// </summary>
     public sealed class TestFunction<T1, T2, T3, TResult> : Test
     {
@@ -216,6 +210,7 @@ namespace FlUnit
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
         /// </summary>
+        /// <param name="prereqs"></param>
         /// <param name="act"></param>
         /// <param name="assertions"></param>
         internal TestFunction((T1, T2, T3) prereqs, Func<T1, T2, T3, TResult> act, IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion> assertions)

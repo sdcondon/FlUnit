@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me!!
+    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
 
     /// <summary>
     /// Builder for providing the first assertion for a test with no "Given" clauses

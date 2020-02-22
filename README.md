@@ -10,7 +10,7 @@ pubic static class MyTests
 {
   ..
 
-  public static ITest WidgetCanProcessAThingy => TestThat
+  public static Test WidgetCanProcessAThingy => TestThat
     .Given(new Widget("widget1"))
     .And(new Thingy("thingy1"))
     .When((wi, th) => wi.TryProcess(th))
@@ -20,7 +20,7 @@ pubic static class MyTests
 
   // or..
 
-  public static ITest WidgetCanProcessAThingy => TestThat
+  public static Test WidgetCanProcessAThingy => TestThat
     .Given(new
     {
       widget = new Widget("widget1"),

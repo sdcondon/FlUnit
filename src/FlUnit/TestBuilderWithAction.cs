@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me!!
+    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
 
     /// <summary>
     /// Builder for providing the first assertion for a test with no "Given" clauses
@@ -44,7 +44,7 @@ namespace FlUnit
     /// Builder for providing the first assertion for a test with one "Given" clause
     /// and for which the "When" clause does not return a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the first pre-requisite of the test.</typeparam>
+    /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithAction<T1>
     {
         private readonly T1 prereq;
@@ -82,6 +82,8 @@ namespace FlUnit
     /// Builder for providing the first assertion for a test with two "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the second "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithAction<T1, T2>
     {
         private readonly (T1, T2) prereqs;
@@ -119,6 +121,9 @@ namespace FlUnit
     /// Builder for providing the first assertion for a test with three "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the second "Given" clause of the test.</typeparam>
+    /// <typeparam name="T3">The type of the third "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithAction<T1, T2, T3>
     {
         private readonly (T1, T2, T3) prereqs;

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me!!
+    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
 
     /// <summary>
     /// Builder for providing the additional assertions for a test with no "Given" clauses
@@ -38,6 +38,12 @@ namespace FlUnit
             return this;
         }
 
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<TResult> And(Action<TestFunctionResult<TResult>> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
@@ -68,6 +74,7 @@ namespace FlUnit
     /// Builder for providing the additional assertions for a test with one "Given" clause
     /// and for which the "When" clause returns a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, TResult>
     {
@@ -98,6 +105,12 @@ namespace FlUnit
             return this;
         }
 
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, TResult> And(Action<T1, TestFunctionResult<TResult>> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
@@ -128,6 +141,8 @@ namespace FlUnit
     /// Builder for providing the additional assertions for a test with two "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
+    /// <typeparam name="T2">The type of the second test pre-requisite.</typeparam>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, T2, TResult>
     {
@@ -158,6 +173,12 @@ namespace FlUnit
             return this;
         }
 
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(Action<T1, T2, TestFunctionResult<TResult>> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
@@ -188,6 +209,9 @@ namespace FlUnit
     /// Builder for providing the additional assertions for a test with three "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
+    /// <typeparam name="T2">The type of the second test pre-requisite.</typeparam>
+    /// <typeparam name="T3">The type of the third test pre-requisite.</typeparam>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>
     {
@@ -218,6 +242,12 @@ namespace FlUnit
             return this;
         }
 
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(Action<T1, T2, T3, TestFunctionResult<TResult>> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));

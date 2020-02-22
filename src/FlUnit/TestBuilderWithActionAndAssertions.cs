@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me!!
+    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
 
     /// <summary>
     /// Builder for providing additional assertions for a test with no "Given" clauses
@@ -37,6 +37,12 @@ namespace FlUnit
             return this;
         }
 
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions And(Action<TestActionResult> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
@@ -67,6 +73,7 @@ namespace FlUnit
     /// Builder for providing additional assertions for a test with a single "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1>
     {
         private readonly T1 prereq;
@@ -96,6 +103,12 @@ namespace FlUnit
             return this;
         }
 
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions<T1> And(Action<T1, TestActionResult> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
@@ -126,6 +139,8 @@ namespace FlUnit
     /// Builder for providing additional assertions for a test with a two "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the second "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1, T2>
     {
         private readonly (T1, T2) prereqs;
@@ -155,6 +170,12 @@ namespace FlUnit
             return this;
         }
 
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions<T1, T2> And(Action<T1, T2, TestActionResult> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
@@ -185,6 +206,9 @@ namespace FlUnit
     /// Builder for providing additional assertions for a test with a three "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the second "Given" clause of the test.</typeparam>
+    /// <typeparam name="T3">The type of the third "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1, T2, T3>
     {
         private readonly (T1, T2, T3) prereqs;
@@ -214,6 +238,12 @@ namespace FlUnit
             return this;
         }
 
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions<T1, T2, T3> And(Action<T1, T2, T3, TestActionResult> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));

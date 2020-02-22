@@ -7,9 +7,7 @@ namespace FlUnit
     //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
 
     /// <summary>
-    /// 
-    /// <para/>
-    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
+    /// Represents a test with no "Given" clauses and a "When" clause that does not return a value.
     /// </summary>
     public sealed class TestAction : Test
     {
@@ -72,9 +70,7 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// 
-    /// <para/>
-    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
+    /// Represents a test with one "Given" clause and a "When" clause that does not return a value.
     /// </summary>
     public sealed class TestAction<T1> : Test
     {
@@ -85,7 +81,7 @@ namespace FlUnit
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1}"/> class.
         /// </summary>
-        /// <param name="prereqs"></param>
+        /// <param name="prereq"></param>
         /// <param name="act"></param>
         /// <param name="assertions"></param>
         internal TestAction(T1 prereq, Action<T1> act, IEnumerable<TestBuilderWithActionAndAssertions<T1>.Assertion> assertions)
@@ -140,9 +136,7 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// 
-    /// <para/>
-    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
+    /// Represents a test with two "Given" clause and a "When" clause that does not return a value.
     /// </summary>
     public sealed class TestAction<T1, T2> : Test
     {
@@ -208,9 +202,7 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// 
-    /// <para/>
-    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
+    /// Represents a test with three "Given" clause and a "When" clause that does not return a value.
     /// </summary>
     public sealed class TestAction<T1, T2, T3> : Test
     {
