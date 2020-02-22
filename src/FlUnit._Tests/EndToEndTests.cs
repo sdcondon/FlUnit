@@ -12,7 +12,7 @@ namespace FlUnit._Tests
         public void ValidInvocationOf_MinimalTest()
         {
             // Arrange
-            var test = TestThat
+            Test test = TestThat
                 .When(() => { })
                 .Then(a => { }, "Empty assertion");
 
@@ -29,7 +29,7 @@ namespace FlUnit._Tests
         public void ValidInvocationOf_SimpleTest()
         {
             // Arrange
-            var test = TestThat
+            Test test = TestThat
                 .Given(new { x = 1, y = 1 })
                 .When(given => given.x + given.y)
                 .Then((given, sum) => sum.Result.ShouldBe(2));
@@ -47,7 +47,7 @@ namespace FlUnit._Tests
         public void ValidInvocationOf_TestWithMultiplePrereqsAndAssertions()
         {
             // Arrange
-            var test = TestThat
+            Test test = TestThat
                 .Given(1)
                 .And(1)
                 .When((x, y) => x + y)
@@ -71,7 +71,7 @@ namespace FlUnit._Tests
         public void ValidInvocationOf_TestWithExceptionExpected()
         {
             // Arrange
-            var test = TestThat
+            Test test = TestThat
                 .Given(new { x = 1, y = 0 })
                 .When(given => given.x / given.y)
                 .Then((given, division) => division.Exception.ShouldBeOfType(typeof(DivideByZeroException)));
@@ -89,7 +89,7 @@ namespace FlUnit._Tests
         public void ValidInvocationOf_TestWithFailingAssertion()
         {
             // Arrange
-            var test = TestThat
+            Test test = TestThat
                 .Given(new { x = 1, y = 1 })
                 .When(given => given.x + given.y)
                 .Then((given, sum) => sum.Result.ShouldBe(3));
@@ -106,7 +106,7 @@ namespace FlUnit._Tests
         [TestMethod]
         public void InvalidInvocation_MultipleTimes()
         {
-            var test = TestThat
+            Test test = TestThat
                 .When(() => { })
                 .Then(a => { }, "Empty assertion");
 

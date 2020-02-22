@@ -7,7 +7,7 @@ namespace Example.TestProject
     public static class ExampleTests
     {
         // Basic example
-        public static ITest ProcessHasSideEffects => TestThat
+        public static Test ProcessHasSideEffects => TestThat
             .Given(new TestSubject())
             .And(new Collaborator())
 
@@ -18,7 +18,7 @@ namespace Example.TestProject
             .And((sut, collaborator, process) => collaborator.HasBeenProcessed.ShouldBeTrue());
          
         // Basic example with single anonymous object-valued 'Given' clause
-        public static ITest ProcessHasSideEffects2 => TestThat
+        public static Test ProcessHasSideEffects2 => TestThat
             .Given(new
             {
                 sut = new TestSubject(),
@@ -30,18 +30,24 @@ namespace Example.TestProject
             .And((given, process) => given.collaborator.HasBeenProcessed.ShouldBeTrue());
 
         // Negative test
-        public static ITest ProcessThrowsOnNullCollaborator => TestThat
+        public static Test ProcessThrowsOnNullCollaborator => TestThat
             .Given(new TestSubject())
             .When(sut => sut.Process(null))
             .Then((sut, process) => process.Exception.ShouldBeOfType(typeof(ArgumentNullException)));
 
+        // Failing test
+        public static Test ProcessDoesntThrowOnNullCollaborator => TestThat
+            .Given(new TestSubject())
+            .When(sut => sut.Process(null))
+            .Then((sut, process) => process.Exception.ShouldBeNull());
+
         // Test with no prereqs
-        public static ITest CtorDoesntThrow => TestThat
+        public static Test CtorDoesntThrow => TestThat
             .When(() => new TestSubject())
             .Then(ctor => ctor.Exception.ShouldBeNull());
 
         // Block bodies
-        public static ITest BlockBodies => TestThat
+        public static Test BlockBodies => TestThat
             .Given(new
             {
                 sut = new TestSubject(),

@@ -84,7 +84,7 @@ namespace FlUnit.Adapters.VSTest
 
             var testProps = assembly.ExportedTypes
                 .SelectMany(c => c.GetProperties(BindingFlags.Public | BindingFlags.Static))
-                .Where(p => p.PropertyType == typeof(ITest) && p.CanRead);
+                .Where(p => p.PropertyType == typeof(Test) && p.CanRead);
 
             var testCases = new List<TestCase>();
             using (var diaSession = new DiaSession(source))
@@ -139,7 +139,7 @@ namespace FlUnit.Adapters.VSTest
             frameworkHandle.RecordEnd(testCase, passed ? TestOutcome.Passed : TestOutcome.Failed);
         }
 
-        private static bool TryMakeTestInstance(TestCase testCase, IFrameworkHandle frameworkHandle, out ITest test)
+        private static bool TryMakeTestInstance(TestCase testCase, IFrameworkHandle frameworkHandle, out Test test)
         {
             // We add a result for arrangement for two reasons:
             // (1) So that it's not an extra result when arrangement fails - consistency is good..
@@ -159,7 +159,7 @@ namespace FlUnit.Adapters.VSTest
                 var propertyInfo = type.GetProperty(propertyDetails[2]);
 
                 result.StartTime = DateTimeOffset.Now;
-                test = (ITest)propertyInfo.GetValue(null);
+                test = (Test)propertyInfo.GetValue(null);
                 result.Outcome = TestOutcome.Passed;
                 return true;
             }

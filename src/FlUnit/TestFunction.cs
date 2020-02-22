@@ -1,163 +1,270 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me!!
+    //// TODO: T4 template me to eliminate repitition and allow for more prereqs with no effort
 
     /// <summary>
-    /// Builder for providing the first assertion for a test with no "Given" clauses
-    /// and for which the "When" clause returns a value.
+    /// 
+    /// <para/>
+    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
     /// </summary>
-    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public class TestFunction<TResult>
+    public sealed class TestFunction<TResult> : Test
     {
-        private readonly Func<TResult> testFunction;
+        private readonly Func<TResult> act;
+        private TestFunctionResult<TResult> invocationResult;
 
-        internal TestFunction(Func<TResult> testFunction)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Test"/> class.
+        /// </summary>
+        /// <param name="act"></param>
+        /// <param name="assertions"></param>
+        internal TestFunction(Func<TResult> act, IEnumerable<TestBuilderWithFunctionAndAssertions<TResult>.Assertion> assertions)
         {
-            this.testFunction = testFunction;
+            this.act = act;
+            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Invokes the test action.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestFunctionAndAssertions<TResult> Then(Expression<Action<TestFunctionResult<TResult>>> assertion)
+        public override void Act()
         {
-            return new TestFunctionAndAssertions<TResult>(testFunction, assertion);
+            if (invocationResult != null)
+            {
+                throw new InvalidOperationException("Test action already invoked");
+            }
+
+            try
+            {
+                invocationResult = new TestFunctionResult<TResult>(act());
+            }
+            catch (Exception e)
+            {
+                invocationResult = new TestFunctionResult<TResult>(e);
+            }
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestFunctionAndAssertions<TResult> Then(Action<TestFunctionResult<TResult>> assertion, string description)
+        public override IEnumerable<TestAssertion> Assertions { get; }
+
+        private class Assertion : TestAssertion
         {
-            return new TestFunctionAndAssertions<TResult>(testFunction, assertion, description);
+            private readonly TestFunction<TResult> test;
+            private readonly Action<TestFunctionResult<TResult>> action;
+
+            public Assertion(TestFunction<TResult> test, Action<TestFunctionResult<TResult>> action, string description)
+            {
+                this.test = test;
+                this.action = action;
+                this.Description = description;
+            }
+
+            public override string Description { get; }
+
+            public override void Invoke() => action(test.invocationResult);
         }
     }
 
     /// <summary>
-    /// Builder for providing the first assertion for a test with one "Given" clause
-    /// and for which the "When" clause returns a value.
+    /// 
+    /// <para/>
+    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
     /// </summary>
-    /// <typeparam name="T1">The type of the test pre-requisite.</typeparam>
-    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public class TestFunction<T1, TResult>
+    public sealed class TestFunction<T1, TResult> : Test
     {
         private readonly T1 prereq;
-        private readonly Func<T1, TResult> testFunction;
+        private readonly Func<T1, TResult> act;
+        private TestFunctionResult<TResult> invocationResult;
 
-        internal TestFunction(T1 prereq, Func<T1, TResult> testFunction)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Test"/> class.
+        /// </summary>
+        /// <param name="act"></param>
+        /// <param name="assertions"></param>
+        internal TestFunction(T1 prereq, Func<T1, TResult> act, IEnumerable<TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion> assertions)
         {
             this.prereq = prereq;
-            this.testFunction = testFunction;
+            this.act = act;
+            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Invokes the test action.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestFunctionAndAssertions<T1, TResult> Then(Expression<Action<T1, TestFunctionResult<TResult>>> assertion)
+        public override void Act()
         {
-            return new TestFunctionAndAssertions<T1, TResult>(prereq, testFunction, assertion);
+            if (invocationResult != null)
+            {
+                throw new InvalidOperationException("Test action already invoked");
+            }
+
+            try
+            {
+                invocationResult = new TestFunctionResult<TResult>(act(prereq));
+            }
+            catch (Exception e)
+            {
+                invocationResult = new TestFunctionResult<TResult>(e);
+            }
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestFunctionAndAssertions<T1, TResult> Then(Action<T1, TestFunctionResult<TResult>> assertion, string description)
+        public override IEnumerable<TestAssertion> Assertions { get; }
+
+        private class Assertion : TestAssertion
         {
-            return new TestFunctionAndAssertions<T1, TResult>(prereq, testFunction, assertion, description);
+            private readonly TestFunction<T1, TResult> test;
+            private readonly Action<T1, TestFunctionResult<TResult>> action;
+
+            public Assertion(TestFunction<T1, TResult> test, Action<T1, TestFunctionResult<TResult>> action, string description)
+            {
+                this.test = test;
+                this.action = action;
+                this.Description = description;
+            }
+
+            public override string Description { get; }
+
+            public override void Invoke() => action(test.prereq, test.invocationResult);
         }
     }
 
     /// <summary>
-    /// Builder for providing the first assertion for a test with two "Given" clauses
-    /// and for which the "When" clause returns a value.
+    /// 
+    /// <para/>
+    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
     /// </summary>
-    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
-    /// <typeparam name="T2">The type of the second test pre-requisite.</typeparam>
-    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public class TestFunction<T1, T2, TResult>
+    public sealed class TestFunction<T1, T2, TResult> : Test
     {
         private readonly (T1, T2) prereqs;
-        private readonly Func<T1, T2, TResult> testFunction;
+        private readonly Func<T1, T2, TResult> act;
+        private TestFunctionResult<TResult> invocationResult;
 
-        internal TestFunction((T1, T2) prereqs, Func<T1, T2, TResult> testFunction)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Test"/> class.
+        /// </summary>
+        /// <param name="act"></param>
+        /// <param name="assertions"></param>
+        internal TestFunction((T1, T2) prereqs, Func<T1, T2, TResult> act, IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion> assertions)
         {
             this.prereqs = prereqs;
-            this.testFunction = testFunction;
+            this.act = act;
+            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Invokes the test action.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestFunctionAndAssertions<T1, T2, TResult> Then(Expression<Action<T1, T2, TestFunctionResult<TResult>>> assertion)
+        public override void Act()
         {
-            return new TestFunctionAndAssertions<T1, T2, TResult>(prereqs, testFunction, assertion);
+            if (invocationResult != null)
+            {
+                throw new InvalidOperationException("Test action already invoked");
+            }
+
+            try
+            {
+                invocationResult = new TestFunctionResult<TResult>(act(prereqs.Item1, prereqs.Item2));
+            }
+            catch (Exception e)
+            {
+                invocationResult = new TestFunctionResult<TResult>(e);
+            }
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestFunctionAndAssertions<T1, T2, TResult> Then(Action<T1, T2, TestFunctionResult<TResult>> assertion, string description)
+        public override IEnumerable<TestAssertion> Assertions { get; }
+
+        private class Assertion : TestAssertion
         {
-            return new TestFunctionAndAssertions<T1, T2, TResult>(prereqs, testFunction, assertion, description);
+            private readonly TestFunction<T1, T2, TResult> test;
+            private readonly Action<T1, T2, TestFunctionResult<TResult>> action;
+
+            public Assertion(TestFunction<T1, T2, TResult> test, Action<T1, T2, TestFunctionResult<TResult>> action, string description)
+            {
+                this.test = test;
+                this.action = action;
+                this.Description = description;
+            }
+
+            public override string Description { get; }
+
+            public override void Invoke() => action(test.prereqs.Item1, test.prereqs.Item2, test.invocationResult);
         }
     }
 
     /// <summary>
-    /// Builder for providing the first assertion for a test with two "Given" clauses
-    /// and for which the "When" clause returns a value.
+    /// 
+    /// <para/>
+    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
     /// </summary>
-    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
-    /// <typeparam name="T2">The type of the second test pre-requisite.</typeparam>
-    /// <typeparam name="T3">The type of the third test pre-requisite.</typeparam>
-    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public class TestFunction<T1, T2, T3, TResult>
+    public sealed class TestFunction<T1, T2, T3, TResult> : Test
     {
         private readonly (T1, T2, T3) prereqs;
-        private readonly Func<T1, T2, T3, TResult> testFunction;
+        private readonly Func<T1, T2, T3, TResult> act;
+        private TestFunctionResult<TResult> invocationResult;
 
-        internal TestFunction((T1, T2, T3) prereqs, Func<T1, T2, T3, TResult> testFunction)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Test"/> class.
+        /// </summary>
+        /// <param name="act"></param>
+        /// <param name="assertions"></param>
+        internal TestFunction((T1, T2, T3) prereqs, Func<T1, T2, T3, TResult> act, IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion> assertions)
         {
             this.prereqs = prereqs;
-            this.testFunction = testFunction;
+            this.act = act;
+            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Invokes the test action.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestFunctionAndAssertions<T1, T2, T3, TResult> Then(Expression<Action<T1, T2, T3, TestFunctionResult<TResult>>> assertion)
+        public override void Act()
         {
-            return new TestFunctionAndAssertions<T1, T2, T3, TResult>(prereqs, testFunction, assertion);
+            if (invocationResult != null)
+            {
+                throw new InvalidOperationException("Test action already invoked");
+            }
+
+            try
+            {
+                invocationResult = new TestFunctionResult<TResult>(act(prereqs.Item1, prereqs.Item2, prereqs.Item3));
+            }
+            catch (Exception e)
+            {
+                invocationResult = new TestFunctionResult<TResult>(e);
+            }
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestFunctionAndAssertions<T1, T2, T3, TResult> Then(Action<T1, T2, T3, TestFunctionResult<TResult>> assertion, string description)
+        public override IEnumerable<TestAssertion> Assertions { get; }
+
+        private class Assertion : TestAssertion
         {
-            return new TestFunctionAndAssertions<T1, T2, T3, TResult>(prereqs, testFunction, assertion, description);
+            private readonly TestFunction<T1, T2, T3, TResult> test;
+            private readonly Action<T1, T2, T3, TestFunctionResult<TResult>> action;
+
+            public Assertion(TestFunction<T1, T2, T3, TResult> test, Action<T1, T2, T3, TestFunctionResult<TResult>> action, string description)
+            {
+                this.test = test;
+                this.action = action;
+                this.Description = description;
+            }
+
+            public override string Description { get; }
+
+            public override void Invoke() => action(test.prereqs.Item1, test.prereqs.Item2, test.prereqs.Item3, test.invocationResult);
         }
     }
 }
