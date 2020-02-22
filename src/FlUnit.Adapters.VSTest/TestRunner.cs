@@ -119,27 +119,38 @@ namespace FlUnit.Adapters.VSTest
 
         private static void RunTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
         {
+            var propertyDetails = ((string)testCase.GetPropertyValue(FlUnitTestProp)).Split(':');
+            var assembly = Assembly.Load(propertyDetails[0]);
+            var type = assembly.GetType(propertyDetails[1]);
+            var propertyInfo = type.GetProperty(propertyDetails[2]);
+            var test = (Test)propertyInfo.GetValue(null);
+
             frameworkHandle.RecordStart(testCase);
 
-            //// TODO: the same number of results should always be recorded - just with a "None" outcome if it didn't get that far..
-
-            if (!TryMakeTestInstance(testCase, frameworkHandle, out var test))
-            {
-                frameworkHandle.RecordEnd(testCase, TestOutcome.None);
-                return;
-            }
+            var arrangementPassed = TryArrangeTestInstance(testCase, test, frameworkHandle);
 
             test.Act();
 
-            var passed = true;
+            var passed = arrangementPassed;
             foreach (var assertion in test.Assertions)
             {
-                passed &= CheckTestAssertion(testCase, assertion, frameworkHandle);
+                if (arrangementPassed)
+                {
+                    passed &= CheckTestAssertion(testCase, assertion, frameworkHandle);
+                }
+                else
+                {
+                    frameworkHandle.RecordResult(new TestResult(testCase)
+                    {
+                        DisplayName = assertion.Description
+                    });
+                }
             }
+
             frameworkHandle.RecordEnd(testCase, passed ? TestOutcome.Passed : TestOutcome.Failed);
         }
 
-        private static bool TryMakeTestInstance(TestCase testCase, IFrameworkHandle frameworkHandle, out Test test)
+        private static bool TryArrangeTestInstance(TestCase testCase, Test test, IFrameworkHandle frameworkHandle)
         {
             // We add a result for arrangement for two reasons:
             // (1) So that it's not an extra result when arrangement fails - consistency is good..
@@ -153,13 +164,8 @@ namespace FlUnit.Adapters.VSTest
 
             try
             {
-                var propertyDetails = ((string)testCase.GetPropertyValue(FlUnitTestProp)).Split(':');
-                var assembly = Assembly.Load(propertyDetails[0]);
-                var type = assembly.GetType(propertyDetails[1]);
-                var propertyInfo = type.GetProperty(propertyDetails[2]);
-
                 result.StartTime = DateTimeOffset.Now;
-                test = (Test)propertyInfo.GetValue(null);
+                test.Arrange();
                 result.Outcome = TestOutcome.Passed;
                 return true;
             }
@@ -169,8 +175,36 @@ namespace FlUnit.Adapters.VSTest
                 result.Outcome = TestOutcome.Failed;
                 result.ErrorMessage = e.Message;
                 result.ErrorStackTrace = e.StackTrace;
+                return false;
+            }
+            finally
+            {
+                result.EndTime = DateTimeOffset.Now;
+                frameworkHandle.RecordResult(result);
+            }
+        }
 
-                test = null;
+        private static bool SkipTestAssertion(TestCase testCase, TestAssertion testAssertion, IFrameworkHandle frameworkHandle)
+        {
+            var result = new TestResult(testCase)
+            {
+                DisplayName = testAssertion.Description
+            };
+
+            try
+            {
+                result.StartTime = DateTimeOffset.Now;
+                testAssertion.Invoke();
+
+                result.Outcome = TestOutcome.Passed;
+                return true;
+            }
+            catch (Exception e)
+            {
+                // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
+                result.Outcome = TestOutcome.Failed;
+                result.ErrorMessage = e.Message;
+                result.ErrorStackTrace = e.StackTrace;
                 return false;
             }
             finally

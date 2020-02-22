@@ -4,11 +4,14 @@ namespace FlUnit
 {
     /// <summary>
     /// Abstraction for types representing a runnable test.
-    /// <para/>
-    /// NB: No arrange method. The way it's designed so far, arrangement happens as the test itself is built. Makes for a fewer delegates when building tests, but not sure I like this..
     /// </summary>
     public abstract class Test
     {
+        /// <summary>
+        /// Arranges the test.
+        /// </summary>
+        public abstract void Arrange();
+
         /// <summary>
         /// Invokes the test action.
         /// </summary>

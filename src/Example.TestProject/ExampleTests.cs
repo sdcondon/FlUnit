@@ -8,8 +8,8 @@ namespace Example.TestProject
     {
         // Basic example
         public static Test ProcessHasSideEffects => TestThat
-            .Given(new TestSubject())
-            .And(new Collaborator())
+            .Given(() => new TestSubject())
+            .And(() => new Collaborator())
 
             .When((sut, collaborator) => sut.Process(collaborator))
 
@@ -19,7 +19,7 @@ namespace Example.TestProject
          
         // Basic example with single anonymous object-valued 'Given' clause
         public static Test ProcessHasSideEffects2 => TestThat
-            .Given(new
+            .Given(() => new
             {
                 sut = new TestSubject(),
                 collaborator = new Collaborator()
@@ -31,13 +31,19 @@ namespace Example.TestProject
 
         // Negative test
         public static Test ProcessThrowsOnNullCollaborator => TestThat
-            .Given(new TestSubject())
+            .Given(() => new TestSubject())
             .When(sut => sut.Process(null))
             .Then((sut, process) => process.Exception.ShouldBeOfType(typeof(ArgumentNullException)));
 
-        // Failing test
+        // Test with failing assertion
         public static Test ProcessDoesntThrowOnNullCollaborator => TestThat
-            .Given(new TestSubject())
+            .Given(() => new TestSubject())
+            .When(sut => sut.Process(null))
+            .Then((sut, process) => process.Exception.ShouldBeNull());
+
+        // Test with failing arrangement
+        public static Test ProcessDoesntThrowOnNullCollaborator2 => TestThat
+            .Given(() => new TestSubject(shouldThrow: true))
             .When(sut => sut.Process(null))
             .Then((sut, process) => process.Exception.ShouldBeNull());
 
@@ -48,7 +54,7 @@ namespace Example.TestProject
 
         // Block bodies
         public static Test BlockBodies => TestThat
-            .Given(new
+            .Given(() => new
             {
                 sut = new TestSubject(),
                 collaborator = new Collaborator()
@@ -64,6 +70,14 @@ namespace Example.TestProject
 
         private class TestSubject
         {
+            public TestSubject(bool shouldThrow = false)
+            {
+                if (shouldThrow)
+                {
+                    throw new ArgumentException();
+                }
+            }
+
             public bool HasProcessed { get; private set; }
 
             public bool Process(Collaborator collaborator)

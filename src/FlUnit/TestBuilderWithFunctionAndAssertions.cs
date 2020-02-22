@@ -78,20 +78,20 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, TResult>
     {
-        private readonly T1 prereq;
+        private readonly Func<T1> arrange;
         private readonly Func<T1, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithFunctionAndAssertions(T1 prereq, Func<T1, TResult> testFunction, Assertion assertion)
+        internal TestBuilderWithFunctionAndAssertions(Func<T1> arrange, Func<T1, TResult> testFunction, Assertion assertion)
         {
-            this.prereq = prereq;
+            this.arrange = arrange;
             this.testFunction = testFunction;
             assertions.Add(assertion);
         }
 
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<T1, TResult> builder)
         {
-            return new TestFunction<T1, TResult>(builder.prereq, builder.testFunction, builder.assertions);
+            return new TestFunction<T1, TResult>(builder.arrange, builder.testFunction, builder.assertions);
         }
 
         /// <summary>
@@ -146,20 +146,20 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, T2, TResult>
     {
-        private readonly (T1, T2) prereqs;
+        private readonly (Func<T1>, Func<T2>) arrange;
         private readonly Func<T1, T2, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithFunctionAndAssertions((T1, T2) prereqs, Func<T1, T2, TResult> testFunction, Assertion assertion)
+        internal TestBuilderWithFunctionAndAssertions((Func<T1>, Func<T2>) arrange, Func<T1, T2, TResult> testFunction, Assertion assertion)
         {
-            this.prereqs = prereqs;
+            this.arrange = arrange;
             this.testFunction = testFunction;
             assertions.Add(assertion);
         }
 
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<T1, T2, TResult> builder)
         {
-            return new TestFunction<T1, T2, TResult>(builder.prereqs, builder.testFunction, builder.assertions);
+            return new TestFunction<T1, T2, TResult>(builder.arrange, builder.testFunction, builder.assertions);
         }
 
         /// <summary>
@@ -215,20 +215,20 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>
     {
-        private readonly (T1, T2, T3) prereqs;
+        private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
         private readonly Func<T1, T2, T3, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithFunctionAndAssertions((T1, T2, T3) prereqs, Func<T1, T2, T3, TResult> testFunction, Assertion assertion)
+        internal TestBuilderWithFunctionAndAssertions((Func<T1>, Func<T2>, Func<T3>) arrange, Func<T1, T2, T3, TResult> testFunction, Assertion assertion)
         {
-            this.prereqs = prereqs;
+            this.arrange = arrange;
             this.testFunction = testFunction;
             assertions.Add(assertion);
         }
 
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> builder)
         {
-            return new TestFunction<T1, T2, T3, TResult>(builder.prereqs, builder.testFunction, builder.assertions);
+            return new TestFunction<T1, T2, T3, TResult>(builder.arrange, builder.testFunction, builder.assertions);
         }
 
         /// <summary>

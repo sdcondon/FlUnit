@@ -17,6 +17,7 @@ namespace FlUnit._Tests
                 .Then(a => { }, "Empty assertion");
 
             // Act & Assert
+            ((Action)test.Arrange).ShouldNotThrow();
             ((Action)test.Act).ShouldNotThrow();
             test.Assertions.Count().ShouldBe(1);
 
@@ -30,11 +31,12 @@ namespace FlUnit._Tests
         {
             // Arrange
             Test test = TestThat
-                .Given(new { x = 1, y = 1 })
+                .Given(() => new { x = 1, y = 1 })
                 .When(given => given.x + given.y)
                 .Then((given, sum) => sum.Result.ShouldBe(2));
 
             // Act & Assert
+            ((Action)test.Arrange).ShouldNotThrow();
             ((Action)test.Act).ShouldNotThrow();
             test.Assertions.Count().ShouldBe(1);
 
@@ -48,13 +50,14 @@ namespace FlUnit._Tests
         {
             // Arrange
             Test test = TestThat
-                .Given(1)
-                .And(1)
+                .Given(() => 1)
+                .And(() => 1)
                 .When((x, y) => x + y)
                 .Then((x, y, sum) => sum.Result.ShouldBeGreaterThan(x))
                 .And((x, y, sum) => sum.Result.ShouldBeGreaterThan(y));
 
             // Act & Assert
+            ((Action)test.Arrange).ShouldNotThrow();
             ((Action)test.Act).ShouldNotThrow();
             test.Assertions.Count().ShouldBe(2);
 
@@ -72,11 +75,12 @@ namespace FlUnit._Tests
         {
             // Arrange
             Test test = TestThat
-                .Given(new { x = 1, y = 0 })
+                .Given(() => new { x = 1, y = 0 })
                 .When(given => given.x / given.y)
                 .Then((given, division) => division.Exception.ShouldBeOfType(typeof(DivideByZeroException)));
 
             // Act & Assert
+            ((Action)test.Arrange).ShouldNotThrow();
             ((Action)test.Act).ShouldNotThrow();
             test.Assertions.Count().ShouldBe(1);
 
@@ -90,11 +94,12 @@ namespace FlUnit._Tests
         {
             // Arrange
             Test test = TestThat
-                .Given(new { x = 1, y = 1 })
+                .Given(() => new { x = 1, y = 1 })
                 .When(given => given.x + given.y)
                 .Then((given, sum) => sum.Result.ShouldBe(3));
 
             // Act & Assert
+            ((Action)test.Arrange).ShouldNotThrow();
             ((Action)test.Act).ShouldNotThrow();
             test.Assertions.Count().ShouldBe(1);
 

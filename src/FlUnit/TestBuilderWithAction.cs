@@ -47,12 +47,12 @@ namespace FlUnit
     /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithAction<T1>
     {
-        private readonly T1 prereq;
+        private readonly Func<T1> arrange;
         private readonly Action<T1> testAction;
 
-        internal TestBuilderWithAction(T1 prereq, Action<T1> testAction)
+        internal TestBuilderWithAction(Func<T1> arrange, Action<T1> testAction)
         {
-            this.prereq = prereq;
+            this.arrange = arrange;
             this.testAction = testAction;
         }
 
@@ -63,7 +63,7 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions<T1> Then(Expression<Action<T1, TestActionResult>> assertion)
         {
-            return new TestBuilderWithActionAndAssertions<T1>(prereq, testAction, new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion));
+            return new TestBuilderWithActionAndAssertions<T1>(arrange, testAction, new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion));
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions<T1> Then(Action<T1, TestActionResult> assertion, string description)
         {
-            return new TestBuilderWithActionAndAssertions<T1>(prereq, testAction, new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description));
+            return new TestBuilderWithActionAndAssertions<T1>(arrange, testAction, new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description));
         }
     }
 
@@ -86,12 +86,12 @@ namespace FlUnit
     /// <typeparam name="T2">The type of the second "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithAction<T1, T2>
     {
-        private readonly (T1, T2) prereqs;
+        private readonly (Func<T1>, Func<T2>) arrange;
         private readonly Action<T1, T2> testAction;
 
-        internal TestBuilderWithAction((T1, T2) prereqs, Action<T1, T2> testAction)
+        internal TestBuilderWithAction((Func<T1>, Func<T2>) arrange, Action<T1, T2> testAction)
         {
-            this.prereqs = prereqs;
+            this.arrange = arrange;
             this.testAction = testAction;
         }
 
@@ -102,7 +102,7 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions<T1, T2> Then(Expression<Action<T1, T2, TestActionResult>> assertion)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2>(prereqs, testAction, new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion));
+            return new TestBuilderWithActionAndAssertions<T1, T2>(arrange, testAction, new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion));
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions<T1, T2> Then(Action<T1, T2, TestActionResult> assertion, string description)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2>(prereqs, testAction, new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description));
+            return new TestBuilderWithActionAndAssertions<T1, T2>(arrange, testAction, new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description));
         }
     }
 
@@ -126,12 +126,12 @@ namespace FlUnit
     /// <typeparam name="T3">The type of the third "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithAction<T1, T2, T3>
     {
-        private readonly (T1, T2, T3) prereqs;
+        private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
         private readonly Action<T1, T2, T3> testAction;
 
-        internal TestBuilderWithAction((T1, T2, T3) prereqs, Action<T1, T2, T3> testAction)
+        internal TestBuilderWithAction((Func<T1>, Func<T2>, Func<T3>) arrange, Action<T1, T2, T3> testAction)
         {
-            this.prereqs = prereqs;
+            this.arrange = arrange;
             this.testAction = testAction;
         }
 
@@ -142,7 +142,7 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions<T1, T2, T3> Then(Expression<Action<T1, T2, T3, TestActionResult>> assertion)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(prereqs, testAction, new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion));
+            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(arrange, testAction, new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion));
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions<T1, T2, T3> Then(Action<T1, T2, T3, TestActionResult> assertion, string description)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(prereqs, testAction, new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description));
+            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(arrange, testAction, new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description));
         }
     }
 }

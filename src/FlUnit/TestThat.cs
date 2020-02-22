@@ -13,7 +13,7 @@ namespace FlUnit
         /// <typeparam name="T">The type of the pre-requisite.</typeparam>
         /// <param name="prerequisite">The pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or a "When" clause.</returns>
-        public static TestBuilderWithPrerequisites<T> Given<T>(T prerequisite) => new TestBuilderWithPrerequisites<T>(prerequisite);
+        public static TestBuilderWithPrerequisites<T> Given<T>(Func<T> prerequisite) => new TestBuilderWithPrerequisites<T>(prerequisite);
 
         ////public static IEnumerable<TestPrerequisite<T>> GivenEachOf<T>(IEnumerable<T> prerequisites) => prerequisites.Select(p => Given(p));
 

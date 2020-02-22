@@ -19,10 +19,16 @@ namespace FlUnit
         /// </summary>
         /// <param name="act"></param>
         /// <param name="assertions"></param>
-        internal TestAction(Action act, IEnumerable<TestBuilderWithActionAndAssertions.Assertion> assertions)
+        internal TestAction(
+            Action act,
+            IEnumerable<TestBuilderWithActionAndAssertions.Assertion> assertions)
         {
             this.act = act;
             this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+        }
+
+        public override void Arrange()
+        {
         }
 
         /// <summary>
@@ -74,21 +80,30 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction<T1> : Test
     {
-        private readonly T1 prereq;
+        private readonly Func<T1> arrange;
         private readonly Action<T1> act;
+        private T1 prereq;
         private TestActionResult invocationResult;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1}"/> class.
         /// </summary>
-        /// <param name="prereq"></param>
+        /// <param name="arrange"></param>
         /// <param name="act"></param>
         /// <param name="assertions"></param>
-        internal TestAction(T1 prereq, Action<T1> act, IEnumerable<TestBuilderWithActionAndAssertions<T1>.Assertion> assertions)
+        internal TestAction(
+            Func<T1> arrange,
+            Action<T1> act,
+            IEnumerable<TestBuilderWithActionAndAssertions<T1>.Assertion> assertions)
         {
-            this.prereq = prereq;
+            this.arrange = arrange;
             this.act = act;
             this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+        }
+
+        public override void Arrange()
+        {
+            prereq = arrange();
         }
 
         /// <summary>
@@ -140,21 +155,31 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction<T1, T2> : Test
     {
-        private readonly (T1, T2) prereqs;
+        private readonly (Func<T1>, Func<T2>) arrange;
         private readonly Action<T1, T2> act;
+        private (T1, T2) prereqs;
         private TestActionResult invocationResult;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1, T2}"/> class.
         /// </summary>
-        /// <param name="prereqs"></param>
+        /// <param name="arrange"></param>
         /// <param name="act"></param>
         /// <param name="assertions"></param>
-        internal TestAction((T1, T2) prereqs, Action<T1, T2> act, IEnumerable<TestBuilderWithActionAndAssertions<T1, T2>.Assertion> assertions)
+        internal TestAction(
+            (Func<T1>, Func<T2>) arrange,
+            Action<T1, T2> act,
+            IEnumerable<TestBuilderWithActionAndAssertions<T1, T2>.Assertion> assertions)
         {
-            this.prereqs = prereqs;
+            this.arrange = arrange;
             this.act = act;
             this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+        }
+
+        public override void Arrange()
+        {
+            prereqs.Item1 = arrange.Item1();
+            prereqs.Item2 = arrange.Item2();
         }
 
         /// <summary>
@@ -206,21 +231,32 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction<T1, T2, T3> : Test
     {
-        private readonly (T1, T2, T3) prereqs;
+        private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
         private readonly Action<T1, T2, T3> act;
+        private (T1, T2, T3) prereqs;
         private TestActionResult invocationResult;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1, T2, T3}"/> class.
         /// </summary>
-        /// <param name="prereqs"></param>
+        /// <param name="arrange"></param>
         /// <param name="act"></param>
         /// <param name="assertions"></param>
-        internal TestAction((T1, T2, T3) prereqs, Action<T1, T2, T3> act, IEnumerable<TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion> assertions)
+        internal TestAction(
+            (Func<T1>, Func<T2>, Func<T3>) arrange,
+            Action<T1, T2, T3> act,
+            IEnumerable<TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion> assertions)
         {
-            this.prereqs = prereqs;
+            this.arrange = arrange;
             this.act = act;
             this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+        }
+
+        public override void Arrange()
+        {
+            prereqs.Item1 = arrange.Item1();
+            prereqs.Item2 = arrange.Item2();
+            prereqs.Item3 = arrange.Item3();
         }
 
         /// <summary>

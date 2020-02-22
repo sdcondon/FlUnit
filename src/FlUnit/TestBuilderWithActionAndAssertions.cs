@@ -76,20 +76,20 @@ namespace FlUnit
     /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1>
     {
-        private readonly T1 prereq;
+        private readonly Func<T1> arrange;
         private readonly Action<T1> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithActionAndAssertions(T1 prereq, Action<T1> testAction, Assertion assertion)
+        internal TestBuilderWithActionAndAssertions(Func<T1> arrange, Action<T1> testAction, Assertion assertion)
         {
-            this.prereq = prereq;
+            this.arrange = arrange;
             this.testAction = testAction;
             assertions.Add(assertion);
         }
 
         public static implicit operator Test(TestBuilderWithActionAndAssertions<T1> buillder)
         {
-            return new TestAction<T1>(buillder.prereq, buillder.testAction, buillder.assertions);
+            return new TestAction<T1>(buillder.arrange, buillder.testAction, buillder.assertions);
         }
 
         /// <summary>
@@ -143,20 +143,20 @@ namespace FlUnit
     /// <typeparam name="T2">The type of the second "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1, T2>
     {
-        private readonly (T1, T2) prereqs;
+        private readonly (Func<T1>, Func<T2>) arrange;
         private readonly Action<T1, T2> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithActionAndAssertions((T1, T2) prereqs, Action<T1, T2> testAction, Assertion assertion)
+        internal TestBuilderWithActionAndAssertions((Func<T1>, Func<T2>) arrange, Action<T1, T2> testAction, Assertion assertion)
         {
-            this.prereqs = prereqs;
+            this.arrange = arrange;
             this.testAction = testAction;
             assertions.Add(assertion);
         }
 
         public static implicit operator Test(TestBuilderWithActionAndAssertions<T1, T2> builder)
         {
-            return new TestAction<T1, T2>(builder.prereqs, builder.testAction, builder.assertions);
+            return new TestAction<T1, T2>(builder.arrange, builder.testAction, builder.assertions);
         }
 
         /// <summary>
@@ -211,20 +211,20 @@ namespace FlUnit
     /// <typeparam name="T3">The type of the third "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1, T2, T3>
     {
-        private readonly (T1, T2, T3) prereqs;
+        private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
         private readonly Action<T1, T2, T3> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithActionAndAssertions((T1, T2, T3) prereqs, Action<T1, T2, T3> testAction, Assertion assertion)
+        internal TestBuilderWithActionAndAssertions((Func<T1>, Func<T2>, Func<T3>) arrange, Action<T1, T2, T3> testAction, Assertion assertion)
         {
-            this.prereqs = prereqs;
+            this.arrange = arrange;
             this.testAction = testAction;
             assertions.Add(assertion);
         }
 
         public static implicit operator Test(TestBuilderWithActionAndAssertions<T1, T2, T3> builder)
         {
-            return new TestAction<T1, T2, T3>(builder.prereqs, builder.testAction, builder.assertions);
+            return new TestAction<T1, T2, T3>(builder.arrange, builder.testAction, builder.assertions);
         }
 
         /// <summary>
