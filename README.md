@@ -43,5 +43,6 @@ Pros
 - Should be easy enough to extend to data driven (GivenEachOf..), even in combination (AndEachOf..)
 
 Cons
+- Inflexible in some ways. In particular, forces you to instantiate all of the objects that you want to examine in assertions in a "Given" clause. Sometimes its handy to be able to do this during the "When"..
 - Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above.
   
