@@ -11,8 +11,8 @@ pubic static class MyTests
   ..
 
   public static Test WidgetCanProcessAThingy => TestThat
-    .Given(new Widget("widget1"))
-    .And(new Thingy("thingy1"))
+    .Given(() => new Widget("widget1"))
+    .And(() => new Thingy("thingy1"))
     .When((wi, th) => wi.TryProcess(th))
     .Then((wi, th, t) => t.Result.ShouldBeTrue())
     .And((wi, th, t) => th.IsProcessed.ShouldBeTrue())
@@ -21,7 +21,7 @@ pubic static class MyTests
   // or..
 
   public static Test WidgetCanProcessAThingy => TestThat
-    .Given(new
+    .Given(() => new
     {
       widget = new Widget("widget1"),
       thingy = new Thingy("thingy1")

@@ -184,36 +184,6 @@ namespace FlUnit.Adapters.VSTest
             }
         }
 
-        private static bool SkipTestAssertion(TestCase testCase, TestAssertion testAssertion, IFrameworkHandle frameworkHandle)
-        {
-            var result = new TestResult(testCase)
-            {
-                DisplayName = testAssertion.Description
-            };
-
-            try
-            {
-                result.StartTime = DateTimeOffset.Now;
-                testAssertion.Invoke();
-
-                result.Outcome = TestOutcome.Passed;
-                return true;
-            }
-            catch (Exception e)
-            {
-                // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
-                result.Outcome = TestOutcome.Failed;
-                result.ErrorMessage = e.Message;
-                result.ErrorStackTrace = e.StackTrace;
-                return false;
-            }
-            finally
-            {
-                result.EndTime = DateTimeOffset.Now;
-                frameworkHandle.RecordResult(result);
-            }
-        }
-
         private static bool CheckTestAssertion(TestCase testCase, TestAssertion testAssertion, IFrameworkHandle frameworkHandle)
         {
             var result = new TestResult(testCase)
