@@ -17,7 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solutio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit._Tests", "FlUnit._Tests\FlUnit._Tests.csproj", "{4B87F0F5-B722-4BD7-B8BD-62B3E7E1F3B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlUnit.Adapters.VSTest._Tests", "FlUnit.Adapters.VSTest._Tests\FlUnit.Adapters.VSTest._Tests.csproj", "{AA0FF464-C5AE-4050-A84C-C765DAE6AB4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit.Adapters.VSTest._Tests", "FlUnit.Adapters.VSTest._Tests\FlUnit.Adapters.VSTest._Tests.csproj", "{AA0FF464-C5AE-4050-A84C-C765DAE6AB4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlUnit.Abstractions", "FlUnit.Abstractions\FlUnit.Abstractions.csproj", "{C3EE9925-293C-4619-8252-A7232675B013}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{AA0FF464-C5AE-4050-A84C-C765DAE6AB4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA0FF464-C5AE-4050-A84C-C765DAE6AB4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA0FF464-C5AE-4050-A84C-C765DAE6AB4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3EE9925-293C-4619-8252-A7232675B013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3EE9925-293C-4619-8252-A7232675B013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3EE9925-293C-4619-8252-A7232675B013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3EE9925-293C-4619-8252-A7232675B013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

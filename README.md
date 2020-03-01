@@ -45,4 +45,14 @@ Pros
 Cons
 - Inflexible in some ways. In particular, forces you to instantiate all of the objects that you want to examine in assertions in a "Given" clause. Sometimes its handy to be able to do this during the "When"..
 - Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above.
-  
+
+## Next Steps
+
+Pre-v1
+- Take some cues from the vstest adapter for mstest - what am I missing re debugging, parallelisation, test attachments, instrumentation, filtering etc?
+- While separate result per assertion works well in VS itself, its not so clear on the command line. Is there a better way for the VS test adapter to work?
+- Easy QoL stuff - DontTestThat for ignoring tests etc..
+
+Post-v1
+- Have a crack at data driven stuff
+- More QoL stuff.. 
