@@ -39,7 +39,8 @@ As shown above, tests are defined as public static gettable properties of public
 
 Pros
 - Succinct, readable
-- Each assertion can be recorded as a separate result of the test. LINQ Expression-valued assertions are named automatically via ToString of expression bodies.
+- Each assertion can be recorded as a separate result of the test. LINQ Expression-valued assertions are named automatically via ToString of expression bodies. Like so:  
+  ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
 - Should be easy enough to extend to data driven (GivenEachOf..), even in combination (AndEachOf..)
 
 Cons
