@@ -4,8 +4,6 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
-
     /// <summary>
     /// Builder for providing additional assertions for a test with no "Given" clauses
     /// and for which the "When" clause does not return a value.
@@ -70,10 +68,10 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing additional assertions for a test with a single "Given" clauses
+    /// Builder for providing additional assertions for a test with a 1 "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1>
     {
         private readonly Func<T1> arrange;
@@ -87,9 +85,9 @@ namespace FlUnit
             assertions.Add(assertion);
         }
 
-        public static implicit operator Test(TestBuilderWithActionAndAssertions<T1> buillder)
+        public static implicit operator Test(TestBuilderWithActionAndAssertions<T1> builder)
         {
-            return new TestAction<T1>(buillder.arrange, buillder.testAction, buillder.assertions);
+            return new TestAction<T1>(builder.arrange, builder.testAction, builder.assertions);
         }
 
         /// <summary>
@@ -136,11 +134,11 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing additional assertions for a test with a two "Given" clauses
+    /// Builder for providing additional assertions for a test with a 2 "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
-    /// <typeparam name="T2">The type of the second "Given" clause of the test.</typeparam>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1, T2>
     {
         private readonly (Func<T1>, Func<T2>) arrange;
@@ -203,12 +201,12 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing additional assertions for a test with a three "Given" clauses
+    /// Builder for providing additional assertions for a test with a 3 "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the first "Given" clause of the test.</typeparam>
-    /// <typeparam name="T2">The type of the second "Given" clause of the test.</typeparam>
-    /// <typeparam name="T3">The type of the third "Given" clause of the test.</typeparam>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
+    /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1, T2, T3>
     {
         private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
@@ -269,4 +267,5 @@ namespace FlUnit
             public string Description { get; }
         }
     }
+
 }

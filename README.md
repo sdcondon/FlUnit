@@ -41,7 +41,14 @@ Pros
 - Succinct, readable
 - Each assertion can be recorded as a separate result of the test. LINQ Expression-valued assertions are named automatically via ToString of expression bodies. Like so:  
   ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
-- Should be easy enough to extend to data driven (GivenEachOf..), even in combination (AndEachOf..)
+- Should be easy enough to extend to data driven (GivenEachOf..), even in combination (AndEachOf..). Like this: 
+  ```
+  public static Test SumOfEvenAndOddIsOdd => TestThat
+    .GivenEachOf(() => new[] { 1, 3, 5 })
+    .AndEachOf(() => new[] { 2, 4, 6 }})
+    .When((x, y) => x + y)
+    .Then((x, y, addition) => (addition.Result % 2).ShouldBe(1));
+  ```
 
 Cons
 - Inflexible in some ways. In particular, forces you to instantiate all of the objects that you want to examine in assertions in a "Given" clause. Sometimes its handy to be able to do this during the "When"..

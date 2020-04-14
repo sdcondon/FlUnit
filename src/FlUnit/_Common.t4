@@ -1,0 +1,38 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #><#+
+
+const int MaxPrerequisiteCount = 3;
+
+string TypeParamDocs(int i, Func<int, string> desc)
+{
+    var lines = Enumerable.Range(1, i).Select(i => $"/// <typeparam name=\"T{i}\">{desc(i)}</typeparam>");
+    return string.Join(Environment.NewLine + "    ", lines);
+}
+
+IEnumerable<string> TypeParamNames(int i) => Enumerable.Range(1, i).Select(i => $"T{i}");
+
+string TypeParamList(int i) => string.Join(", ", TypeParamNames(i));
+
+string ArrangeFieldType(int i) => i == 1 ? "Func<T1>" : $"({string.Join(", ", TypeParamNames(i).Select(t => $"Func<{t}>"))})";
+
+string PrereqsFieldType(int i) => i == 1 ? "T1" : $"({string.Join(", ", TypeParamNames(i).Select(t => $"{t}"))})";
+
+string List(int count, Func<int, string> itemValue) => $"{string.Join(", ", Enumerable.Range(1, count).Select(itemValue))}";
+
+string Ordinal(int i)
+{
+    if ((i / 10) % 10 == 1)
+    {
+        return $"{i}th";
+    }
+    else return (i % 10) switch 
+    {
+        1 => $"{i}st",
+        2 => $"{i}nd",
+        3 => $"{i}rd",
+        _ => $"{i}th"
+    };
+}
+
+#>

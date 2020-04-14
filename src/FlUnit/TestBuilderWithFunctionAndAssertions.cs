@@ -4,8 +4,6 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
-
     /// <summary>
     /// Builder for providing the additional assertions for a test with no "Given" clauses
     /// and for which the "When" clause returns a value.
@@ -71,10 +69,10 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing the additional assertions for a test with one "Given" clause
+    /// Builder for providing the additional assertions for a test with 1 "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, TResult>
     {
@@ -136,13 +134,12 @@ namespace FlUnit
             public string Description { get; }
         }
     }
-
     /// <summary>
-    /// Builder for providing the additional assertions for a test with two "Given" clauses
+    /// Builder for providing the additional assertions for a test with 2 "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
-    /// <typeparam name="T2">The type of the second test pre-requisite.</typeparam>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, T2, TResult>
     {
@@ -204,14 +201,13 @@ namespace FlUnit
             public string Description { get; }
         }
     }
-
     /// <summary>
-    /// Builder for providing the additional assertions for a test with three "Given" clauses
+    /// Builder for providing the additional assertions for a test with 3 "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
-    /// <typeparam name="T2">The type of the second test pre-requisite.</typeparam>
-    /// <typeparam name="T3">The type of the third test pre-requisite.</typeparam>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
+    /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>
     {

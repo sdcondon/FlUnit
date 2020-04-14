@@ -1,0 +1,93 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="_Common.t4" #>
+using System;
+using System.Linq.Expressions;
+
+namespace FlUnit
+{
+    /// <summary>
+    /// Builder for providing the first assertion for a test with no "Given" clauses
+    /// and for which the "When" clause does not return a value.
+    /// </summary>
+    public sealed class TestBuilderWithAction
+    {
+        private readonly Action testAction;
+
+        internal TestBuilderWithAction(Action testAction)
+        {
+            this.testAction = testAction;
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions Then(Expression<Action<TestActionResult>> assertion)
+        {
+            return new TestBuilderWithActionAndAssertions(testAction, new TestBuilderWithActionAndAssertions.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions Then(Action<TestActionResult> assertion, string description)
+        {
+            return new TestBuilderWithActionAndAssertions(testAction, new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
+        }
+    }
+
+<# for(int i = 1; i <= MaxPrerequisiteCount; i++) { #>
+    /// <summary>
+    /// Builder for providing the first assertion for a test with <#= i #> "Given" clauses
+    /// and for which the "When" clause does not return a value.
+    /// </summary>
+    <#= TypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test.") #>
+    public sealed class TestBuilderWithAction<<#= TypeParamList(i) #>>
+    {
+        private readonly <#= ArrangeFieldType(i) #> arrange;
+        private readonly Action<<#= TypeParamList(i) #>> testAction;
+
+        internal TestBuilderWithAction(<#= ArrangeFieldType(i) #> arrange, Action<<#= TypeParamList(i) #>> testAction)
+        {
+            this.arrange = arrange;
+            this.testAction = testAction;
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>> Then(Expression<Action<<#= TypeParamList(i) #>, TestActionResult>> assertion)
+        {
+            return new TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>> Then(Action<<#= TypeParamList(i) #>, TestActionResult> assertion, string description)
+        {
+            return new TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>>.Assertion(assertion, description));
+        }
+    }
+
+<# } #>
+}

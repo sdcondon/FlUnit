@@ -1,0 +1,56 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="_Common.t4" #>
+using System;
+
+namespace FlUnit
+{
+<# for(int i = 1; i <= MaxPrerequisiteCount; i++) { #>
+	/// <summary>
+    /// Builder for providing additional pre-requisites for a test.
+    /// </summary>
+    <#= TypeParamDocs(i, i => $"The type of the { Ordinal(i) } pre-requisite already defined.") #>
+	public sealed class TestBuilderWithPrerequisites<<#= TypeParamList(i) #>>
+	{
+		private readonly <#= ArrangeFieldType(i) #> arrange;
+
+		internal TestBuilderWithPrerequisites(<#= ArrangeFieldType(i) #> prereqs) => this.arrange = prereqs;
+
+<# if (i < MaxPrerequisiteCount) { #>
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
+        /// <param name="prereq<#= i + 1 #>">The pre-requisite.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestBuilderWithPrerequisites<<#= TypeParamList(i + 1) #>> And<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
+        {
+            return new TestBuilderWithPrerequisites<<#= TypeParamList(i + 1) #>>((<#= ArrangeFieldList(i) #>, prereq<#= i + 1 #>));
+        }
+<# } #>
+
+        /// <summary>
+        /// Adds a "When" clause that returns a value.
+        /// </summary>
+        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <returns>A builder for providing "Then" clauses.</returns>
+        public TestBuilderWithAction<<#= TypeParamList(i) #>> When(Action<<#= TypeParamList(i) #>> testAction)
+        {
+            return new TestBuilderWithAction<<#= TypeParamList(i) #>>(arrange, testAction);
+        }
+
+        /// <summary>
+        /// Adds a "When" clause that returns a value.
+        /// </summary>
+        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <returns>A builder for providing "Then" clauses.</returns>
+        public TestBuilderWithFunction<<#= TypeParamList(i) #>, TResult> When<TResult>(Func<<#= TypeParamList(i) #>, TResult> testFunction)
+        {
+            return new TestBuilderWithFunction<<#= TypeParamList(i) #>, TResult>(arrange, testFunction);
+        }
+	}
+
+<# } #>}

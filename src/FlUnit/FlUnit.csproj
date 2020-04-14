@@ -16,11 +16,117 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="TestAction.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestAction.tt</DependentUpon>
+    </None>
+    <None Include="TestBuilderWithAction.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithAction.tt</DependentUpon>
+    </None>
+    <None Include="TestBuilderWithActionAndAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithActionAndAssertions.tt</DependentUpon>
+    </None>
+    <None Include="TestBuilderWithFunction.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithFunction.tt</DependentUpon>
+    </None>
+    <None Include="TestBuilderWithFunctionAndAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+    </None>
+    <None Include="TestBuilderWithPrerequisites.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithPrerequisites.tt</DependentUpon>
+    </None>
+    <None Include="TestFunction.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestFunction.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestAction.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestAction.cs</LastGenOutput>
+    </None>
+    <None Update="TestBuilderWithAction.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestBuilderWithAction.cs</LastGenOutput>
+    </None>
+    <None Update="TestBuilderWithActionAndAssertions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestBuilderWithActionAndAssertions.cs</LastGenOutput>
+    </None>
+    <None Update="TestBuilderWithFunction.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestBuilderWithFunction.cs</LastGenOutput>
+    </None>
+    <None Update="TestBuilderWithFunctionAndAssertions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestBuilderWithFunctionAndAssertions.cs</LastGenOutput>
+    </None>
+    <None Update="TestBuilderWithPrerequisites.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestBuilderWithPrerequisites.cs</LastGenOutput>
+    </None>
+    <None Update="TestFunction.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestFunction.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="TestAction.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestAction.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TestBuilderWithAction.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithAction.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TestBuilderWithActionAndAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithActionAndAssertions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TestBuilderWithFunction.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithFunction.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TestBuilderWithFunctionAndAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TestBuilderWithPrerequisites.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithPrerequisites.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TestFunction.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestFunction.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\FlUnit.Abstractions\FlUnit.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
-
 </Project>

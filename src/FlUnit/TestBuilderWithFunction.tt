@@ -1,0 +1,98 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="_Common.t4" #>
+using System;
+using System.Linq.Expressions;
+
+namespace FlUnit
+{
+    /// <summary>
+    /// Builder for providing the first assertion for a test with no "Given" clauses
+    /// and for which the "When" clause returns a value.
+    /// </summary>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
+    public sealed class TestBuilderWithFunction<TResult>
+    {
+        private readonly Func<TResult> testFunction;
+
+        internal TestBuilderWithFunction(Func<TResult> testFunction)
+        {
+            this.testFunction = testFunction;
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndAssertions<TResult> Then(Expression<Action<TestFunctionResult<TResult>>> assertion)
+        {
+            return new TestBuilderWithFunctionAndAssertions<TResult>(testFunction, new TestBuilderWithFunctionAndAssertions<TResult>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndAssertions<TResult> Then(Action<TestFunctionResult<TResult>> assertion, string description)
+        {
+            return new TestBuilderWithFunctionAndAssertions<TResult>(testFunction, new TestBuilderWithFunctionAndAssertions<TResult>.Assertion(assertion, description));
+        }
+    }
+
+<# for(int i = 1; i <= MaxPrerequisiteCount; i++) { #>
+    /// <summary>
+    /// Builder for providing the first assertion for a test with <#= i #> "Given" clauses
+    /// and for which the "When" clause returns a value.
+    /// </summary>
+    <#= TypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test.") #>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
+    public sealed class TestBuilderWithFunction<<#= TypeParamList(i) #>, TResult>
+    {
+        private readonly <#= ArrangeFieldType(i) #> arrange;
+        private readonly Func<<#= TypeParamList(i) #>, TResult> testFunction;
+
+        internal TestBuilderWithFunction(
+            <#= ArrangeFieldType(i) #> arrange,
+            Func<<#= TypeParamList(i) #>, TResult> testFunction)
+        {
+            this.arrange = arrange;
+            this.testFunction = testFunction;
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult> Then(Expression<Action<<#= TypeParamList(i) #>, TestFunctionResult<TResult>>> assertion)
+        {
+            return new TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult> Then(
+            Action<<#= TypeParamList(i) #>, TestFunctionResult<TResult>> assertion,
+            string description)
+        {
+            return new TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult>.Assertion(assertion, description));
+        }
+    }
+<# } #>
+}

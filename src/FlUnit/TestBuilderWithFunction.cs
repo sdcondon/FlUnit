@@ -3,8 +3,6 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
-
     /// <summary>
     /// Builder for providing the first assertion for a test with no "Given" clauses
     /// and for which the "When" clause returns a value.
@@ -42,17 +40,19 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing the first assertion for a test with one "Given" clause
+    /// Builder for providing the first assertion for a test with 1 "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the test pre-requisite.</typeparam>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunction<T1, TResult>
     {
         private readonly Func<T1> arrange;
         private readonly Func<T1, TResult> testFunction;
 
-        internal TestBuilderWithFunction(Func<T1> arrange, Func<T1, TResult> testFunction)
+        internal TestBuilderWithFunction(
+            Func<T1> arrange,
+            Func<T1, TResult> testFunction)
         {
             this.arrange = arrange;
             this.testFunction = testFunction;
@@ -65,7 +65,10 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, TResult> Then(Expression<Action<T1, TestFunctionResult<TResult>>> assertion)
         {
-            return new TestBuilderWithFunctionAndAssertions<T1, TResult>(arrange, testFunction, new TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion(assertion));
+            return new TestBuilderWithFunctionAndAssertions<T1, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion(assertion));
         }
 
         /// <summary>
@@ -74,25 +77,31 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, TResult> Then(Action<T1, TestFunctionResult<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<T1, TResult> Then(
+            Action<T1, TestFunctionResult<TResult>> assertion,
+            string description)
         {
-            return new TestBuilderWithFunctionAndAssertions<T1, TResult>(arrange, testFunction, new TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion(assertion, description));
+            return new TestBuilderWithFunctionAndAssertions<T1, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion(assertion, description));
         }
     }
-
     /// <summary>
-    /// Builder for providing the first assertion for a test with two "Given" clauses
+    /// Builder for providing the first assertion for a test with 2 "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
-    /// <typeparam name="T2">The type of the second test pre-requisite.</typeparam>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunction<T1, T2, TResult>
     {
         private readonly (Func<T1>, Func<T2>) arrange;
         private readonly Func<T1, T2, TResult> testFunction;
 
-        internal TestBuilderWithFunction((Func<T1>, Func<T2>) arrange, Func<T1, T2, TResult> testFunction)
+        internal TestBuilderWithFunction(
+            (Func<T1>, Func<T2>) arrange,
+            Func<T1, T2, TResult> testFunction)
         {
             this.arrange = arrange;
             this.testFunction = testFunction;
@@ -105,7 +114,10 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> Then(Expression<Action<T1, T2, TestFunctionResult<TResult>>> assertion)
         {
-            return new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>(arrange, testFunction, new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion(assertion));
+            return new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion(assertion));
         }
 
         /// <summary>
@@ -114,26 +126,32 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> Then(Action<T1, T2, TestFunctionResult<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> Then(
+            Action<T1, T2, TestFunctionResult<TResult>> assertion,
+            string description)
         {
-            return new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>(arrange, testFunction, new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion(assertion, description));
+            return new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion(assertion, description));
         }
     }
-
     /// <summary>
-    /// Builder for providing the first assertion for a test with two "Given" clauses
+    /// Builder for providing the first assertion for a test with 3 "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
-    /// <typeparam name="T1">The type of the first test pre-requisite.</typeparam>
-    /// <typeparam name="T2">The type of the second test pre-requisite.</typeparam>
-    /// <typeparam name="T3">The type of the third test pre-requisite.</typeparam>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
+    /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunction<T1, T2, T3, TResult>
     {
         private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
         private readonly Func<T1, T2, T3, TResult> testFunction;
 
-        internal TestBuilderWithFunction((Func<T1>, Func<T2>, Func<T3>) arrange, Func<T1, T2, T3, TResult> testFunction)
+        internal TestBuilderWithFunction(
+            (Func<T1>, Func<T2>, Func<T3>) arrange,
+            Func<T1, T2, T3, TResult> testFunction)
         {
             this.arrange = arrange;
             this.testFunction = testFunction;
@@ -146,7 +164,10 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> Then(Expression<Action<T1, T2, T3, TestFunctionResult<TResult>>> assertion)
         {
-            return new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>(arrange, testFunction, new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion(assertion));
+            return new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion(assertion));
         }
 
         /// <summary>
@@ -155,9 +176,14 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> Then(Action<T1, T2, T3, TestFunctionResult<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> Then(
+            Action<T1, T2, T3, TestFunctionResult<TResult>> assertion,
+            string description)
         {
-            return new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>(arrange, testFunction, new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion(assertion, description));
+            return new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion(assertion, description));
         }
     }
 }

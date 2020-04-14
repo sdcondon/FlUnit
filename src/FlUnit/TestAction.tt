@@ -1,0 +1,159 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="_Common.t4" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FlUnit
+{
+    /// <summary>
+    /// Represents a test with no "Given" clauses and a "When" clause that does not return a value.
+    /// </summary>
+    public sealed class TestAction : Test
+    {
+        private readonly Action act;
+        private TestActionResult invocationResult;
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Test"/> class.
+        /// </summary>
+        /// <param name="act"></param>
+        /// <param name="assertions"></param>
+        internal TestAction(
+            Action act,
+            IEnumerable<TestBuilderWithActionAndAssertions.Assertion> assertions)
+        {
+            this.act = act;
+            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+        }
+
+        public override void Arrange()
+        {
+        }
+
+        /// <summary>
+        /// Invokes the test action.
+        /// </summary>
+        public override void Act()
+        {
+            if (invocationResult != null)
+            {
+                throw new InvalidOperationException("Test action already invoked");
+            }
+
+            try
+            {
+                act();
+                invocationResult = new TestActionResult();
+            }
+            catch (Exception e)
+            {
+                invocationResult = new TestActionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
+        /// </summary>
+        public override IEnumerable<TestAssertion> Assertions { get; }
+
+        private class Assertion : TestAssertion
+        {
+            private readonly TestAction test;
+            private readonly Action<TestActionResult> action;
+
+            public Assertion(TestAction test, Action<TestActionResult> action, string description)
+            {
+                this.test = test;
+                this.action = action;
+                this.Description = description;
+            }
+
+            public override string Description { get; }
+
+            public override void Invoke() => action(test.invocationResult);
+        }
+    }
+
+<# for(int i = 1; i <= MaxPrerequisiteCount; i++) { #>
+    /// <summary>
+    /// Represents a test with <#= i #> "Given" clauses and a "When" clause that does not return a value.
+    /// </summary>
+    public sealed class TestAction<<#= TypeParamList(i) #>> : Test
+    {
+        private readonly <#= ArrangeFieldType(i) #> arrange;
+        private readonly Action<<#= TypeParamList(i) #>> act;
+        private <#= PrereqsFieldType(i) #> prereqs;
+        private TestActionResult invocationResult;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestAction{<#= TypeParamList(i) #>}"/> class.
+        /// </summary>
+        /// <param name="arrange"></param>
+        /// <param name="act"></param>
+        /// <param name="assertions"></param>
+        internal TestAction(
+            <#= ArrangeFieldType(i) #> arrange,
+            Action<<#= TypeParamList(i) #>> act,
+            IEnumerable<TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>>.Assertion> assertions)
+        {
+            this.arrange = arrange;
+            this.act = act;
+            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+        }
+
+        public override void Arrange()
+        {
+            <#= i == 1 ? "prereqs" : $"({List(i, i => $"prereqs.Item{i}")})" #> = <#= i == 1 ? "arrange()" : $"({List(i, i => $"arrange.Item{i}()")})" #>; 
+        }
+
+        /// <summary>
+        /// Invokes the test action.
+        /// </summary>
+        public override void Act()
+        {
+            if (invocationResult != null)
+            {
+                throw new InvalidOperationException("Test action already invoked");
+            }
+
+            try
+            {
+                act(<#= i == 1 ? "prereqs" : List(i, i => $"prereqs.Item{i}") #>);
+                invocationResult = new TestActionResult();
+            }
+            catch (Exception e)
+            {
+                invocationResult = new TestActionResult(e);
+            }
+        }
+
+        /// <summary>
+        /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
+        /// </summary>
+        public override IEnumerable<TestAssertion> Assertions { get; }
+
+        private class Assertion : TestAssertion
+        {
+            private readonly TestAction<<#= TypeParamList(i) #>> test;
+            private readonly Action<<#= TypeParamList(i) #>, TestActionResult> action;
+
+            public Assertion(TestAction<<#= TypeParamList(i) #>> test, Action<<#= TypeParamList(i) #>, TestActionResult> action, string description)
+            {
+                this.test = test;
+                this.action = action;
+                this.Description = description;
+            }
+
+            public override string Description { get; }
+
+            public override void Invoke() => action(<#= i == 1 ? "test.prereqs" : List(i, i => $"test.prereqs.Item{i}") #>, test.invocationResult);
+        }
+    }
+<# } #>
+}

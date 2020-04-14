@@ -4,8 +4,6 @@ using System.Linq;
 
 namespace FlUnit
 {
-    //// TODO: T4 template me to eliminate repetition and allow for more prereqs with no effort
-
     /// <summary>
     /// Represents a test with no "Given" clauses and a "When" clause that returns a value.
     /// </summary>
@@ -75,13 +73,13 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Represents a test with one "Given" clause and a "When" clause that returns a value.
+    /// Represents a test with 1 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
     public sealed class TestFunction<T1, TResult> : Test
     {
         private readonly Func<T1> arrange;
         private readonly Func<T1, TResult> act;
-        private T1 prereq;
+        private T1 prereqs;
         private TestFunctionResult<TResult> invocationResult;
 
         /// <summary>
@@ -102,7 +100,7 @@ namespace FlUnit
 
         public override void Arrange()
         {
-            prereq = arrange();
+            prereqs = arrange(); 
         }
 
         /// <summary>
@@ -117,7 +115,7 @@ namespace FlUnit
 
             try
             {
-                invocationResult = new TestFunctionResult<TResult>(act(prereq));
+                invocationResult = new TestFunctionResult<TResult>(act(prereqs));
             }
             catch (Exception e)
             {
@@ -144,12 +142,11 @@ namespace FlUnit
 
             public override string Description { get; }
 
-            public override void Invoke() => action(test.prereq, test.invocationResult);
+            public override void Invoke() => action(test.prereqs, test.invocationResult);
         }
     }
-
     /// <summary>
-    /// Represents a test with two "Given" clauses and a "When" clause that returns a value.
+    /// Represents a test with 2 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
     public sealed class TestFunction<T1, T2, TResult> : Test
     {
@@ -176,8 +173,7 @@ namespace FlUnit
 
         public override void Arrange()
         {
-            prereqs.Item1 = arrange.Item1();
-            prereqs.Item2 = arrange.Item2();
+            (prereqs.Item1, prereqs.Item2) = (arrange.Item1(), arrange.Item2()); 
         }
 
         /// <summary>
@@ -222,9 +218,8 @@ namespace FlUnit
             public override void Invoke() => action(test.prereqs.Item1, test.prereqs.Item2, test.invocationResult);
         }
     }
-
     /// <summary>
-    /// Represents a test with three "Given" clauses and a "When" clause that returns a value.
+    /// Represents a test with 3 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
     public sealed class TestFunction<T1, T2, T3, TResult> : Test
     {
@@ -251,9 +246,7 @@ namespace FlUnit
 
         public override void Arrange()
         {
-            prereqs.Item1 = arrange.Item1();
-            prereqs.Item2 = arrange.Item2();
-            prereqs.Item3 = arrange.Item3();
+            (prereqs.Item1, prereqs.Item2, prereqs.Item3) = (arrange.Item1(), arrange.Item2(), arrange.Item3()); 
         }
 
         /// <summary>
