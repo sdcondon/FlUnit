@@ -11,25 +11,36 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
+<# for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
+<# WriteLineIf(i > 0); #>
     /// <summary>
-    /// Builder for providing the additional assertions for a test with no "Given" clauses
+    /// Builder for providing the additional assertions for a test with <#= i #> "Given" clause<#= Plural(i) #>
     /// and for which the "When" clause returns a value.
     /// </summary>
+<# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public sealed class TestBuilderWithFunctionAndAssertions<TResult>
+    public sealed class TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>
     {
-        private readonly Func<TResult> testFunction;
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithFunctionAndAssertions(Func<TResult> testFunction, Assertion assertion)
+        internal TestBuilderWithFunctionAndAssertions(
+<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>TResult> testFunction,
+            Assertion assertion)
         {
+<# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
             this.testFunction = testFunction;
             assertions.Add(assertion);
         }
 
-        public static implicit operator Test(TestBuilderWithFunctionAndAssertions<TResult> builder)
+        public static implicit operator Test(TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> builder)
         {
-            return new TestFunction<TResult>(builder.testFunction, builder.assertions);
+            return new TestFunction<<#= TList(i, "", ", ") #>TResult>(
+<# WriteLineIf(i > 0, "builder.arrange,", 4); #>
+                builder.testFunction,
+                builder.assertions);
         }
 
         /// <summary>
@@ -37,7 +48,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<TResult> And(Expression<Action<TestFunctionResult<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> And(Expression<Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -49,7 +60,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<TResult> And(Action<TestFunctionResult<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> And(Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -57,87 +68,19 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<TestFunctionResult<TResult>> action, string description)
+            internal Assertion(Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>> action, string description)
             {
                 Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<TestFunctionResult<TResult>>> expression)
+            internal Assertion(Expression<Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 
-            public Action<TestFunctionResult<TResult>> Action { get; }
-
-            public string Description { get; }
-        }
-    }
-
-<# for(int i = 1; i <= MaxPrerequisiteCount; i++) { #>
-    /// <summary>
-    /// Builder for providing the additional assertions for a test with <#= i #> "Given" clauses
-    /// and for which the "When" clause returns a value.
-    /// </summary>
-    <#= TypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test.") #>
-    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public sealed class TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult>
-    {
-        private readonly <#= ArrangeFieldType(i) #> arrange;
-        private readonly Func<<#= TypeParamList(i) #>, TResult> testFunction;
-        private readonly List<Assertion> assertions = new List<Assertion>();
-
-        internal TestBuilderWithFunctionAndAssertions(<#= ArrangeFieldType(i) #> arrange, Func<<#= TypeParamList(i) #>, TResult> testFunction, Assertion assertion)
-        {
-            this.arrange = arrange;
-            this.testFunction = testFunction;
-            assertions.Add(assertion);
-        }
-
-        public static implicit operator Test(TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult> builder)
-        {
-            return new TestFunction<<#= TypeParamList(i) #>, TResult>(builder.arrange, builder.testFunction, builder.assertions);
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult> And(Expression<Action<<#= TypeParamList(i) #>, TestFunctionResult<TResult>>> assertion)
-        {
-            assertions.Add(new Assertion(assertion));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult> And(Action<<#= TypeParamList(i) #>, TestFunctionResult<TResult>> assertion, string description)
-        {
-            assertions.Add(new Assertion(assertion, description));
-            return this;
-        }
-
-        internal class Assertion
-        {
-            internal Assertion(Action<<#= TypeParamList(i) #>, TestFunctionResult<TResult>> action, string description)
-            {
-                Action = action;
-                Description = description;
-            }
-
-            internal Assertion(Expression<Action<<#= TypeParamList(i) #>, TestFunctionResult<TResult>>> expression)
-            {
-                Action = expression.Compile();
-                Description = expression.Body.ToString();
-            }
-
-            public Action<<#= TypeParamList(i) #>, TestFunctionResult<TResult>> Action { get; }
+            public Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>> Action { get; }
 
             public string Description { get; }
         }

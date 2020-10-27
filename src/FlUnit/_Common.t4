@@ -10,15 +10,50 @@ string TypeParamDocs(int i, Func<int, string> desc)
     return string.Join(Environment.NewLine + "    ", lines);
 }
 
-IEnumerable<string> TypeParamNames(int i) => Enumerable.Range(1, i).Select(i => $"T{i}");
+void WriteTypeParamDocs(int count, Func<int, string> desc, int indent = 1)
+{
+    for (int i = 1; i <= count; i++)
+    {
+        Write(new String(' ', 4 * indent));
+        WriteLine($"/// <typeparam name=\"T{i}\">{desc(i)}</typeparam>");
+    }
+}
 
-string TypeParamList(int i) => string.Join(", ", TypeParamNames(i));
+IEnumerable<string> TypeParamNames(int i) => Enumerable.Range(1, i).Select(i => $"T{i}");
 
 string ArrangeFieldType(int i) => i == 1 ? "Func<T1>" : $"({string.Join(", ", TypeParamNames(i).Select(t => $"Func<{t}>"))})";
 
 string PrereqsFieldType(int i) => i == 1 ? "T1" : $"({string.Join(", ", TypeParamNames(i).Select(t => $"{t}"))})";
 
-string List(int count, Func<int, string> itemValue) => $"{string.Join(", ", Enumerable.Range(1, count).Select(itemValue))}";
+string List(
+    int count,
+    Func<int, string> itemValue,
+    string nonZeroPrefix = "",
+    string nonZeroSuffix = "")
+{
+    var prefix = count > 0 ? nonZeroPrefix : "";
+    var suffix = count > 0 ? nonZeroSuffix : "";
+    return $"{prefix}{string.Join(", ", Enumerable.Range(1, count).Select(itemValue))}{suffix}";
+}
+
+string TList(
+    int count,
+    string nonZeroPrefix = "",
+    string nonZeroSuffix = "")
+{
+    return List(count, i => $"T{i}", nonZeroPrefix, nonZeroSuffix);
+}
+
+void WriteLineIf(bool predicate, string line = "", int indent = 0)
+{
+    if (predicate)
+    {
+        Write(new String(' ', 4 * indent));
+        WriteLine(line);
+    }
+}
+
+string WriteIf(bool predicate, string write) => predicate ? write : string.Empty;
 
 string Ordinal(int i)
 {
@@ -34,5 +69,7 @@ string Ordinal(int i)
         _ => $"{i}th"
     };
 }
+
+string Plural(int i) => i == 1 ? string.Empty : "s";
 
 #>

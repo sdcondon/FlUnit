@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 namespace FlUnit
 {
     /// <summary>
-    /// Builder for providing the additional assertions for a test with no "Given" clauses
+    /// Builder for providing the additional assertions for a test with 0 "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
@@ -14,7 +14,9 @@ namespace FlUnit
         private readonly Func<TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithFunctionAndAssertions(Func<TResult> testFunction, Assertion assertion)
+        internal TestBuilderWithFunctionAndAssertions(
+            Func<TResult> testFunction,
+            Assertion assertion)
         {
             this.testFunction = testFunction;
             assertions.Add(assertion);
@@ -22,7 +24,9 @@ namespace FlUnit
 
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<TResult> builder)
         {
-            return new TestFunction<TResult>(builder.testFunction, builder.assertions);
+            return new TestFunction<TResult>(
+                builder.testFunction,
+                builder.assertions);
         }
 
         /// <summary>
@@ -69,7 +73,7 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing the additional assertions for a test with 1 "Given" clauses
+    /// Builder for providing the additional assertions for a test with 1 "Given" clause
     /// and for which the "When" clause returns a value.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
@@ -80,7 +84,10 @@ namespace FlUnit
         private readonly Func<T1, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithFunctionAndAssertions(Func<T1> arrange, Func<T1, TResult> testFunction, Assertion assertion)
+        internal TestBuilderWithFunctionAndAssertions(
+            Func<T1> arrange,
+            Func<T1, TResult> testFunction,
+            Assertion assertion)
         {
             this.arrange = arrange;
             this.testFunction = testFunction;
@@ -89,7 +96,10 @@ namespace FlUnit
 
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<T1, TResult> builder)
         {
-            return new TestFunction<T1, TResult>(builder.arrange, builder.testFunction, builder.assertions);
+            return new TestFunction<T1, TResult>(
+                builder.arrange,
+                builder.testFunction,
+                builder.assertions);
         }
 
         /// <summary>
@@ -134,6 +144,7 @@ namespace FlUnit
             public string Description { get; }
         }
     }
+
     /// <summary>
     /// Builder for providing the additional assertions for a test with 2 "Given" clauses
     /// and for which the "When" clause returns a value.
@@ -147,7 +158,10 @@ namespace FlUnit
         private readonly Func<T1, T2, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithFunctionAndAssertions((Func<T1>, Func<T2>) arrange, Func<T1, T2, TResult> testFunction, Assertion assertion)
+        internal TestBuilderWithFunctionAndAssertions(
+            (Func<T1>, Func<T2>) arrange,
+            Func<T1, T2, TResult> testFunction,
+            Assertion assertion)
         {
             this.arrange = arrange;
             this.testFunction = testFunction;
@@ -156,7 +170,10 @@ namespace FlUnit
 
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<T1, T2, TResult> builder)
         {
-            return new TestFunction<T1, T2, TResult>(builder.arrange, builder.testFunction, builder.assertions);
+            return new TestFunction<T1, T2, TResult>(
+                builder.arrange,
+                builder.testFunction,
+                builder.assertions);
         }
 
         /// <summary>
@@ -201,6 +218,7 @@ namespace FlUnit
             public string Description { get; }
         }
     }
+
     /// <summary>
     /// Builder for providing the additional assertions for a test with 3 "Given" clauses
     /// and for which the "When" clause returns a value.
@@ -215,7 +233,10 @@ namespace FlUnit
         private readonly Func<T1, T2, T3, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithFunctionAndAssertions((Func<T1>, Func<T2>, Func<T3>) arrange, Func<T1, T2, T3, TResult> testFunction, Assertion assertion)
+        internal TestBuilderWithFunctionAndAssertions(
+            (Func<T1>, Func<T2>, Func<T3>) arrange,
+            Func<T1, T2, T3, TResult> testFunction,
+            Assertion assertion)
         {
             this.arrange = arrange;
             this.testFunction = testFunction;
@@ -224,7 +245,10 @@ namespace FlUnit
 
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> builder)
         {
-            return new TestFunction<T1, T2, T3, TResult>(builder.arrange, builder.testFunction, builder.assertions);
+            return new TestFunction<T1, T2, T3, TResult>(
+                builder.arrange,
+                builder.testFunction,
+                builder.assertions);
         }
 
         /// <summary>

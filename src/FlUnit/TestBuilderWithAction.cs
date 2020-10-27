@@ -4,14 +4,15 @@ using System.Linq.Expressions;
 namespace FlUnit
 {
     /// <summary>
-    /// Builder for providing the first assertion for a test with no "Given" clauses
+    /// Builder for providing the first assertion for a test with 0 "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
     public sealed class TestBuilderWithAction
     {
         private readonly Action testAction;
 
-        internal TestBuilderWithAction(Action testAction)
+        internal TestBuilderWithAction(
+            Action testAction)
         {
             this.testAction = testAction;
         }
@@ -23,7 +24,9 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions Then(Expression<Action<TestActionResult>> assertion)
         {
-            return new TestBuilderWithActionAndAssertions(testAction, new TestBuilderWithActionAndAssertions.Assertion(assertion));
+            return new TestBuilderWithActionAndAssertions(
+                testAction,
+                new TestBuilderWithActionAndAssertions.Assertion(assertion));
         }
 
         /// <summary>
@@ -34,12 +37,14 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithActionAndAssertions Then(Action<TestActionResult> assertion, string description)
         {
-            return new TestBuilderWithActionAndAssertions(testAction, new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
+            return new TestBuilderWithActionAndAssertions(
+                testAction,
+                new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
         }
     }
 
     /// <summary>
-    /// Builder for providing the first assertion for a test with 1 "Given" clauses
+    /// Builder for providing the first assertion for a test with 1 "Given" clause
     /// and for which the "When" clause does not return a value.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
@@ -48,7 +53,9 @@ namespace FlUnit
         private readonly Func<T1> arrange;
         private readonly Action<T1> testAction;
 
-        internal TestBuilderWithAction(Func<T1> arrange, Action<T1> testAction)
+        internal TestBuilderWithAction(
+            Func<T1> arrange,
+            Action<T1> testAction)
         {
             this.arrange = arrange;
             this.testAction = testAction;
@@ -93,7 +100,9 @@ namespace FlUnit
         private readonly (Func<T1>, Func<T2>) arrange;
         private readonly Action<T1, T2> testAction;
 
-        internal TestBuilderWithAction((Func<T1>, Func<T2>) arrange, Action<T1, T2> testAction)
+        internal TestBuilderWithAction(
+            (Func<T1>, Func<T2>) arrange,
+            Action<T1, T2> testAction)
         {
             this.arrange = arrange;
             this.testAction = testAction;
@@ -139,7 +148,9 @@ namespace FlUnit
         private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
         private readonly Action<T1, T2, T3> testAction;
 
-        internal TestBuilderWithAction((Func<T1>, Func<T2>, Func<T3>) arrange, Action<T1, T2, T3> testAction)
+        internal TestBuilderWithAction(
+            (Func<T1>, Func<T2>, Func<T3>) arrange,
+            Action<T1, T2, T3> testAction)
         {
             this.arrange = arrange;
             this.testAction = testAction;
@@ -172,5 +183,4 @@ namespace FlUnit
                 new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description));
         }
     }
-
 }

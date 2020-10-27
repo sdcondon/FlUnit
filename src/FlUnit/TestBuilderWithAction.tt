@@ -9,16 +9,23 @@ using System.Linq.Expressions;
 
 namespace FlUnit
 {
+<# for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
+<# WriteLineIf(i > 0); #>
     /// <summary>
-    /// Builder for providing the first assertion for a test with no "Given" clauses
+    /// Builder for providing the first assertion for a test with <#= i #> "Given" clause<#= Plural(i) #>
     /// and for which the "When" clause does not return a value.
     /// </summary>
-    public sealed class TestBuilderWithAction
+<# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
+    public sealed class TestBuilderWithAction<#= TList(i, "<", ">") #>
     {
-        private readonly Action testAction;
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
+        private readonly Action<#= TList(i, "<", ">") #> testAction;
 
-        internal TestBuilderWithAction(Action testAction)
+        internal TestBuilderWithAction(
+<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
+            Action<#= TList(i, "<", ">") #> testAction)
         {
+<# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
             this.testAction = testAction;
         }
 
@@ -27,9 +34,12 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions Then(Expression<Action<TestActionResult>> assertion)
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Expression<Action<<#= TList(i, "", ", ") #>TestActionResult>> assertion)
         {
-            return new TestBuilderWithActionAndAssertions(testAction, new TestBuilderWithActionAndAssertions.Assertion(assertion));
+            return new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>(
+<# WriteLineIf(i > 0, "arrange,", 4); #>
+                testAction,
+                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion));
         }
 
         /// <summary>
@@ -38,56 +48,13 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions Then(Action<TestActionResult> assertion, string description)
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Action<<#= TList(i, "", ", ") #>TestActionResult> assertion, string description)
         {
-            return new TestBuilderWithActionAndAssertions(testAction, new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
+            return new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>(
+<# WriteLineIf(i > 0, "arrange,", 4); #>
+                testAction,
+                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description));
         }
     }
-
-<# for(int i = 1; i <= MaxPrerequisiteCount; i++) { #>
-    /// <summary>
-    /// Builder for providing the first assertion for a test with <#= i #> "Given" clauses
-    /// and for which the "When" clause does not return a value.
-    /// </summary>
-    <#= TypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test.") #>
-    public sealed class TestBuilderWithAction<<#= TypeParamList(i) #>>
-    {
-        private readonly <#= ArrangeFieldType(i) #> arrange;
-        private readonly Action<<#= TypeParamList(i) #>> testAction;
-
-        internal TestBuilderWithAction(<#= ArrangeFieldType(i) #> arrange, Action<<#= TypeParamList(i) #>> testAction)
-        {
-            this.arrange = arrange;
-            this.testAction = testAction;
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>> Then(Expression<Action<<#= TypeParamList(i) #>, TestActionResult>> assertion)
-        {
-            return new TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>>(
-                arrange,
-                testAction,
-                new TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>>.Assertion(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>> Then(Action<<#= TypeParamList(i) #>, TestActionResult> assertion, string description)
-        {
-            return new TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>>(
-                arrange,
-                testAction,
-                new TestBuilderWithActionAndAssertions<<#= TypeParamList(i) #>>.Assertion(assertion, description));
-        }
-    }
-
 <# } #>
 }

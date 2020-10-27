@@ -11,104 +11,41 @@ using System.Linq;
 
 namespace FlUnit
 {
-    /// <summary>
-    /// Represents a test with no "Given" clauses and a "When" clause that returns a value.
-    /// </summary>
-    public sealed class TestFunction<TResult> : Test
-    {
-        private readonly Func<TResult> act;
-        private TestFunctionResult<TResult> invocationResult;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Test"/> class.
-        /// </summary>
-        /// <param name="act"></param>
-        /// <param name="assertions"></param>
-        internal TestFunction(
-            Func<TResult> act,
-            IEnumerable<TestBuilderWithFunctionAndAssertions<TResult>.Assertion> assertions)
-        {
-            this.act = act;
-            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
-        }
-
-        public override void Arrange()
-        {
-        }
-
-        /// <summary>
-        /// Invokes the test action.
-        /// </summary>
-        public override void Act()
-        {
-            if (invocationResult != null)
-            {
-                throw new InvalidOperationException("Test action already invoked");
-            }
-
-            try
-            {
-                invocationResult = new TestFunctionResult<TResult>(act());
-            }
-            catch (Exception e)
-            {
-                invocationResult = new TestFunctionResult<TResult>(e);
-            }
-        }
-
-        /// <summary>
-        /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
-        /// </summary>
-        public override IEnumerable<TestAssertion> Assertions { get; }
-
-        private class Assertion : TestAssertion
-        {
-            private readonly TestFunction<TResult> test;
-            private readonly Action<TestFunctionResult<TResult>> action;
-
-            public Assertion(TestFunction<TResult> test, Action<TestFunctionResult<TResult>> action, string description)
-            {
-                this.test = test;
-                this.action = action;
-                this.Description = description;
-            }
-
-            public override string Description { get; }
-
-            public override void Invoke() => action(test.invocationResult);
-        }
-    }
-
-<# for(int i = 1; i <= MaxPrerequisiteCount; i++) { #>
+<# for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
+<# WriteLineIf(i > 0); #>
     /// <summary>
     /// Represents a test with <#= i #> "Given" clauses and a "When" clause that returns a value.
     /// </summary>
-    public sealed class TestFunction<<#= TypeParamList(i) #>, TResult> : Test
+    public sealed class TestFunction<<#= TList(i, "", ", ") #>TResult> : Test
     {
-        private readonly <#= ArrangeFieldType(i) #> arrange;
-        private readonly Func<<#= TypeParamList(i) #>, TResult> act;
-        private <#= PrereqsFieldType(i) #> prereqs;
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>TResult> act;
+<# WriteLineIf(i > 0, $"private {PrereqsFieldType(i)} prereqs;", 2); #>
         private TestFunctionResult<TResult> invocationResult;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
         /// </summary>
-        /// <param name="arrange"></param>
+<# WriteLineIf(i > 0, "/// <param name=\"arrange\"></param>", 2); #>
         /// <param name="act"></param>
         /// <param name="assertions"></param>
         internal TestFunction(
-            <#= ArrangeFieldType(i) #> arrange,
-            Func<<#= TypeParamList(i) #>, TResult> act,
-            IEnumerable<TestBuilderWithFunctionAndAssertions<<#= TypeParamList(i) #>, TResult>.Assertion> assertions)
+<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>TResult> act,
+            IEnumerable<TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion> assertions)
         {
-            this.arrange = arrange;
+<# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
             this.act = act;
             this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
         }
 
         public override void Arrange()
         {
-            <#= i == 1 ? "prereqs" : $"({List(i, i => $"prereqs.Item{i}")})" #> = <#= i == 1 ? "arrange()" : $"({List(i, i => $"arrange.Item{i}()")})" #>; 
+<# if (i == 1) { #>
+            prereqs = arrange();
+<# } else if (i > 1) { #>
+            (<#= List(i, i => $"prereqs.Item{i}") #>) = (<#= List(i, i => $"arrange.Item{i}()") #>);
+<# } #>
         }
 
         /// <summary>
@@ -138,10 +75,10 @@ namespace FlUnit
 
         private class Assertion : TestAssertion
         {
-            private readonly TestFunction<<#= TypeParamList(i) #>, TResult> test;
-            private readonly Action<<#= TypeParamList(i) #>, TestFunctionResult<TResult>> action;
+            private readonly TestFunction<<#= TList(i, "", ", ") #>TResult> test;
+            private readonly Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>> action;
 
-            public Assertion(TestFunction<<#= TypeParamList(i) #>, TResult> test, Action<<#= TypeParamList(i) #>, TestFunctionResult<TResult>> action, string description)
+            public Assertion(TestFunction<<#= TList(i, "", ", ") #>TResult> test, Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>> action, string description)
             {
                 this.test = test;
                 this.action = action;
@@ -150,7 +87,7 @@ namespace FlUnit
 
             public override string Description { get; }
 
-            public override void Invoke() => action(<#= i == 1 ? "test.prereqs" : List(i, i => $"test.prereqs.Item{i}") #>, test.invocationResult);
+            public override void Invoke() => action(<#= i == 1 ? "test.prereqs, " : List(i, i => $"test.prereqs.Item{i}", "", ", ") #>test.invocationResult);
         }
     }
 <# } #>

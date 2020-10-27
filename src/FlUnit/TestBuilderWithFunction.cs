@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace FlUnit
 {
     /// <summary>
-    /// Builder for providing the first assertion for a test with no "Given" clauses
+    /// Builder for providing the first assertion for a test with 0 "Given" clauses
     /// and for which the "When" clause returns a value.
     /// </summary>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
@@ -12,7 +12,8 @@ namespace FlUnit
     {
         private readonly Func<TResult> testFunction;
 
-        internal TestBuilderWithFunction(Func<TResult> testFunction)
+        internal TestBuilderWithFunction(
+            Func<TResult> testFunction)
         {
             this.testFunction = testFunction;
         }
@@ -24,7 +25,9 @@ namespace FlUnit
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<TResult> Then(Expression<Action<TestFunctionResult<TResult>>> assertion)
         {
-            return new TestBuilderWithFunctionAndAssertions<TResult>(testFunction, new TestBuilderWithFunctionAndAssertions<TResult>.Assertion(assertion));
+            return new TestBuilderWithFunctionAndAssertions<TResult>(
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<TResult>.Assertion(assertion));
         }
 
         /// <summary>
@@ -33,14 +36,18 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<TResult> Then(Action<TestFunctionResult<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<TResult> Then(
+            Action<TestFunctionResult<TResult>> assertion,
+            string description)
         {
-            return new TestBuilderWithFunctionAndAssertions<TResult>(testFunction, new TestBuilderWithFunctionAndAssertions<TResult>.Assertion(assertion, description));
+            return new TestBuilderWithFunctionAndAssertions<TResult>(
+                testFunction,
+                new TestBuilderWithFunctionAndAssertions<TResult>.Assertion(assertion, description));
         }
     }
 
     /// <summary>
-    /// Builder for providing the first assertion for a test with 1 "Given" clauses
+    /// Builder for providing the first assertion for a test with 1 "Given" clause
     /// and for which the "When" clause returns a value.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
@@ -87,6 +94,7 @@ namespace FlUnit
                 new TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion(assertion, description));
         }
     }
+
     /// <summary>
     /// Builder for providing the first assertion for a test with 2 "Given" clauses
     /// and for which the "When" clause returns a value.
@@ -136,6 +144,7 @@ namespace FlUnit
                 new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion(assertion, description));
         }
     }
+
     /// <summary>
     /// Builder for providing the first assertion for a test with 3 "Given" clauses
     /// and for which the "When" clause returns a value.

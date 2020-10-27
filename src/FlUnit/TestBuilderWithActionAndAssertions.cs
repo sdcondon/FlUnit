@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 namespace FlUnit
 {
     /// <summary>
-    /// Builder for providing additional assertions for a test with no "Given" clauses
+    /// Builder for providing additional assertions for a test with a 0 "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
     public sealed class TestBuilderWithActionAndAssertions
@@ -13,15 +13,19 @@ namespace FlUnit
         private readonly Action testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithActionAndAssertions(Action testAction, Assertion assertion)
+        internal TestBuilderWithActionAndAssertions(
+            Action testAction,
+            Assertion assertion)
         {
             this.testAction = testAction;
             assertions.Add(assertion);
         }
-        
+
         public static implicit operator Test(TestBuilderWithActionAndAssertions builder)
         {
-            return new TestAction(builder.testAction, builder.assertions);
+            return new TestAction(
+                builder.testAction,
+                builder.assertions);
         }
 
         /// <summary>
@@ -68,7 +72,7 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing additional assertions for a test with a 1 "Given" clauses
+    /// Builder for providing additional assertions for a test with a 1 "Given" clause
     /// and for which the "When" clause does not return a value.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
@@ -78,7 +82,10 @@ namespace FlUnit
         private readonly Action<T1> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithActionAndAssertions(Func<T1> arrange, Action<T1> testAction, Assertion assertion)
+        internal TestBuilderWithActionAndAssertions(
+            Func<T1> arrange,
+            Action<T1> testAction,
+            Assertion assertion)
         {
             this.arrange = arrange;
             this.testAction = testAction;
@@ -87,7 +94,10 @@ namespace FlUnit
 
         public static implicit operator Test(TestBuilderWithActionAndAssertions<T1> builder)
         {
-            return new TestAction<T1>(builder.arrange, builder.testAction, builder.assertions);
+            return new TestAction<T1>(
+                builder.arrange,
+                builder.testAction,
+                builder.assertions);
         }
 
         /// <summary>
@@ -145,7 +155,10 @@ namespace FlUnit
         private readonly Action<T1, T2> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithActionAndAssertions((Func<T1>, Func<T2>) arrange, Action<T1, T2> testAction, Assertion assertion)
+        internal TestBuilderWithActionAndAssertions(
+            (Func<T1>, Func<T2>) arrange,
+            Action<T1, T2> testAction,
+            Assertion assertion)
         {
             this.arrange = arrange;
             this.testAction = testAction;
@@ -154,7 +167,10 @@ namespace FlUnit
 
         public static implicit operator Test(TestBuilderWithActionAndAssertions<T1, T2> builder)
         {
-            return new TestAction<T1, T2>(builder.arrange, builder.testAction, builder.assertions);
+            return new TestAction<T1, T2>(
+                builder.arrange,
+                builder.testAction,
+                builder.assertions);
         }
 
         /// <summary>
@@ -213,7 +229,10 @@ namespace FlUnit
         private readonly Action<T1, T2, T3> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithActionAndAssertions((Func<T1>, Func<T2>, Func<T3>) arrange, Action<T1, T2, T3> testAction, Assertion assertion)
+        internal TestBuilderWithActionAndAssertions(
+            (Func<T1>, Func<T2>, Func<T3>) arrange,
+            Action<T1, T2, T3> testAction,
+            Assertion assertion)
         {
             this.arrange = arrange;
             this.testAction = testAction;
@@ -222,7 +241,10 @@ namespace FlUnit
 
         public static implicit operator Test(TestBuilderWithActionAndAssertions<T1, T2, T3> builder)
         {
-            return new TestAction<T1, T2, T3>(builder.arrange, builder.testAction, builder.assertions);
+            return new TestAction<T1, T2, T3>(
+                builder.arrange,
+                builder.testAction,
+                builder.assertions);
         }
 
         /// <summary>
@@ -267,5 +289,4 @@ namespace FlUnit
             public string Description { get; }
         }
     }
-
 }
