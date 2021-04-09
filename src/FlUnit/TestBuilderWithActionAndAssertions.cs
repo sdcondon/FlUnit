@@ -78,12 +78,12 @@ namespace FlUnit
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1>
     {
-        private readonly Func<T1> arrange;
+        private readonly Func<IEnumerable<T1>> arrange;
         private readonly Action<T1> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithActionAndAssertions(
-            Func<T1> arrange,
+            Func<IEnumerable<T1>> arrange,
             Action<T1> testAction,
             Assertion assertion)
         {
@@ -151,12 +151,12 @@ namespace FlUnit
     /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1, T2>
     {
-        private readonly (Func<T1>, Func<T2>) arrange;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Action<T1, T2> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithActionAndAssertions(
-            (Func<T1>, Func<T2>) arrange,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Action<T1, T2> testAction,
             Assertion assertion)
         {
@@ -225,12 +225,12 @@ namespace FlUnit
     /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndAssertions<T1, T2, T3>
     {
-        private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Action<T1, T2, T3> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithActionAndAssertions(
-            (Func<T1>, Func<T2>, Func<T3>) arrange,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Action<T1, T2, T3> testAction,
             Assertion assertion)
         {

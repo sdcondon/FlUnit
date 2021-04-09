@@ -29,7 +29,7 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IEnumerable<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
 
         /// <inheritdoc />
         public override void Arrange()
@@ -47,10 +47,10 @@ namespace FlUnit
                 IEnumerable<TestBuilderWithActionAndAssertions.Assertion> assertions)
             {
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
-            public override string Description => throw new NotImplementedException("Not yet implemented");
+            public override string Description => string.Empty;
 
             /// <inheritdoc />
             public override void Act()
@@ -72,7 +72,7 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public override IEnumerable<TestAssertion> Assertions { get; }
+            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
 
             private class Assertion : TestAssertion
             {
@@ -101,7 +101,7 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction<T1> : Test
     {
-        private readonly Func<T1> arrange;
+        private readonly Func<IEnumerable<T1>> arrange;
         private readonly Action<T1> act;
         private readonly IEnumerable<TestBuilderWithActionAndAssertions<T1>.Assertion> assertions;
 
@@ -112,7 +112,7 @@ namespace FlUnit
         /// <param name="act"></param>
         /// <param name="assertions"></param>
         internal TestAction(
-            Func<T1> arrange,
+            Func<IEnumerable<T1>> arrange,
             Action<T1> act,
             IEnumerable<TestBuilderWithActionAndAssertions<T1>.Assertion> assertions)
         {
@@ -125,12 +125,12 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IEnumerable<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
 
         /// <inheritdoc />
         public override void Arrange()
         {
-            Cases = new[] { new Case(arrange(), act, assertions) };
+            Cases = arrange().Select(p => new Case(p, act, assertions)).ToArray();
         }
 
         private class Case : TestCase
@@ -146,10 +146,10 @@ namespace FlUnit
             {
                 this.prereqs = prereqs;
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
-            public override string Description => throw new NotImplementedException("Not yet implemented");
+            public override string Description => prereqs.ToString();
 
             /// <inheritdoc />
             public override void Act()
@@ -171,7 +171,7 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public override IEnumerable<TestAssertion> Assertions { get; }
+            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
 
             private class Assertion : TestAssertion
             {
@@ -200,7 +200,7 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction<T1, T2> : Test
     {
-        private readonly (Func<T1>, Func<T2>) arrange;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Action<T1, T2> act;
         private readonly IEnumerable<TestBuilderWithActionAndAssertions<T1, T2>.Assertion> assertions;
 
@@ -211,7 +211,7 @@ namespace FlUnit
         /// <param name="act"></param>
         /// <param name="assertions"></param>
         internal TestAction(
-            (Func<T1>, Func<T2>) arrange,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Action<T1, T2> act,
             IEnumerable<TestBuilderWithActionAndAssertions<T1, T2>.Assertion> assertions)
         {
@@ -224,12 +224,15 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IEnumerable<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
 
         /// <inheritdoc />
         public override void Arrange()
         {
-            Cases = new[] { new Case((arrange.Item1(), arrange.Item2()), act, assertions) };
+            Cases = (
+                from p1 in arrange.Item1()
+                from p2 in arrange.Item2()
+                select new Case((p1, p2), act, assertions)).ToArray();
         }
 
         private class Case : TestCase
@@ -245,10 +248,10 @@ namespace FlUnit
             {
                 this.prereqs = prereqs;
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
-            public override string Description => throw new NotImplementedException("Not yet implemented");
+            public override string Description => prereqs.ToString();
 
             /// <inheritdoc />
             public override void Act()
@@ -270,7 +273,7 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public override IEnumerable<TestAssertion> Assertions { get; }
+            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
 
             private class Assertion : TestAssertion
             {
@@ -299,7 +302,7 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction<T1, T2, T3> : Test
     {
-        private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Action<T1, T2, T3> act;
         private readonly IEnumerable<TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion> assertions;
 
@@ -310,7 +313,7 @@ namespace FlUnit
         /// <param name="act"></param>
         /// <param name="assertions"></param>
         internal TestAction(
-            (Func<T1>, Func<T2>, Func<T3>) arrange,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Action<T1, T2, T3> act,
             IEnumerable<TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion> assertions)
         {
@@ -323,12 +326,16 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IEnumerable<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
 
         /// <inheritdoc />
         public override void Arrange()
         {
-            Cases = new[] { new Case((arrange.Item1(), arrange.Item2(), arrange.Item3()), act, assertions) };
+            Cases = (
+                from p1 in arrange.Item1()
+                from p2 in arrange.Item2()
+                from p3 in arrange.Item3()
+                select new Case((p1, p2, p3), act, assertions)).ToArray();
         }
 
         private class Case : TestCase
@@ -344,10 +351,10 @@ namespace FlUnit
             {
                 this.prereqs = prereqs;
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
-            public override string Description => throw new NotImplementedException("Not yet implemented");
+            public override string Description => prereqs.ToString();
 
             /// <inheritdoc />
             public override void Act()
@@ -369,7 +376,7 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public override IEnumerable<TestAssertion> Assertions { get; }
+            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
 
             private class Assertion : TestAssertion
             {

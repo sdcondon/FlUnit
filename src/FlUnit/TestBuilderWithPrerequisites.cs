@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FlUnit
 {
@@ -9,9 +10,9 @@ namespace FlUnit
     /// <typeparam name="T1">The type of the 1st pre-requisite already defined.</typeparam>
 	public sealed class TestBuilderWithPrerequisites<T1>
 	{
-		private readonly Func<T1> arrange;
+		private readonly Func<IEnumerable<T1>> arrange;
 
-		internal TestBuilderWithPrerequisites(Func<T1> prereqs) => this.arrange = prereqs;
+		internal TestBuilderWithPrerequisites(Func<IEnumerable<T1>> prereqs) => this.arrange = prereqs;
 
         /// <summary>
         /// Adds another "Given" clause for the test.
@@ -21,7 +22,18 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<T1, T2> And<T2>(Func<T2> prereq2)
         {
-            return new TestBuilderWithPrerequisites<T1, T2>((arrange, prereq2));
+            return new TestBuilderWithPrerequisites<T1, T2>((arrange, () => new[] { prereq2() }));
+        }
+
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T2">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs2">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestBuilderWithPrerequisites<T1, T2> AndEachOf<T2>(Func<IEnumerable<T2>> prereqs2)
+        {
+            return new TestBuilderWithPrerequisites<T1, T2>((arrange, prereqs2));
         }
 
         /// <summary>
@@ -52,9 +64,9 @@ namespace FlUnit
     /// <typeparam name="T2">The type of the 2nd pre-requisite already defined.</typeparam>
 	public sealed class TestBuilderWithPrerequisites<T1, T2>
 	{
-		private readonly (Func<T1>, Func<T2>) arrange;
+		private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
 
-		internal TestBuilderWithPrerequisites((Func<T1>, Func<T2>) prereqs) => this.arrange = prereqs;
+		internal TestBuilderWithPrerequisites((Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) prereqs) => this.arrange = prereqs;
 
         /// <summary>
         /// Adds another "Given" clause for the test.
@@ -64,7 +76,18 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<T1, T2, T3> And<T3>(Func<T3> prereq3)
         {
-            return new TestBuilderWithPrerequisites<T1, T2, T3>((arrange.Item1, arrange.Item2, prereq3));
+            return new TestBuilderWithPrerequisites<T1, T2, T3>((arrange.Item1, arrange.Item2, () => new[] { prereq3() }));
+        }
+
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T3">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs3">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestBuilderWithPrerequisites<T1, T2, T3> AndEachOf<T3>(Func<IEnumerable<T3>> prereqs3)
+        {
+            return new TestBuilderWithPrerequisites<T1, T2, T3>((arrange.Item1, arrange.Item2, prereqs3));
         }
 
         /// <summary>
@@ -96,9 +119,9 @@ namespace FlUnit
     /// <typeparam name="T3">The type of the 3rd pre-requisite already defined.</typeparam>
 	public sealed class TestBuilderWithPrerequisites<T1, T2, T3>
 	{
-		private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
+		private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
 
-		internal TestBuilderWithPrerequisites((Func<T1>, Func<T2>, Func<T3>) prereqs) => this.arrange = prereqs;
+		internal TestBuilderWithPrerequisites((Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) prereqs) => this.arrange = prereqs;
 
 
         /// <summary>

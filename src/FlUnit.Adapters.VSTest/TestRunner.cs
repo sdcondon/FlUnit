@@ -138,7 +138,7 @@ namespace FlUnit.Adapters.VSTest
 
                     foreach (var assertion in flCase.Assertions)
                     {
-                        allAssertionsPassed &= CheckTestAssertion(testCase, assertion, frameworkHandle);
+                        allAssertionsPassed &= CheckTestAssertion(testCase, test, flCase, assertion, frameworkHandle);
                     }
                 }
             }
@@ -185,12 +185,21 @@ namespace FlUnit.Adapters.VSTest
             }
         }
 
-        private static bool CheckTestAssertion(TestCase testCase, TestAssertion testAssertion, IFrameworkHandle frameworkHandle)
+        private static bool CheckTestAssertion(TestCase testCase, FlUnit.Test flTest, FlUnit.TestCase flCase, TestAssertion testAssertion, IFrameworkHandle frameworkHandle)
         {
-            var result = new TestResult(testCase)
+            var result = new TestResult(testCase);
+            if (flTest.Cases.Count > 1 && flCase.Assertions.Count > 1)
             {
-                DisplayName = testAssertion.Description
-            };
+                result.DisplayName = string.IsNullOrEmpty(flCase.Description) ? testAssertion.Description : $"{testAssertion.Description} for test case {flCase.Description}";
+            }
+            else if (flTest.Cases.Count > 1)
+            {
+                result.DisplayName = flCase.Description;
+            }
+            else if (flCase.Assertions.Count > 1)
+            {
+                result.DisplayName = testAssertion.Description;
+            }
 
             try
             {

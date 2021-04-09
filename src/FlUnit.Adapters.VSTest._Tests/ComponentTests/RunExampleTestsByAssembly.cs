@@ -40,12 +40,12 @@ namespace FlUnit.Adapters.VSTest._Tests
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.ProcessThrowsOnNullCollaborator", TestOutcome.Passed, new[]
             {
-                ("process.Exception.ShouldBeOfType(System.ArgumentNullException)", TestOutcome.Passed)
+                ((string)null, TestOutcome.Passed)
             });
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.ProcessDoesntThrowOnNullCollaborator", TestOutcome.Failed, new[]
             {
-                ("process.Exception.ShouldBeNull()", TestOutcome.Failed)
+                ((string)null, TestOutcome.Failed)
             });
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.ProcessDoesntThrowOnNullCollaborator2", TestOutcome.Skipped, new[]
@@ -55,12 +55,35 @@ namespace FlUnit.Adapters.VSTest._Tests
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.CtorDoesntThrow", TestOutcome.Passed, new[]
             {
-                ("ctor.Exception.ShouldBeNull()", TestOutcome.Passed)
+                ((string)null, TestOutcome.Passed)
             });
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.BlockBodies", TestOutcome.Passed, new[]
             {
-                ("Exception should be null", TestOutcome.Passed)
+                ((string)null, TestOutcome.Passed)
+            });
+
+            AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.SumOfEvenAndOddIsOdd", TestOutcome.Passed, new[]
+            {
+                ("(1, 2)", TestOutcome.Passed),
+                ("(1, 4)", TestOutcome.Passed),
+                ("(1, 6)", TestOutcome.Passed),
+                ("(3, 2)", TestOutcome.Passed),
+                ("(3, 4)", TestOutcome.Passed),
+                ("(3, 6)", TestOutcome.Passed),
+                ("(5, 2)", TestOutcome.Passed),
+                ("(5, 4)", TestOutcome.Passed),
+                ("(5, 6)", TestOutcome.Passed),
+            });
+
+            AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.SumOfEvenAndSix", TestOutcome.Passed, new[]
+            {
+                ("(addition.Result % 2).ShouldBe(1) for test case (1, 6)", TestOutcome.Passed),
+                ("addition.Result.ShouldBeGreaterThan(x) for test case (1, 6)", TestOutcome.Passed),
+                ("(addition.Result % 2).ShouldBe(1) for test case (3, 6)", TestOutcome.Passed),
+                ("addition.Result.ShouldBeGreaterThan(x) for test case (3, 6)", TestOutcome.Passed),
+                ("(addition.Result % 2).ShouldBe(1) for test case (5, 6)", TestOutcome.Passed),
+                ("addition.Result.ShouldBeGreaterThan(x) for test case (5, 6)", TestOutcome.Passed),
             });
         }
 
@@ -68,6 +91,7 @@ namespace FlUnit.Adapters.VSTest._Tests
         {
             handle.TestCases.ContainsKey(testName).ShouldBeTrue(testName);
             handle.TestOutcomes[testName].ShouldBe(expectedOutcome);
+            handle.TestResults[testName].Count.ShouldBe(expectedResults.Count());
             foreach (var result in handle.TestResults[testName].Zip(expectedResults))
             {
                 result.First.DisplayName.ShouldBe(result.Second.Item1);

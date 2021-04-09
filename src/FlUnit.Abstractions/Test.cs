@@ -16,8 +16,8 @@ namespace FlUnit
         public abstract void Arrange();
 
         /// <summary>
-        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
-        public abstract IEnumerable<TestCase> Cases { get; protected set; }
+        public abstract IReadOnlyCollection<TestCase> Cases { get; protected set; }
     }
 }

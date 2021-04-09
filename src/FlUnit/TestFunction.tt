@@ -42,7 +42,7 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IEnumerable<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
 
         /// <summary>
         /// Arranges the test.
@@ -52,9 +52,13 @@ namespace FlUnit
 <# if (i == 0) { #>
             Cases = new[] { new Case(act, assertions) };
 <# } else if (i == 1) { #>
-            Cases = new[] { new Case(arrange(), act, assertions) };
+            Cases = arrange().Select(p => new Case(p, act, assertions)).ToArray();
 <# } else if (i > 1) { #>
-            Cases = new[] { new Case((<#= List(i, i => $"arrange.Item{i}()") #>), act, assertions) };
+            Cases = (
+<# for (int j = 0; j < i; j++) { #>
+                from p<#= j + 1 #> in arrange.Item<#= j + 1 #>()
+<# } #>
+                select new Case((<#= List(i, i => $"p{i}") #>), act, assertions)).ToArray();
 <# } #>
         }
 
@@ -71,10 +75,14 @@ namespace FlUnit
             {
 <# WriteLineIf(i > 0, "this.prereqs = prereqs;", 4); #>
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
-            public override string Description => throw new NotImplementedException("Not yet implemented");
+<# if (i == 0) { #>
+            public override string Description => string.Empty;
+<# } else { #>
+            public override string Description => prereqs.ToString();
+<# } #>
 
             public override void Act()
             {
@@ -93,7 +101,7 @@ namespace FlUnit
                 }
             }
 
-            public override IEnumerable<TestAssertion> Assertions { get; }
+            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
 
             private class Assertion : TestAssertion
             {

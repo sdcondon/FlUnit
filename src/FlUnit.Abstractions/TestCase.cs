@@ -23,6 +23,6 @@ namespace FlUnit
         /// <summary>
         /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
         /// </summary>
-        public abstract IEnumerable<TestAssertion> Assertions { get; }
+        public abstract IReadOnlyCollection<TestAssertion> Assertions { get; }
     }
 }

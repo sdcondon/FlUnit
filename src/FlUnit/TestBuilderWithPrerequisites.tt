@@ -5,6 +5,7 @@
 <#@ output extension=".cs" #>
 <#@ include file="_Common.t4" #>
 using System;
+using System.Collections.Generic;
 
 namespace FlUnit
 {
@@ -29,7 +30,18 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
         {
-            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>((<#= i == 1 ? "arrange" : List(i, i => $"arrange.Item{i}") #>, prereq<#= i + 1 #>));
+            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>((<#= i == 1 ? "arrange" : List(i, i => $"arrange.Item{i}") #>, () => new[] { prereq<#= i + 1 #>() }));
+        }
+
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs<#= i + 1 #>">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
+        {
+            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>((<#= i == 1 ? "arrange" : List(i, i => $"arrange.Item{i}") #>, prereqs<#= i + 1 #>));
         }
 <# } #>
 

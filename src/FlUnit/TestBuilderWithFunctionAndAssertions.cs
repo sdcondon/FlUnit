@@ -80,12 +80,12 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, TResult>
     {
-        private readonly Func<T1> arrange;
+        private readonly Func<IEnumerable<T1>> arrange;
         private readonly Func<T1, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithFunctionAndAssertions(
-            Func<T1> arrange,
+            Func<IEnumerable<T1>> arrange,
             Func<T1, TResult> testFunction,
             Assertion assertion)
         {
@@ -154,12 +154,12 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, T2, TResult>
     {
-        private readonly (Func<T1>, Func<T2>) arrange;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Func<T1, T2, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithFunctionAndAssertions(
-            (Func<T1>, Func<T2>) arrange,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Func<T1, T2, TResult> testFunction,
             Assertion assertion)
         {
@@ -229,12 +229,12 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>
     {
-        private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Func<T1, T2, T3, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithFunctionAndAssertions(
-            (Func<T1>, Func<T2>, Func<T3>) arrange,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Func<T1, T2, T3, TResult> testFunction,
             Assertion assertion)
         {

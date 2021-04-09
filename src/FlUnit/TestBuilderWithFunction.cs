@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace FlUnit
@@ -54,11 +55,11 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunction<T1, TResult>
     {
-        private readonly Func<T1> arrange;
+        private readonly Func<IEnumerable<T1>> arrange;
         private readonly Func<T1, TResult> testFunction;
 
         internal TestBuilderWithFunction(
-            Func<T1> arrange,
+            Func<IEnumerable<T1>> arrange,
             Func<T1, TResult> testFunction)
         {
             this.arrange = arrange;
@@ -104,11 +105,11 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunction<T1, T2, TResult>
     {
-        private readonly (Func<T1>, Func<T2>) arrange;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Func<T1, T2, TResult> testFunction;
 
         internal TestBuilderWithFunction(
-            (Func<T1>, Func<T2>) arrange,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Func<T1, T2, TResult> testFunction)
         {
             this.arrange = arrange;
@@ -155,11 +156,11 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunction<T1, T2, T3, TResult>
     {
-        private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Func<T1, T2, T3, TResult> testFunction;
 
         internal TestBuilderWithFunction(
-            (Func<T1>, Func<T2>, Func<T3>) arrange,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Func<T1, T2, T3, TResult> testFunction)
         {
             this.arrange = arrange;

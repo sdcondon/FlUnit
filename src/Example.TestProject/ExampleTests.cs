@@ -68,6 +68,20 @@ namespace Example.TestProject
                 process.Exception.ShouldBeNull();
             }, "Exception should be null");
 
+        // Multiple test cases
+        public static Test SumOfOddAndSixIsOdd => TestThat
+            .GivenEachOf(() => new[] { 1, 3, 5 })
+            .When(x => x + 6)
+            .Then((x, addition) => (addition.Result % 2).ShouldBe(1));
+
+        // Test cases in combination with multiple assertions
+        public static Test SumOfEvenAndOdd => TestThat
+            .GivenEachOf(() => new[] { 1, 3, 5 })
+            .AndEachOf(() => new[] { 2, 4, 6 })
+            .When((x, y) => x + y)
+            .Then((x, y, addition) => (addition.Result % 2).ShouldBe(1))
+            .And((x, y, addition) => addition.Result.ShouldBeGreaterThan(x));
+
         private class TestSubject
         {
             public TestSubject(bool shouldThrow = false)

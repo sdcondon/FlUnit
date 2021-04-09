@@ -5,6 +5,7 @@
 <#@ output extension=".cs" #>
 <#@ include file="_Common.t4" #>
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace FlUnit

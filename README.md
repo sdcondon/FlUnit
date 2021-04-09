@@ -4,14 +4,12 @@
 
 Prototype for a test framework where tests are defined using a fluent builder. Includes a skeleton VSTest adapter which records each assertion in a separate result of the test. 
 
-```
+```csharp
 using FlUnit;
 using Shouldly;
 
-pubic static class MyTests
+public static class MyTests
 {
-  ..
-
   public static Test WidgetCanProcessAThingy => TestThat
     .Given(() => new Widget("widget1"))
     .And(() => new Thingy("thingy1"))
@@ -33,7 +31,14 @@ pubic static class MyTests
     .And((given, tryProcess) => given.thingy.IsProcessed.ShouldBeTrue())
     .And((given, tryProcess) => given.widget.HasProcessed.ShouldBeTrue());
 
-  ..
+  // multiple test cases are also supported, for example..
+
+  public static Test SumOfEvenAndOdd => TestThat
+    .GivenEachOf(() => new[] { 1, 3, 5 })
+    .AndEachOf(() => new[] { 2, 4, 6 })
+    .When((x, y) => x + y)
+    .Then((x, y, addition) => (addition.Result % 2).ShouldBe(1))
+    .And((x, y, addition) => addition.Result.ShouldBeGreaterThan(x));
 }
 ```
 
@@ -43,26 +48,13 @@ Pros
 - Succinct, readable
 - Each assertion can be recorded as a separate result of the test. LINQ Expression-valued assertions are named automatically via ToString of expression bodies. Like so:  
   ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
-- Should be easy enough to extend to data driven (GivenEachOf..), even in combination (AndEachOf..). Like this: 
-  ```
-  public static Test SumOfEvenAndOddIsOdd => TestThat
-    .GivenEachOf(() => new[] { 1, 3, 5 })
-    .AndEachOf(() => new[] { 2, 4, 6 }})
-    .When((x, y) => x + y)
-    .Then((x, y, addition) => (addition.Result % 2).ShouldBe(1));
-  ```
 
 Cons
-- Inflexible in some ways. In particular, forces you to instantiate all of the objects that you want to examine in assertions in a "Given" clause. Sometimes its handy to be able to do this during the "When"..
+- Inflexible in some ways, in that it requires you to be rather formal in the separation of the clauses of your tests. Sometimes a freer-flowing test structure is useful.
 - Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above.
 
 ## Next Steps
 
-Pre-v1
 - Take some cues from the vstest adapter for mstest - what am I missing re debugging, parallelisation, test attachments, instrumentation, filtering etc?
-- While separate result per assertion works well in VS itself, its not so clear on the command line. Is there a better way for the VS test adapter to work?
-- Easy QoL stuff - DontTestThat for ignoring tests etc..
+- While separate result per assertion works well in VS itself, its not so clear on the command line. Work on the VSTest adapter to make it better form a test result perspective.
 
-Post-v1
-- Have a crack at data driven stuff
-- More QoL stuff.. 
