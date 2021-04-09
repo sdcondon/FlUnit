@@ -15,7 +15,7 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or a "When" clause.</returns>
         public static TestBuilderWithPrerequisites<T> Given<T>(Func<T> prerequisite) => new TestBuilderWithPrerequisites<T>(prerequisite);
 
-        ////public static IEnumerable<TestPrerequisite<T>> GivenEachOf<T>(IEnumerable<T> prerequisites) => prerequisites.Select(p => Given(p));
+        ////public static IEnumerable<TestBuilderWithPrerequisite<T>> GivenEachOf<T>(Func<IEnumerable<T>> prerequisites) => prerequisites.Select(p => Given(p));
 
         /// <summary>
         /// Starts building a test with no "Given" clauses and a "When" clause that does not return a value.

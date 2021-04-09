@@ -18,10 +18,11 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            ((Action)test.Act).ShouldNotThrow();
-            test.Assertions.Count().ShouldBe(1);
+            test.Cases.Count().ShouldBe(1);
+            ((Action)test.Cases.Single().Act).ShouldNotThrow();
+            test.Cases.Single().Assertions.Count().ShouldBe(1);
 
-            var assertion = test.Assertions.Single();
+            var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("Empty assertion");
             ((Action)assertion.Invoke).ShouldNotThrow();
         }
@@ -37,10 +38,11 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            ((Action)test.Act).ShouldNotThrow();
-            test.Assertions.Count().ShouldBe(1);
+            test.Cases.Count().ShouldBe(1);
+            ((Action)test.Cases.Single().Act).ShouldNotThrow();
+            test.Cases.Single().Assertions.Count().ShouldBe(1);
 
-            var assertion = test.Assertions.Single();
+            var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("sum.Result.ShouldBe(2)");
             ((Action)assertion.Invoke).ShouldNotThrow();
         }
@@ -58,14 +60,15 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            ((Action)test.Act).ShouldNotThrow();
-            test.Assertions.Count().ShouldBe(2);
+            test.Cases.Count().ShouldBe(1);
+            ((Action)test.Cases.Single().Act).ShouldNotThrow();
+            test.Cases.Single().Assertions.Count().ShouldBe(2);
 
-            var assertion1 = test.Assertions.First();
+            var assertion1 = test.Cases.Single().Assertions.First();
             assertion1.Description.ShouldBe("sum.Result.ShouldBeGreaterThan(x)");
             ((Action)assertion1.Invoke).ShouldNotThrow();
 
-            var assertion2 = test.Assertions.Skip(1).First();
+            var assertion2 = test.Cases.Single().Assertions.Skip(1).First();
             assertion2.Description.ShouldBe("sum.Result.ShouldBeGreaterThan(y)");
             ((Action)assertion2.Invoke).ShouldNotThrow();
         }
@@ -81,10 +84,11 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            ((Action)test.Act).ShouldNotThrow();
-            test.Assertions.Count().ShouldBe(1);
+            test.Cases.Count().ShouldBe(1);
+            ((Action)test.Cases.Single().Act).ShouldNotThrow();
+            test.Cases.Single().Assertions.Count().ShouldBe(1);
 
-            var assertion = test.Assertions.Single();
+            var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("division.Exception.ShouldBeOfType(System.DivideByZeroException)");
             ((Action)assertion.Invoke).ShouldNotThrow();
         }
@@ -100,10 +104,11 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            ((Action)test.Act).ShouldNotThrow();
-            test.Assertions.Count().ShouldBe(1);
+            test.Cases.Count().ShouldBe(1);
+            ((Action)test.Cases.Single().Act).ShouldNotThrow();
+            test.Cases.Single().Assertions.Count().ShouldBe(1);
 
-            var assertion = test.Assertions.Single();
+            var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("sum.Result.ShouldBe(3)");
             ((Action)assertion.Invoke).ShouldThrow(typeof(ShouldAssertException));
         }
@@ -115,8 +120,10 @@ namespace FlUnit._Tests
                 .When(() => { })
                 .Then(a => { }, "Empty assertion");
 
-            test.Act();
-            Assert.ThrowsException<InvalidOperationException>(test.Act);
+            ((Action)test.Arrange).ShouldNotThrow();
+            test.Cases.Count().ShouldBe(1);
+            test.Cases.Single().Act();
+            Assert.ThrowsException<InvalidOperationException>(test.Cases.Single().Act);
         }
     }
 }

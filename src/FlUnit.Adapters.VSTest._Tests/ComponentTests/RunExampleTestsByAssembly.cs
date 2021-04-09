@@ -26,7 +26,6 @@ namespace FlUnit.Adapters.VSTest._Tests
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.ProcessHasSideEffects", TestOutcome.Passed, new[]
             {
-                ("[Test Arrangement]", TestOutcome.Passed),
                 ("process.Result.ShouldBeTrue()", TestOutcome.Passed),
                 ("sut.HasProcessed.ShouldBeTrue()", TestOutcome.Passed),
                 ("collaborator.HasBeenProcessed.ShouldBeTrue()", TestOutcome.Passed)
@@ -34,7 +33,6 @@ namespace FlUnit.Adapters.VSTest._Tests
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.ProcessHasSideEffects2", TestOutcome.Passed, new[]
             {
-                ("[Test Arrangement]", TestOutcome.Passed),
                 ("process.Result.ShouldBeTrue()", TestOutcome.Passed),
                 ("given.sut.HasProcessed.ShouldBeTrue()", TestOutcome.Passed),
                 ("given.collaborator.HasBeenProcessed.ShouldBeTrue()", TestOutcome.Passed)
@@ -42,31 +40,26 @@ namespace FlUnit.Adapters.VSTest._Tests
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.ProcessThrowsOnNullCollaborator", TestOutcome.Passed, new[]
             {
-                ("[Test Arrangement]", TestOutcome.Passed),
                 ("process.Exception.ShouldBeOfType(System.ArgumentNullException)", TestOutcome.Passed)
             });
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.ProcessDoesntThrowOnNullCollaborator", TestOutcome.Failed, new[]
             {
-                ("[Test Arrangement]", TestOutcome.Passed),
                 ("process.Exception.ShouldBeNull()", TestOutcome.Failed)
             });
 
-            AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.ProcessDoesntThrowOnNullCollaborator2", TestOutcome.Failed, new[]
+            AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.ProcessDoesntThrowOnNullCollaborator2", TestOutcome.Skipped, new[]
             {
-                ("[Test Arrangement]", TestOutcome.Failed),
-                ("process.Exception.ShouldBeNull()", TestOutcome.None)
+                ((string)null, TestOutcome.Skipped),
             });
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.CtorDoesntThrow", TestOutcome.Passed, new[]
             {
-                ("[Test Arrangement]", TestOutcome.Passed),
                 ("ctor.Exception.ShouldBeNull()", TestOutcome.Passed)
             });
 
             AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.BlockBodies", TestOutcome.Passed, new[]
             {
-                ("[Test Arrangement]", TestOutcome.Passed),
                 ("Exception should be null", TestOutcome.Passed)
             });
         }

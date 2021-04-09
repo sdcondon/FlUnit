@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using System;
 using System.Collections.Generic;
 
 namespace FlUnit.Adapters.VSTest._Tests.TestDoubles
 {
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+
     class FakeFrameworkHandle : IFrameworkHandle
     {
         public Dictionary<string, TestCase> TestCases { get; } = new Dictionary<string, TestCase>();

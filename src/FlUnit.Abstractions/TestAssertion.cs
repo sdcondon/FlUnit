@@ -1,7 +1,7 @@
 ﻿namespace FlUnit
 {
     /// <summary>
-    /// Abstraction for types representing a runnable assertion for a test.
+    /// Abstraction for types representing a invocable assertion for a test.
     /// </summary>
     public abstract class TestAssertion
     {

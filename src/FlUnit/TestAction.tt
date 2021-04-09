@@ -20,8 +20,7 @@ namespace FlUnit
     {
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Action<#= TList(i, "<", ">") #> act;
-<# WriteLineIf(i > 0, $"private {PrereqsFieldType(i)} prereqs;", 2); #>
-        private TestActionResult invocationResult;
+        private readonly IEnumerable<TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion> assertions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction<#= TList(i, "{", "}") #>"/> class.
@@ -36,59 +35,86 @@ namespace FlUnit
         {
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
             this.act = act;
-            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+            this.assertions = assertions;
         }
+
+        /// <summary>
+        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// </summary>
+        // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
+        public override IEnumerable<TestCase> Cases { get; protected set; }
 
         /// <inheritdoc />
         public override void Arrange()
         {
-<# if (i == 1) { #>
-            prereqs = arrange();
+<# if (i == 0) { #>
+            Cases = new[] { new Case(act, assertions) };
+<# } else if (i == 1) { #>
+            Cases = new[] { new Case(arrange(), act, assertions) };
 <# } else if (i > 1) { #>
-            (<#= List(i, i => $"prereqs.Item{i}") #>) = (<#= List(i, i => $"arrange.Item{i}()") #>);
+            Cases = new[] { new Case((<#= List(i, i => $"arrange.Item{i}()") #>), act, assertions) };
 <# } #>
         }
 
-        /// <inheritdoc />
-        public override void Act()
+        private class Case : TestCase
         {
-            if (invocationResult != null)
+            private readonly Action<#= TList(i, "<", ">") #> act;
+<# WriteLineIf(i > 0, $"private readonly {PrereqsFieldType(i)} prereqs;", 3); #>
+            private TestActionResult invocationResult;
+
+            internal Case(
+<# WriteLineIf(i > 0, $"{PrereqsFieldType(i)} prereqs,", 4); #>
+                Action<#= TList(i, "<", ">") #> act,
+                IEnumerable<TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion> assertions)
             {
-                throw new InvalidOperationException("Test action already invoked");
+<# WriteLineIf(i > 0, "this.prereqs = prereqs;", 4); #>
+                this.act = act;
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
             }
 
-            try
-            {
-                act(<#= i == 1 ? "prereqs" : List(i, i => $"prereqs.Item{i}") #>);
-                invocationResult = new TestActionResult();
-            }
-            catch (Exception e)
-            {
-                invocationResult = new TestActionResult(e);
-            }
-        }
+            public override string Description => throw new NotImplementedException("Not yet implemented");
 
-        /// <inheritdoc />
-        public override IEnumerable<TestAssertion> Assertions { get; }
-
-        private class Assertion : TestAssertion
-        {
-            private readonly TestAction<#= TList(i, "<", ">") #> test;
-            private readonly Action<<#= TList(i, "", ", ") #>TestActionResult> action;
-
-            public Assertion(
-                TestAction<#= TList(i, "<", ">") #> test,
-                Action<<#= TList(i, "", ", ") #>TestActionResult> action,
-                string description)
+            /// <inheritdoc />
+            public override void Act()
             {
-                this.test = test;
-                this.action = action;
-                this.Description = description;
+                if (invocationResult != null)
+                {
+                    throw new InvalidOperationException("Test action already invoked");
+                }
+
+                try
+                {
+                    act(<#= i == 1 ? "prereqs" : List(i, i => $"prereqs.Item{i}") #>);
+                    invocationResult = new TestActionResult();
+                }
+                catch (Exception e)
+                {
+                    invocationResult = new TestActionResult(e);
+                }
             }
 
-            public override string Description { get; }
+            /// <inheritdoc />
+            public override IEnumerable<TestAssertion> Assertions { get; }
 
-            public override void Invoke() => action(<#= i == 1 ? "test.prereqs, " : List(i, i => $"test.prereqs.Item{i}", "", ", ") #>test.invocationResult);
+            private class Assertion : TestAssertion
+            {
+                private readonly Case testCase;
+                private readonly Action<<#= TList(i, "", ", ") #>TestActionResult> action;
+
+                public Assertion(
+                    Case testCase,
+                    Action<<#= TList(i, "", ", ") #>TestActionResult> action,
+                    string description)
+                {
+                    this.testCase = testCase;
+                    this.action = action;
+                    this.Description = description;
+                }
+
+                public override string Description { get; }
+
+                public override void Invoke() => action(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationResult);
+            }
         }
     }
 <# } #>

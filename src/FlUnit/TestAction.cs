@@ -10,7 +10,7 @@ namespace FlUnit
     public sealed class TestAction : Test
     {
         private readonly Action act;
-        private TestActionResult invocationResult;
+        private readonly IEnumerable<TestBuilderWithActionAndAssertions.Assertion> assertions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction"/> class.
@@ -22,54 +22,77 @@ namespace FlUnit
             IEnumerable<TestBuilderWithActionAndAssertions.Assertion> assertions)
         {
             this.act = act;
-            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+            this.assertions = assertions;
         }
+
+        /// <summary>
+        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// </summary>
+        // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
+        public override IEnumerable<TestCase> Cases { get; protected set; }
 
         /// <inheritdoc />
         public override void Arrange()
         {
+            Cases = new[] { new Case(act, assertions) };
         }
 
-        /// <inheritdoc />
-        public override void Act()
+        private class Case : TestCase
         {
-            if (invocationResult != null)
+            private readonly Action act;
+            private TestActionResult invocationResult;
+
+            internal Case(
+                Action act,
+                IEnumerable<TestBuilderWithActionAndAssertions.Assertion> assertions)
             {
-                throw new InvalidOperationException("Test action already invoked");
+                this.act = act;
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
             }
 
-            try
-            {
-                act();
-                invocationResult = new TestActionResult();
-            }
-            catch (Exception e)
-            {
-                invocationResult = new TestActionResult(e);
-            }
-        }
+            public override string Description => throw new NotImplementedException("Not yet implemented");
 
-        /// <inheritdoc />
-        public override IEnumerable<TestAssertion> Assertions { get; }
-
-        private class Assertion : TestAssertion
-        {
-            private readonly TestAction test;
-            private readonly Action<TestActionResult> action;
-
-            public Assertion(
-                TestAction test,
-                Action<TestActionResult> action,
-                string description)
+            /// <inheritdoc />
+            public override void Act()
             {
-                this.test = test;
-                this.action = action;
-                this.Description = description;
+                if (invocationResult != null)
+                {
+                    throw new InvalidOperationException("Test action already invoked");
+                }
+
+                try
+                {
+                    act();
+                    invocationResult = new TestActionResult();
+                }
+                catch (Exception e)
+                {
+                    invocationResult = new TestActionResult(e);
+                }
             }
 
-            public override string Description { get; }
+            /// <inheritdoc />
+            public override IEnumerable<TestAssertion> Assertions { get; }
 
-            public override void Invoke() => action(test.invocationResult);
+            private class Assertion : TestAssertion
+            {
+                private readonly Case testCase;
+                private readonly Action<TestActionResult> action;
+
+                public Assertion(
+                    Case testCase,
+                    Action<TestActionResult> action,
+                    string description)
+                {
+                    this.testCase = testCase;
+                    this.action = action;
+                    this.Description = description;
+                }
+
+                public override string Description { get; }
+
+                public override void Invoke() => action(testCase.invocationResult);
+            }
         }
     }
 
@@ -80,8 +103,7 @@ namespace FlUnit
     {
         private readonly Func<T1> arrange;
         private readonly Action<T1> act;
-        private T1 prereqs;
-        private TestActionResult invocationResult;
+        private readonly IEnumerable<TestBuilderWithActionAndAssertions<T1>.Assertion> assertions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1}"/> class.
@@ -96,55 +118,80 @@ namespace FlUnit
         {
             this.arrange = arrange;
             this.act = act;
-            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+            this.assertions = assertions;
         }
+
+        /// <summary>
+        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// </summary>
+        // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
+        public override IEnumerable<TestCase> Cases { get; protected set; }
 
         /// <inheritdoc />
         public override void Arrange()
         {
-            prereqs = arrange();
+            Cases = new[] { new Case(arrange(), act, assertions) };
         }
 
-        /// <inheritdoc />
-        public override void Act()
+        private class Case : TestCase
         {
-            if (invocationResult != null)
+            private readonly Action<T1> act;
+            private readonly T1 prereqs;
+            private TestActionResult invocationResult;
+
+            internal Case(
+                T1 prereqs,
+                Action<T1> act,
+                IEnumerable<TestBuilderWithActionAndAssertions<T1>.Assertion> assertions)
             {
-                throw new InvalidOperationException("Test action already invoked");
+                this.prereqs = prereqs;
+                this.act = act;
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
             }
 
-            try
-            {
-                act(prereqs);
-                invocationResult = new TestActionResult();
-            }
-            catch (Exception e)
-            {
-                invocationResult = new TestActionResult(e);
-            }
-        }
+            public override string Description => throw new NotImplementedException("Not yet implemented");
 
-        /// <inheritdoc />
-        public override IEnumerable<TestAssertion> Assertions { get; }
-
-        private class Assertion : TestAssertion
-        {
-            private readonly TestAction<T1> test;
-            private readonly Action<T1, TestActionResult> action;
-
-            public Assertion(
-                TestAction<T1> test,
-                Action<T1, TestActionResult> action,
-                string description)
+            /// <inheritdoc />
+            public override void Act()
             {
-                this.test = test;
-                this.action = action;
-                this.Description = description;
+                if (invocationResult != null)
+                {
+                    throw new InvalidOperationException("Test action already invoked");
+                }
+
+                try
+                {
+                    act(prereqs);
+                    invocationResult = new TestActionResult();
+                }
+                catch (Exception e)
+                {
+                    invocationResult = new TestActionResult(e);
+                }
             }
 
-            public override string Description { get; }
+            /// <inheritdoc />
+            public override IEnumerable<TestAssertion> Assertions { get; }
 
-            public override void Invoke() => action(test.prereqs, test.invocationResult);
+            private class Assertion : TestAssertion
+            {
+                private readonly Case testCase;
+                private readonly Action<T1, TestActionResult> action;
+
+                public Assertion(
+                    Case testCase,
+                    Action<T1, TestActionResult> action,
+                    string description)
+                {
+                    this.testCase = testCase;
+                    this.action = action;
+                    this.Description = description;
+                }
+
+                public override string Description { get; }
+
+                public override void Invoke() => action(testCase.prereqs, testCase.invocationResult);
+            }
         }
     }
 
@@ -155,8 +202,7 @@ namespace FlUnit
     {
         private readonly (Func<T1>, Func<T2>) arrange;
         private readonly Action<T1, T2> act;
-        private (T1, T2) prereqs;
-        private TestActionResult invocationResult;
+        private readonly IEnumerable<TestBuilderWithActionAndAssertions<T1, T2>.Assertion> assertions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1, T2}"/> class.
@@ -171,55 +217,80 @@ namespace FlUnit
         {
             this.arrange = arrange;
             this.act = act;
-            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+            this.assertions = assertions;
         }
+
+        /// <summary>
+        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// </summary>
+        // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
+        public override IEnumerable<TestCase> Cases { get; protected set; }
 
         /// <inheritdoc />
         public override void Arrange()
         {
-            (prereqs.Item1, prereqs.Item2) = (arrange.Item1(), arrange.Item2());
+            Cases = new[] { new Case((arrange.Item1(), arrange.Item2()), act, assertions) };
         }
 
-        /// <inheritdoc />
-        public override void Act()
+        private class Case : TestCase
         {
-            if (invocationResult != null)
+            private readonly Action<T1, T2> act;
+            private readonly (T1, T2) prereqs;
+            private TestActionResult invocationResult;
+
+            internal Case(
+                (T1, T2) prereqs,
+                Action<T1, T2> act,
+                IEnumerable<TestBuilderWithActionAndAssertions<T1, T2>.Assertion> assertions)
             {
-                throw new InvalidOperationException("Test action already invoked");
+                this.prereqs = prereqs;
+                this.act = act;
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
             }
 
-            try
-            {
-                act(prereqs.Item1, prereqs.Item2);
-                invocationResult = new TestActionResult();
-            }
-            catch (Exception e)
-            {
-                invocationResult = new TestActionResult(e);
-            }
-        }
+            public override string Description => throw new NotImplementedException("Not yet implemented");
 
-        /// <inheritdoc />
-        public override IEnumerable<TestAssertion> Assertions { get; }
-
-        private class Assertion : TestAssertion
-        {
-            private readonly TestAction<T1, T2> test;
-            private readonly Action<T1, T2, TestActionResult> action;
-
-            public Assertion(
-                TestAction<T1, T2> test,
-                Action<T1, T2, TestActionResult> action,
-                string description)
+            /// <inheritdoc />
+            public override void Act()
             {
-                this.test = test;
-                this.action = action;
-                this.Description = description;
+                if (invocationResult != null)
+                {
+                    throw new InvalidOperationException("Test action already invoked");
+                }
+
+                try
+                {
+                    act(prereqs.Item1, prereqs.Item2);
+                    invocationResult = new TestActionResult();
+                }
+                catch (Exception e)
+                {
+                    invocationResult = new TestActionResult(e);
+                }
             }
 
-            public override string Description { get; }
+            /// <inheritdoc />
+            public override IEnumerable<TestAssertion> Assertions { get; }
 
-            public override void Invoke() => action(test.prereqs.Item1, test.prereqs.Item2, test.invocationResult);
+            private class Assertion : TestAssertion
+            {
+                private readonly Case testCase;
+                private readonly Action<T1, T2, TestActionResult> action;
+
+                public Assertion(
+                    Case testCase,
+                    Action<T1, T2, TestActionResult> action,
+                    string description)
+                {
+                    this.testCase = testCase;
+                    this.action = action;
+                    this.Description = description;
+                }
+
+                public override string Description { get; }
+
+                public override void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationResult);
+            }
         }
     }
 
@@ -230,8 +301,7 @@ namespace FlUnit
     {
         private readonly (Func<T1>, Func<T2>, Func<T3>) arrange;
         private readonly Action<T1, T2, T3> act;
-        private (T1, T2, T3) prereqs;
-        private TestActionResult invocationResult;
+        private readonly IEnumerable<TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion> assertions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1, T2, T3}"/> class.
@@ -246,55 +316,80 @@ namespace FlUnit
         {
             this.arrange = arrange;
             this.act = act;
-            this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
+            this.assertions = assertions;
         }
+
+        /// <summary>
+        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// </summary>
+        // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
+        public override IEnumerable<TestCase> Cases { get; protected set; }
 
         /// <inheritdoc />
         public override void Arrange()
         {
-            (prereqs.Item1, prereqs.Item2, prereqs.Item3) = (arrange.Item1(), arrange.Item2(), arrange.Item3());
+            Cases = new[] { new Case((arrange.Item1(), arrange.Item2(), arrange.Item3()), act, assertions) };
         }
 
-        /// <inheritdoc />
-        public override void Act()
+        private class Case : TestCase
         {
-            if (invocationResult != null)
+            private readonly Action<T1, T2, T3> act;
+            private readonly (T1, T2, T3) prereqs;
+            private TestActionResult invocationResult;
+
+            internal Case(
+                (T1, T2, T3) prereqs,
+                Action<T1, T2, T3> act,
+                IEnumerable<TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion> assertions)
             {
-                throw new InvalidOperationException("Test action already invoked");
+                this.prereqs = prereqs;
+                this.act = act;
+                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description));
             }
 
-            try
-            {
-                act(prereqs.Item1, prereqs.Item2, prereqs.Item3);
-                invocationResult = new TestActionResult();
-            }
-            catch (Exception e)
-            {
-                invocationResult = new TestActionResult(e);
-            }
-        }
+            public override string Description => throw new NotImplementedException("Not yet implemented");
 
-        /// <inheritdoc />
-        public override IEnumerable<TestAssertion> Assertions { get; }
-
-        private class Assertion : TestAssertion
-        {
-            private readonly TestAction<T1, T2, T3> test;
-            private readonly Action<T1, T2, T3, TestActionResult> action;
-
-            public Assertion(
-                TestAction<T1, T2, T3> test,
-                Action<T1, T2, T3, TestActionResult> action,
-                string description)
+            /// <inheritdoc />
+            public override void Act()
             {
-                this.test = test;
-                this.action = action;
-                this.Description = description;
+                if (invocationResult != null)
+                {
+                    throw new InvalidOperationException("Test action already invoked");
+                }
+
+                try
+                {
+                    act(prereqs.Item1, prereqs.Item2, prereqs.Item3);
+                    invocationResult = new TestActionResult();
+                }
+                catch (Exception e)
+                {
+                    invocationResult = new TestActionResult(e);
+                }
             }
 
-            public override string Description { get; }
+            /// <inheritdoc />
+            public override IEnumerable<TestAssertion> Assertions { get; }
 
-            public override void Invoke() => action(test.prereqs.Item1, test.prereqs.Item2, test.prereqs.Item3, test.invocationResult);
+            private class Assertion : TestAssertion
+            {
+                private readonly Case testCase;
+                private readonly Action<T1, T2, T3, TestActionResult> action;
+
+                public Assertion(
+                    Case testCase,
+                    Action<T1, T2, T3, TestActionResult> action,
+                    string description)
+                {
+                    this.testCase = testCase;
+                    this.action = action;
+                    this.Description = description;
+                }
+
+                public override string Description { get; }
+
+                public override void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationResult);
+            }
         }
     }
 }

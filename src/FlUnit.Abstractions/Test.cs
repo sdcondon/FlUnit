@@ -16,13 +16,8 @@ namespace FlUnit
         public abstract void Arrange();
 
         /// <summary>
-        /// Invokes the test action.
+        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
-        public abstract void Act();
-
-        /// <summary>
-        /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
-        /// </summary>
-        public abstract IEnumerable<TestAssertion> Assertions { get; }
+        public abstract IEnumerable<TestCase> Cases { get; protected set; }
     }
 }

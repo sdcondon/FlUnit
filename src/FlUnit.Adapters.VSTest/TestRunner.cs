@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,8 @@ using System.Reflection;
 
 namespace FlUnit.Adapters.VSTest
 {
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+
     // TODO: This class probably needs splitting up - want to take a closer look at how MSTest V2 runner is structured (it looks quite a bit more organised than XUnit one..)
     //
     // References:
@@ -127,60 +128,60 @@ namespace FlUnit.Adapters.VSTest
 
             frameworkHandle.RecordStart(testCase);
 
-            var arrangementPassed = TryArrangeTestInstance(testCase, test, frameworkHandle);
-
-            test.Act();
-
-            var passed = arrangementPassed;
-            foreach (var assertion in test.Assertions)
+            var testArrangementPassed = TryArrangeTestInstance(testCase, test, frameworkHandle);
+            var allAssertionsPassed = testArrangementPassed;
+            if (testArrangementPassed)
             {
-                if (arrangementPassed)
+                foreach (var flCase in test.Cases)
                 {
-                    passed &= CheckTestAssertion(testCase, assertion, frameworkHandle);
-                }
-                else
-                {
-                    frameworkHandle.RecordResult(new TestResult(testCase)
+                    flCase.Act();
+
+                    foreach (var assertion in flCase.Assertions)
                     {
-                        DisplayName = assertion.Description
-                    });
+                        allAssertionsPassed &= CheckTestAssertion(testCase, assertion, frameworkHandle);
+                    }
                 }
             }
 
-            frameworkHandle.RecordEnd(testCase, passed ? TestOutcome.Passed : TestOutcome.Failed);
+            TestOutcome testOutcome;
+            if (!testArrangementPassed)
+            {
+                testOutcome = TestOutcome.Skipped;
+            }
+            else if (!allAssertionsPassed)
+            {
+                testOutcome = TestOutcome.Failed;
+            }
+            else
+            {
+                testOutcome = TestOutcome.Passed;
+            }
+
+            frameworkHandle.RecordEnd(testCase, testOutcome);
         }
 
         private static bool TryArrangeTestInstance(TestCase testCase, Test test, IFrameworkHandle frameworkHandle)
         {
-            // We add a result for arrangement for two reasons:
-            // (1) So that it's not an extra result when arrangement fails - consistency is good..
-            // (2) So that there's always at least two results, so that we don't have to do different stuff when there's
-            // only a single assertion to account for VSTests behaviour in naming the tests.. 
-            // Having said that, I'm not sure I like this and might change it so that we only include it when it fails..
-            var result = new TestResult(testCase)
-            {
-                DisplayName = "[Test Arrangement]"
-            };
+            var arrangementStartTime = DateTimeOffset.Now;
 
             try
             {
-                result.StartTime = DateTimeOffset.Now;
                 test.Arrange();
-                result.Outcome = TestOutcome.Passed;
                 return true;
             }
             catch (Exception e)
             {
                 // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
-                result.Outcome = TestOutcome.Failed;
-                result.ErrorMessage = e.Message;
-                result.ErrorStackTrace = e.StackTrace;
+                frameworkHandle.RecordResult(new TestResult(testCase)
+                {
+                    StartTime = arrangementStartTime,
+                    Outcome = TestOutcome.Skipped,
+                    ErrorMessage = $"Test arrangement failed: {e.Message}", // TODO: localisation needed if this ever takes off
+                    ErrorStackTrace = e.StackTrace,
+                    EndTime = DateTimeOffset.Now,
+                });
+
                 return false;
-            }
-            finally
-            {
-                result.EndTime = DateTimeOffset.Now;
-                frameworkHandle.RecordResult(result);
             }
         }
 
