@@ -185,7 +185,7 @@ namespace FlUnit.Adapters.VSTest
             }
         }
 
-        private static bool CheckTestAssertion(TestCase testCase, FlUnit.Test flTest, FlUnit.TestCase flCase, TestAssertion testAssertion, IFrameworkHandle frameworkHandle)
+        private static bool CheckTestAssertion(TestCase testCase, FlUnit.Test flTest, FlUnit.ITestCase flCase, ITestAssertion testAssertion, IFrameworkHandle frameworkHandle)
         {
             var result = new TestResult(testCase);
             if (flTest.Cases.Count > 1 && flCase.Assertions.Count > 1)

@@ -29,7 +29,7 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
 
         /// <summary>
         /// Arranges the test.
@@ -39,7 +39,7 @@ namespace FlUnit
             Cases = new[] { new Case(act, assertions) };
         }
 
-        private class Case : TestCase
+        private class Case : ITestCase
         {
             private readonly Func<TResult> act;
             private TestFunctionResult<TResult> invocationResult;
@@ -52,9 +52,11 @@ namespace FlUnit
                 this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
-            public override string Description => string.Empty;
+            public string Description => string.Empty;
 
-            public override void Act()
+            public IReadOnlyCollection<ITestAssertion> Assertions { get; }
+
+            public void Act()
             {
                 if (invocationResult != null)
                 {
@@ -71,9 +73,7 @@ namespace FlUnit
                 }
             }
 
-            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
-
-            private class Assertion : TestAssertion
+            private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<TestFunctionResult<TResult>> action;
@@ -85,9 +85,9 @@ namespace FlUnit
                     this.Description = description;
                 }
 
-                public override string Description { get; }
+                public string Description { get; }
 
-                public override void Invoke() => action(testCase.invocationResult);
+                public void Invoke() => action(testCase.invocationResult);
             }
         }
     }
@@ -121,7 +121,7 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
 
         /// <summary>
         /// Arranges the test.
@@ -131,7 +131,7 @@ namespace FlUnit
             Cases = arrange().Select(p => new Case(p, act, assertions)).ToArray();
         }
 
-        private class Case : TestCase
+        private class Case : ITestCase
         {
             private readonly Func<T1, TResult> act;
             private readonly T1 prereqs;
@@ -147,9 +147,11 @@ namespace FlUnit
                 this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
-            public override string Description => prereqs.ToString();
+            public string Description => prereqs.ToString();
 
-            public override void Act()
+            public IReadOnlyCollection<ITestAssertion> Assertions { get; }
+
+            public void Act()
             {
                 if (invocationResult != null)
                 {
@@ -166,9 +168,7 @@ namespace FlUnit
                 }
             }
 
-            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
-
-            private class Assertion : TestAssertion
+            private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<T1, TestFunctionResult<TResult>> action;
@@ -180,9 +180,9 @@ namespace FlUnit
                     this.Description = description;
                 }
 
-                public override string Description { get; }
+                public string Description { get; }
 
-                public override void Invoke() => action(testCase.prereqs, testCase.invocationResult);
+                public void Invoke() => action(testCase.prereqs, testCase.invocationResult);
             }
         }
     }
@@ -216,7 +216,7 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
 
         /// <summary>
         /// Arranges the test.
@@ -229,7 +229,7 @@ namespace FlUnit
                 select new Case((p1, p2), act, assertions)).ToArray();
         }
 
-        private class Case : TestCase
+        private class Case : ITestCase
         {
             private readonly Func<T1, T2, TResult> act;
             private readonly (T1, T2) prereqs;
@@ -245,9 +245,11 @@ namespace FlUnit
                 this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
-            public override string Description => prereqs.ToString();
+            public string Description => prereqs.ToString();
 
-            public override void Act()
+            public IReadOnlyCollection<ITestAssertion> Assertions { get; }
+
+            public void Act()
             {
                 if (invocationResult != null)
                 {
@@ -264,9 +266,7 @@ namespace FlUnit
                 }
             }
 
-            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
-
-            private class Assertion : TestAssertion
+            private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<T1, T2, TestFunctionResult<TResult>> action;
@@ -278,9 +278,9 @@ namespace FlUnit
                     this.Description = description;
                 }
 
-                public override string Description { get; }
+                public string Description { get; }
 
-                public override void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationResult);
+                public void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationResult);
             }
         }
     }
@@ -314,7 +314,7 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
 
         /// <summary>
         /// Arranges the test.
@@ -328,7 +328,7 @@ namespace FlUnit
                 select new Case((p1, p2, p3), act, assertions)).ToArray();
         }
 
-        private class Case : TestCase
+        private class Case : ITestCase
         {
             private readonly Func<T1, T2, T3, TResult> act;
             private readonly (T1, T2, T3) prereqs;
@@ -344,9 +344,11 @@ namespace FlUnit
                 this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
-            public override string Description => prereqs.ToString();
+            public string Description => prereqs.ToString();
 
-            public override void Act()
+            public IReadOnlyCollection<ITestAssertion> Assertions { get; }
+
+            public void Act()
             {
                 if (invocationResult != null)
                 {
@@ -363,9 +365,7 @@ namespace FlUnit
                 }
             }
 
-            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
-
-            private class Assertion : TestAssertion
+            private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<T1, T2, T3, TestFunctionResult<TResult>> action;
@@ -377,9 +377,9 @@ namespace FlUnit
                     this.Description = description;
                 }
 
-                public override string Description { get; }
+                public string Description { get; }
 
-                public override void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationResult);
+                public void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationResult);
             }
         }
     }

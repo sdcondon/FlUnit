@@ -42,7 +42,7 @@ namespace FlUnit
         /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<TestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
 
         /// <summary>
         /// Arranges the test.
@@ -62,7 +62,7 @@ namespace FlUnit
 <# } #>
         }
 
-        private class Case : TestCase
+        private class Case : ITestCase
         {
             private readonly Func<<#= TList(i, "", ", ") #>TResult> act;
 <# WriteLineIf(i > 0, $"private readonly {PrereqsFieldType(i)} prereqs;", 3); #>
@@ -79,12 +79,14 @@ namespace FlUnit
             }
 
 <# if (i == 0) { #>
-            public override string Description => string.Empty;
+            public string Description => string.Empty;
 <# } else { #>
-            public override string Description => prereqs.ToString();
+            public string Description => prereqs.ToString();
 <# } #>
 
-            public override void Act()
+            public IReadOnlyCollection<ITestAssertion> Assertions { get; }
+
+            public void Act()
             {
                 if (invocationResult != null)
                 {
@@ -101,9 +103,7 @@ namespace FlUnit
                 }
             }
 
-            public override IReadOnlyCollection<TestAssertion> Assertions { get; }
-
-            private class Assertion : TestAssertion
+            private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>> action;
@@ -115,9 +115,9 @@ namespace FlUnit
                     this.Description = description;
                 }
 
-                public override string Description { get; }
+                public string Description { get; }
 
-                public override void Invoke() => action(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationResult);
+                public void Invoke() => action(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationResult);
             }
         }
     }

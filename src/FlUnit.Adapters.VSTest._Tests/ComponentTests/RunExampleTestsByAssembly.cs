@@ -63,25 +63,31 @@ namespace FlUnit.Adapters.VSTest._Tests
                 ((string)null, TestOutcome.Passed)
             });
 
-            AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.SumOfEvenAndOddIsOdd", TestOutcome.Passed, new[]
+            AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.SumOfOddAndSixIsOdd", TestOutcome.Passed, new[]
             {
-                ("(1, 2)", TestOutcome.Passed),
-                ("(1, 4)", TestOutcome.Passed),
-                ("(1, 6)", TestOutcome.Passed),
-                ("(3, 2)", TestOutcome.Passed),
-                ("(3, 4)", TestOutcome.Passed),
-                ("(3, 6)", TestOutcome.Passed),
-                ("(5, 2)", TestOutcome.Passed),
-                ("(5, 4)", TestOutcome.Passed),
-                ("(5, 6)", TestOutcome.Passed),
+                ("1", TestOutcome.Passed),
+                ("3", TestOutcome.Passed),
+                ("5", TestOutcome.Passed),
             });
 
-            AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.SumOfEvenAndSix", TestOutcome.Passed, new[]
+            AssertTestResult(frameworkHandle, "Example.TestProject.ExampleTests.SumOfEvenAndOdd", TestOutcome.Passed, new[]
             {
+                ("(addition.Result % 2).ShouldBe(1) for test case (1, 2)", TestOutcome.Passed),
+                ("addition.Result.ShouldBeGreaterThan(x) for test case (1, 2)", TestOutcome.Passed),
+                ("(addition.Result % 2).ShouldBe(1) for test case (1, 4)", TestOutcome.Passed),
+                ("addition.Result.ShouldBeGreaterThan(x) for test case (1, 4)", TestOutcome.Passed),
                 ("(addition.Result % 2).ShouldBe(1) for test case (1, 6)", TestOutcome.Passed),
                 ("addition.Result.ShouldBeGreaterThan(x) for test case (1, 6)", TestOutcome.Passed),
+                ("(addition.Result % 2).ShouldBe(1) for test case (3, 2)", TestOutcome.Passed),
+                ("addition.Result.ShouldBeGreaterThan(x) for test case (3, 2)", TestOutcome.Passed),
+                ("(addition.Result % 2).ShouldBe(1) for test case (3, 4)", TestOutcome.Passed),
+                ("addition.Result.ShouldBeGreaterThan(x) for test case (3, 4)", TestOutcome.Passed),
                 ("(addition.Result % 2).ShouldBe(1) for test case (3, 6)", TestOutcome.Passed),
                 ("addition.Result.ShouldBeGreaterThan(x) for test case (3, 6)", TestOutcome.Passed),
+                ("(addition.Result % 2).ShouldBe(1) for test case (5, 2)", TestOutcome.Passed),
+                ("addition.Result.ShouldBeGreaterThan(x) for test case (5, 2)", TestOutcome.Passed),
+                ("(addition.Result % 2).ShouldBe(1) for test case (5, 4)", TestOutcome.Passed),
+                ("addition.Result.ShouldBeGreaterThan(x) for test case (5, 4)", TestOutcome.Passed),
                 ("(addition.Result % 2).ShouldBe(1) for test case (5, 6)", TestOutcome.Passed),
                 ("addition.Result.ShouldBeGreaterThan(x) for test case (5, 6)", TestOutcome.Passed),
             });
