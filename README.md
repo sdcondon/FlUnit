@@ -6,6 +6,8 @@ Prototype for a test framework where tests are defined using a fluent builder. I
 
 ```csharp
 using FlUnit;
+// NB: They went and added optional parameters in Shouldly v4 - which aren't supported by LINQ,
+// meaning that the auto-naming of assertion clauses below only works with Shouldly v3-..
 using Shouldly;
 
 public static class MyTests
