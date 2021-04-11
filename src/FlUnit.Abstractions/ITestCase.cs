@@ -3,7 +3,7 @@
 namespace FlUnit
 {
     /// <summary>
-    /// Abstraction for types representing an individual test case.
+    /// Interface for types representing an individual test case.
     /// </summary>
     public interface ITestCase
     {

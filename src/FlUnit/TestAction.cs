@@ -26,7 +26,7 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
         public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
@@ -40,7 +40,7 @@ namespace FlUnit
         private class Case : ITestCase
         {
             private readonly Action act;
-            private TestActionResult invocationResult;
+            private TestActionOutcome invocationOutcome;
 
             internal Case(
                 Action act,
@@ -58,7 +58,7 @@ namespace FlUnit
             /// <inheritdoc />
             public void Act()
             {
-                if (invocationResult != null)
+                if (invocationOutcome != null)
                 {
                     throw new InvalidOperationException("Test action already invoked");
                 }
@@ -66,22 +66,22 @@ namespace FlUnit
                 try
                 {
                     act();
-                    invocationResult = new TestActionResult();
+                    invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
                 {
-                    invocationResult = new TestActionResult(e);
+                    invocationOutcome = new TestActionOutcome(e);
                 }
             }
 
             private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<TestActionResult> action;
+                private readonly Action<TestActionOutcome> action;
 
                 public Assertion(
                     Case testCase,
-                    Action<TestActionResult> action,
+                    Action<TestActionOutcome> action,
                     string description)
                 {
                     this.testCase = testCase;
@@ -91,7 +91,7 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(testCase.invocationResult);
+                public void Invoke() => action(testCase.invocationOutcome);
             }
         }
     }
@@ -122,7 +122,7 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
         public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
@@ -137,7 +137,7 @@ namespace FlUnit
         {
             private readonly Action<T1> act;
             private readonly T1 prereqs;
-            private TestActionResult invocationResult;
+            private TestActionOutcome invocationOutcome;
 
             internal Case(
                 T1 prereqs,
@@ -157,7 +157,7 @@ namespace FlUnit
             /// <inheritdoc />
             public void Act()
             {
-                if (invocationResult != null)
+                if (invocationOutcome != null)
                 {
                     throw new InvalidOperationException("Test action already invoked");
                 }
@@ -165,22 +165,22 @@ namespace FlUnit
                 try
                 {
                     act(prereqs);
-                    invocationResult = new TestActionResult();
+                    invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
                 {
-                    invocationResult = new TestActionResult(e);
+                    invocationOutcome = new TestActionOutcome(e);
                 }
             }
 
             private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<T1, TestActionResult> action;
+                private readonly Action<T1, TestActionOutcome> action;
 
                 public Assertion(
                     Case testCase,
-                    Action<T1, TestActionResult> action,
+                    Action<T1, TestActionOutcome> action,
                     string description)
                 {
                     this.testCase = testCase;
@@ -190,7 +190,7 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(testCase.prereqs, testCase.invocationResult);
+                public void Invoke() => action(testCase.prereqs, testCase.invocationOutcome);
             }
         }
     }
@@ -221,7 +221,7 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
         public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
@@ -239,7 +239,7 @@ namespace FlUnit
         {
             private readonly Action<T1, T2> act;
             private readonly (T1, T2) prereqs;
-            private TestActionResult invocationResult;
+            private TestActionOutcome invocationOutcome;
 
             internal Case(
                 (T1, T2) prereqs,
@@ -259,7 +259,7 @@ namespace FlUnit
             /// <inheritdoc />
             public void Act()
             {
-                if (invocationResult != null)
+                if (invocationOutcome != null)
                 {
                     throw new InvalidOperationException("Test action already invoked");
                 }
@@ -267,22 +267,22 @@ namespace FlUnit
                 try
                 {
                     act(prereqs.Item1, prereqs.Item2);
-                    invocationResult = new TestActionResult();
+                    invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
                 {
-                    invocationResult = new TestActionResult(e);
+                    invocationOutcome = new TestActionOutcome(e);
                 }
             }
 
             private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<T1, T2, TestActionResult> action;
+                private readonly Action<T1, T2, TestActionOutcome> action;
 
                 public Assertion(
                     Case testCase,
-                    Action<T1, T2, TestActionResult> action,
+                    Action<T1, T2, TestActionOutcome> action,
                     string description)
                 {
                     this.testCase = testCase;
@@ -292,7 +292,7 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationResult);
+                public void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
             }
         }
     }
@@ -323,7 +323,7 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
         public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
@@ -342,7 +342,7 @@ namespace FlUnit
         {
             private readonly Action<T1, T2, T3> act;
             private readonly (T1, T2, T3) prereqs;
-            private TestActionResult invocationResult;
+            private TestActionOutcome invocationOutcome;
 
             internal Case(
                 (T1, T2, T3) prereqs,
@@ -362,7 +362,7 @@ namespace FlUnit
             /// <inheritdoc />
             public void Act()
             {
-                if (invocationResult != null)
+                if (invocationOutcome != null)
                 {
                     throw new InvalidOperationException("Test action already invoked");
                 }
@@ -370,22 +370,22 @@ namespace FlUnit
                 try
                 {
                     act(prereqs.Item1, prereqs.Item2, prereqs.Item3);
-                    invocationResult = new TestActionResult();
+                    invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
                 {
-                    invocationResult = new TestActionResult(e);
+                    invocationOutcome = new TestActionOutcome(e);
                 }
             }
 
             private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<T1, T2, T3, TestActionResult> action;
+                private readonly Action<T1, T2, T3, TestActionOutcome> action;
 
                 public Assertion(
                     Case testCase,
-                    Action<T1, T2, T3, TestActionResult> action,
+                    Action<T1, T2, T3, TestActionOutcome> action,
                     string description)
                 {
                     this.testCase = testCase;
@@ -395,7 +395,7 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationResult);
+                public void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
             }
         }
     }

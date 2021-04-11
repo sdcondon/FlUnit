@@ -35,7 +35,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Expression<Action<<#= TList(i, "", ", ") #>TestActionResult>> assertion)
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> assertion)
         {
             return new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>(
 <# WriteLineIf(i > 0, "arrange,", 4); #>
@@ -49,7 +49,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Action<<#= TList(i, "", ", ") #>TestActionResult> assertion, string description)
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Action<<#= TList(i, "", ", ") #>TestActionOutcome> assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>(
 <# WriteLineIf(i > 0, "arrange,", 4); #>

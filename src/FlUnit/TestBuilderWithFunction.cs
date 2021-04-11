@@ -24,7 +24,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<TResult> Then(Expression<Action<TestFunctionResult<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<TResult> Then(Expression<Action<TestFunctionOutcome<TResult>>> assertion)
         {
             return new TestBuilderWithFunctionAndAssertions<TResult>(
                 testFunction,
@@ -38,7 +38,7 @@ namespace FlUnit
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<TResult> Then(
-            Action<TestFunctionResult<TResult>> assertion,
+            Action<TestFunctionOutcome<TResult>> assertion,
             string description)
         {
             return new TestBuilderWithFunctionAndAssertions<TResult>(
@@ -71,7 +71,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, TResult> Then(Expression<Action<T1, TestFunctionResult<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, TResult> Then(Expression<Action<T1, TestFunctionOutcome<TResult>>> assertion)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, TResult>(
                 arrange,
@@ -86,7 +86,7 @@ namespace FlUnit
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, TResult> Then(
-            Action<T1, TestFunctionResult<TResult>> assertion,
+            Action<T1, TestFunctionOutcome<TResult>> assertion,
             string description)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, TResult>(
@@ -121,7 +121,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> Then(Expression<Action<T1, T2, TestFunctionResult<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> Then(Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> assertion)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>(
                 arrange,
@@ -136,7 +136,7 @@ namespace FlUnit
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> Then(
-            Action<T1, T2, TestFunctionResult<TResult>> assertion,
+            Action<T1, T2, TestFunctionOutcome<TResult>> assertion,
             string description)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>(
@@ -172,7 +172,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> Then(Expression<Action<T1, T2, T3, TestFunctionResult<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> Then(Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> assertion)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>(
                 arrange,
@@ -187,7 +187,7 @@ namespace FlUnit
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> Then(
-            Action<T1, T2, T3, TestFunctionResult<TResult>> assertion,
+            Action<T1, T2, T3, TestFunctionOutcome<TResult>> assertion,
             string description)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>(

@@ -5,11 +5,11 @@ namespace FlUnit
     /// <summary>
     /// Container for the outcome of the invoking the "When" clause of a test.
     /// </summary>
-    public sealed class TestActionResult
+    public sealed class TestActionOutcome
     {
-        internal TestActionResult() { }
+        internal TestActionOutcome() { }
 
-        internal TestActionResult(Exception exception) => Exception = exception;
+        internal TestActionOutcome(Exception exception) => Exception = exception;
 
         /// <summary>
         /// Gets the exception that was thrown, or null.

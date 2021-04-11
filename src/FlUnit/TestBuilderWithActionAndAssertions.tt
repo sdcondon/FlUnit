@@ -34,6 +34,10 @@ namespace FlUnit
             assertions.Add(assertion);
         }
 
+        /// <summary>
+        /// Implicitly converts a <see cref="TestBuilderWithActionAndAssertions<#= TList(i, "{", "}") #>"/> to a <see cref="Test"/> (by building it).
+        /// </summary>
+        /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> builder)
         {
             return new TestAction<#= TList(i, "<", ">") #>(
@@ -47,7 +51,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> And(Expression<Action<<#= TList(i, "", ", ") #>TestActionResult>> assertion)
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> And(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -59,7 +63,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> And(Action<<#= TList(i, "", ", ") #>TestActionResult> assertion, string description)
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> And(Action<<#= TList(i, "", ", ") #>TestActionOutcome> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -67,19 +71,19 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<<#= TList(i, "", ", ") #>TestActionResult> action, string description)
+            internal Assertion(Action<<#= TList(i, "", ", ") #>TestActionOutcome> action, string description)
             {
                 Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<<#= TList(i, "", ", ") #>TestActionResult>> expression)
+            internal Assertion(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 
-            public Action<<#= TList(i, "", ", ") #>TestActionResult> Action { get; }
+            public Action<<#= TList(i, "", ", ") #>TestActionOutcome> Action { get; }
 
             public string Description { get; }
         }

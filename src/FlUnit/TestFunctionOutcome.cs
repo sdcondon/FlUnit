@@ -5,12 +5,12 @@ namespace FlUnit
     /// <summary>
     /// Container for the outcome of the invoking the "When" clause of a test.
     /// </summary>
-    /// <typeparam name="T">The return type of test action.</typeparam>
-    public sealed class TestFunctionResult<T>
+    /// <typeparam name="T">The return type of test function.</typeparam>
+    public sealed class TestFunctionOutcome<T>
     {
-        internal TestFunctionResult(T result) => Result = result;
+        internal TestFunctionOutcome(T result) => Result = result;
 
-        internal TestFunctionResult(Exception exception) => Exception = exception;
+        internal TestFunctionOutcome(Exception exception) => Exception = exception;
 
         /// <summary>
         /// Gets the return value of the when clause, as long as an exception was not thrown.

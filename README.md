@@ -32,13 +32,14 @@ public static class MyTests
     .And((given, tryProcess) => given.widget.HasProcessed.ShouldBeTrue());
 
   // multiple test cases are also supported, for example..
+  // (and note how using C# 9's lambda discard parameters can make assertion clauses a little clearer)
 
   public static Test SumOfEvenAndOdd => TestThat
     .GivenEachOf(() => new[] { 1, 3, 5 })
     .AndEachOf(() => new[] { 2, 4, 6 })
     .When((x, y) => x + y)
-    .Then((x, y, addition) => (addition.Result % 2).ShouldBe(1))
-    .And((x, y, addition) => addition.Result.ShouldBeGreaterThan(x));
+    .Then((_, _, addition) => (addition.Result % 2).ShouldBe(1))
+    .And((x, _, addition) => addition.Result.ShouldBeGreaterThan(x));
 }
 ```
 
@@ -50,11 +51,22 @@ Pros
   ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
 
 Cons
+- LINQ expression-valued assertion clauses do come with a performance cost.
 - Inflexible in some ways, in that it requires you to be rather formal in the separation of the clauses of your tests. Sometimes a freer-flowing test structure is useful.
-- Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above.
+- Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above. Using C# 9's lambda discard parameters can also make things a little clearer.
 
 ## Next Steps
 
 - Take some cues from the vstest adapter for mstest - what am I missing re debugging, parallelisation, test attachments, instrumentation, filtering etc?
-- While separate result per assertion works well in VS itself, its not so clear on the command line. Work on the VSTest adapter to make it better form a test result perspective.
+- While separate result per assertion works well in VS itself, its not so clear on the command line. Work on the VSTest adapter to make it better from a test result perspective.
+- Quality of life ideas:
+  - Perhaps `ThenOfOutcome(o => o.Result.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
+  - We might have test cases where the prereqs aren't independent. E.g. allowing for: 
+    ```
+    public static Test SumOfEvenAndOdd => TestThat
+      .GivenEachOf(() => new[] { 1, 3, 5 })
+      .AndEachOf(x => new[] { x - 1, x, x + 1 })
+      ...  
+    ```
+    ..of course, people can generate these themselves in a single `GivenEachOf`, but supporting it as separate clauses might be handy. Maybe.
 

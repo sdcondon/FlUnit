@@ -22,6 +22,10 @@ namespace FlUnit
             assertions.Add(assertion);
         }
 
+        /// <summary>
+        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndAssertions{TResult}"/> to a <see cref="Test"/> (by building it).
+        /// </summary>
+        /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<TResult> builder)
         {
             return new TestFunction<TResult>(
@@ -34,7 +38,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<TResult> And(Expression<Action<TestFunctionResult<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<TResult> And(Expression<Action<TestFunctionOutcome<TResult>>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -46,7 +50,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<TResult> And(Action<TestFunctionResult<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<TResult> And(Action<TestFunctionOutcome<TResult>> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -54,19 +58,19 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<TestFunctionResult<TResult>> action, string description)
+            internal Assertion(Action<TestFunctionOutcome<TResult>> action, string description)
             {
                 Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<TestFunctionResult<TResult>>> expression)
+            internal Assertion(Expression<Action<TestFunctionOutcome<TResult>>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 
-            public Action<TestFunctionResult<TResult>> Action { get; }
+            public Action<TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
         }
@@ -94,6 +98,10 @@ namespace FlUnit
             assertions.Add(assertion);
         }
 
+        /// <summary>
+        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndAssertions{T1, TResult}"/> to a <see cref="Test"/> (by building it).
+        /// </summary>
+        /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<T1, TResult> builder)
         {
             return new TestFunction<T1, TResult>(
@@ -107,7 +115,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, TResult> And(Expression<Action<T1, TestFunctionResult<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, TResult> And(Expression<Action<T1, TestFunctionOutcome<TResult>>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -119,7 +127,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, TResult> And(Action<T1, TestFunctionResult<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<T1, TResult> And(Action<T1, TestFunctionOutcome<TResult>> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -127,19 +135,19 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<T1, TestFunctionResult<TResult>> action, string description)
+            internal Assertion(Action<T1, TestFunctionOutcome<TResult>> action, string description)
             {
                 Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<T1, TestFunctionResult<TResult>>> expression)
+            internal Assertion(Expression<Action<T1, TestFunctionOutcome<TResult>>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 
-            public Action<T1, TestFunctionResult<TResult>> Action { get; }
+            public Action<T1, TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
         }
@@ -168,6 +176,10 @@ namespace FlUnit
             assertions.Add(assertion);
         }
 
+        /// <summary>
+        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndAssertions{T1, T2, TResult}"/> to a <see cref="Test"/> (by building it).
+        /// </summary>
+        /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<T1, T2, TResult> builder)
         {
             return new TestFunction<T1, T2, TResult>(
@@ -181,7 +193,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(Expression<Action<T1, T2, TestFunctionResult<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -193,7 +205,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(Action<T1, T2, TestFunctionResult<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(Action<T1, T2, TestFunctionOutcome<TResult>> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -201,19 +213,19 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<T1, T2, TestFunctionResult<TResult>> action, string description)
+            internal Assertion(Action<T1, T2, TestFunctionOutcome<TResult>> action, string description)
             {
                 Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<T1, T2, TestFunctionResult<TResult>>> expression)
+            internal Assertion(Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 
-            public Action<T1, T2, TestFunctionResult<TResult>> Action { get; }
+            public Action<T1, T2, TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
         }
@@ -243,6 +255,10 @@ namespace FlUnit
             assertions.Add(assertion);
         }
 
+        /// <summary>
+        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndAssertions{T1, T2, T3, TResult}"/> to a <see cref="Test"/> (by building it).
+        /// </summary>
+        /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> builder)
         {
             return new TestFunction<T1, T2, T3, TResult>(
@@ -256,7 +272,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(Expression<Action<T1, T2, T3, TestFunctionResult<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -268,7 +284,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(Action<T1, T2, T3, TestFunctionResult<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(Action<T1, T2, T3, TestFunctionOutcome<TResult>> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -276,19 +292,19 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<T1, T2, T3, TestFunctionResult<TResult>> action, string description)
+            internal Assertion(Action<T1, T2, T3, TestFunctionOutcome<TResult>> action, string description)
             {
                 Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<T1, T2, T3, TestFunctionResult<TResult>>> expression)
+            internal Assertion(Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 
-            public Action<T1, T2, T3, TestFunctionResult<TResult>> Action { get; }
+            public Action<T1, T2, T3, TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
         }

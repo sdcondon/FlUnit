@@ -39,7 +39,7 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// An enumerable of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
         public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
@@ -66,7 +66,7 @@ namespace FlUnit
         {
             private readonly Func<<#= TList(i, "", ", ") #>TResult> act;
 <# WriteLineIf(i > 0, $"private readonly {PrereqsFieldType(i)} prereqs;", 3); #>
-            private TestFunctionResult<TResult> invocationResult;
+            private TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
 <# WriteLineIf(i > 0, $"{PrereqsFieldType(i)} prereqs,", 4); #>
@@ -88,27 +88,27 @@ namespace FlUnit
 
             public void Act()
             {
-                if (invocationResult != null)
+                if (invocationOutcome != null)
                 {
                     throw new InvalidOperationException("Test action already invoked");
                 }
 
                 try
                 {
-                    invocationResult = new TestFunctionResult<TResult>(act(<#= i == 1 ? "prereqs" : List(i, i => $"prereqs.Item{i}") #>));
+                    invocationOutcome = new TestFunctionOutcome<TResult>(act(<#= i == 1 ? "prereqs" : List(i, i => $"prereqs.Item{i}") #>));
                 }
                 catch (Exception e)
                 {
-                    invocationResult = new TestFunctionResult<TResult>(e);
+                    invocationOutcome = new TestFunctionOutcome<TResult>(e);
                 }
             }
 
             private class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>> action;
+                private readonly Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> action;
 
-                public Assertion(Case testCase, Action<<#= TList(i, "", ", ") #>TestFunctionResult<TResult>> action, string description)
+                public Assertion(Case testCase, Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> action, string description)
                 {
                     this.testCase = testCase;
                     this.action = action;
@@ -117,7 +117,7 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationResult);
+                public void Invoke() => action(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
             }
         }
     }

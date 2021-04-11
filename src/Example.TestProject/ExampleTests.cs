@@ -74,13 +74,14 @@ namespace Example.TestProject
             .When(x => x + 6)
             .Then((x, addition) => (addition.Result % 2).ShouldBe(1));
 
-        // Test cases in combination with multiple assertions
+        // Test cases in combination with multiple assertions,
+        // with discard params to make assertion clauses clearer
         public static Test SumOfEvenAndOdd => TestThat
             .GivenEachOf(() => new[] { 1, 3, 5 })
             .AndEachOf(() => new[] { 2, 4, 6 })
             .When((x, y) => x + y)
-            .Then((x, y, addition) => (addition.Result % 2).ShouldBe(1))
-            .And((x, y, addition) => addition.Result.ShouldBeGreaterThan(x));
+            .Then((_, _, addition) => (addition.Result % 2).ShouldBe(1))
+            .And((x, _, addition) => addition.Result.ShouldBeGreaterThan(x));
 
         private class TestSubject
         {
@@ -88,7 +89,7 @@ namespace Example.TestProject
             {
                 if (shouldThrow)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException(nameof(shouldThrow));
                 }
             }
 
@@ -96,7 +97,7 @@ namespace Example.TestProject
 
             public bool Process(Collaborator collaborator)
             {
-                if (collaborator == null) throw new ArgumentNullException();
+                if (collaborator == null) throw new ArgumentNullException(nameof(collaborator));
                 HasProcessed = true;
                 collaborator.HasBeenProcessed = true;
                 return true;
