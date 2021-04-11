@@ -16,7 +16,7 @@ namespace FlUnit.Adapters.VSTest._Tests
         [TestMethod]
         public void Smoke()
         {
-            var runner = new TestRunner();
+            var runner = new TestExecutor();
             var runContext = new Mock<IRunContext>();
             var frameworkHandle = new FakeFrameworkHandle();
             runner.RunTests(
@@ -93,7 +93,7 @@ namespace FlUnit.Adapters.VSTest._Tests
             });
         }
 
-        private void AssertTestResult(FakeFrameworkHandle handle, string testName, TestOutcome expectedOutcome, IEnumerable<(string, TestOutcome)> expectedResults)
+        private static void AssertTestResult(FakeFrameworkHandle handle, string testName, TestOutcome expectedOutcome, IEnumerable<(string, TestOutcome)> expectedResults)
         {
             handle.TestCases.ContainsKey(testName).ShouldBeTrue(testName);
             handle.TestOutcomes[testName].ShouldBe(expectedOutcome);

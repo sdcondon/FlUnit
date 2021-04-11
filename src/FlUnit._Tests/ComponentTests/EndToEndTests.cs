@@ -18,9 +18,9 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            test.Cases.Count().ShouldBe(1);
+            test.Cases.Count.ShouldBe(1);
             ((Action)test.Cases.Single().Act).ShouldNotThrow();
-            test.Cases.Single().Assertions.Count().ShouldBe(1);
+            test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("Empty assertion");
@@ -38,9 +38,9 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            test.Cases.Count().ShouldBe(1);
+            test.Cases.Count.ShouldBe(1);
             ((Action)test.Cases.Single().Act).ShouldNotThrow();
-            test.Cases.Single().Assertions.Count().ShouldBe(1);
+            test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("sum.Result.ShouldBe(2)");
@@ -60,9 +60,9 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            test.Cases.Count().ShouldBe(1);
+            test.Cases.Count.ShouldBe(1);
             ((Action)test.Cases.Single().Act).ShouldNotThrow();
-            test.Cases.Single().Assertions.Count().ShouldBe(2);
+            test.Cases.Single().Assertions.Count.ShouldBe(2);
 
             var assertion1 = test.Cases.Single().Assertions.First();
             assertion1.Description.ShouldBe("sum.Result.ShouldBeGreaterThan(x)");
@@ -84,9 +84,9 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            test.Cases.Count().ShouldBe(1);
+            test.Cases.Count.ShouldBe(1);
             ((Action)test.Cases.Single().Act).ShouldNotThrow();
-            test.Cases.Single().Assertions.Count().ShouldBe(1);
+            test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("division.Exception.ShouldBeOfType(System.DivideByZeroException)");
@@ -104,9 +104,9 @@ namespace FlUnit._Tests
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
-            test.Cases.Count().ShouldBe(1);
+            test.Cases.Count.ShouldBe(1);
             ((Action)test.Cases.Single().Act).ShouldNotThrow();
-            test.Cases.Single().Assertions.Count().ShouldBe(1);
+            test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("sum.Result.ShouldBe(3)");
@@ -121,7 +121,7 @@ namespace FlUnit._Tests
                 .Then(a => { }, "Empty assertion");
 
             ((Action)test.Arrange).ShouldNotThrow();
-            test.Cases.Count().ShouldBe(1);
+            test.Cases.Count.ShouldBe(1);
             test.Cases.Single().Act();
             Assert.ThrowsException<InvalidOperationException>(test.Cases.Single().Act);
         }

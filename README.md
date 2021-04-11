@@ -60,6 +60,7 @@ Cons
 - Take some cues from the vstest adapter for mstest - what am I missing re debugging, parallelisation, test attachments, instrumentation, filtering etc?
 - While separate result per assertion works well in VS itself, its not so clear on the command line. Work on the VSTest adapter to make it better from a test result perspective.
 - Quality of life ideas:
+  - Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name..
   - Perhaps `ThenOfOutcome(o => o.Result.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
   - We might have test cases where the prereqs aren't independent. E.g. allowing for: 
     ```
