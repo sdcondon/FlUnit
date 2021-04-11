@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>FlUnit</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<Description>Abstractions for FlUnit.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>FlUnit.Abstractions.xml</DocumentationFile>
   </PropertyGroup>
 
 </Project>

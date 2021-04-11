@@ -64,9 +64,9 @@ Cons
   - Perhaps `ThenOfOutcome(o => o.Result.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
   - We might have test cases where the prereqs aren't independent. E.g. allowing for: 
     ```
-    public static Test SumOfEvenAndOdd => TestThat
+    public static Test SumOfOddAndAdjacentEven => TestThat
       .GivenEachOf(() => new[] { 1, 3, 5 })
-      .AndEachOf(x => new[] { x - 1, x, x + 1 })
+      .AndEachOf(x => new[] { x - 1, x + 1 })
       ...  
     ```
     ..of course, people can generate these themselves in a single `GivenEachOf`, but supporting it as separate clauses might be handy. Maybe.
