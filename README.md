@@ -7,8 +7,8 @@ Prototype for a test framework where tests are defined using a fluent builder. I
 ```csharp
 using FlUnit;
 // NB: Shouldly v4 adds optional parameters to many of its assertion methods - which Linq expressions can't
-// represent - meaning that the examples here (which attempt to make use of LINQ expression-valued assertions)
-// only works with Shouldly v3-..
+// represent - meaning that the examples here (which attempt to make use of LINQ expression-valued assertions
+// for automatic labelling - see below for more on this) only work with Shouldly v3-..
 using Shouldly;
 
 public static class MyTests
