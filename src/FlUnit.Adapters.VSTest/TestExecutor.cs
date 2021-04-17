@@ -67,11 +67,13 @@ namespace FlUnit.Adapters.VSTest
             {
                 foreach (var flCase in test.Cases)
                 {
+                    var flCaseStart = DateTimeOffset.Now;
                     flCase.Act();
+                    var flCaseEnd = DateTimeOffset.Now;
 
                     foreach (var assertion in flCase.Assertions)
                     {
-                        allAssertionsPassed &= CheckTestAssertion(testCase, test, flCase, assertion, frameworkHandle);
+                        allAssertionsPassed &= CheckTestAssertion(testCase, test, flCase, flCaseStart, flCaseEnd, assertion, frameworkHandle);
                     }
                 }
             }
@@ -118,9 +120,19 @@ namespace FlUnit.Adapters.VSTest
             }
         }
 
-        private static bool CheckTestAssertion(TestCase testCase, FlUnit.Test flTest, FlUnit.ITestCase flCase, ITestAssertion testAssertion, IFrameworkHandle frameworkHandle)
+        private static bool CheckTestAssertion(TestCase testCase, Test flTest, ITestCase flCase, DateTimeOffset flCaseStart, DateTimeOffset flCaseEnd, ITestAssertion testAssertion, IFrameworkHandle frameworkHandle)
         {
-            var result = new TestResult(testCase);
+            // NB: We use the start and end time for the test action as the start and end time for each assertion result.
+            // The assumption being that assertions themselves will generally be (fast and) less interesting.
+            var result = new TestResult(testCase)
+            {
+                StartTime = flCaseStart,
+                EndTime = flCaseEnd,
+            };
+
+            // Use different descriptions depending on multiplicity of csses and assertions.
+            // This makes results in Visual Studio itself look good - but the actual results miss out on some info (so not as good for TRX files).
+            // Perhaps room for some configuration of naming strategy at some point.
             if (flTest.Cases.Count > 1 && flCase.Assertions.Count > 1)
             {
                 result.DisplayName = string.IsNullOrEmpty(flCase.Description) ? testAssertion.Description : $"{testAssertion.Description} for test case {flCase.Description}";
@@ -136,11 +148,7 @@ namespace FlUnit.Adapters.VSTest
 
             try
             {
-                // TODO: Start time (and thus test duration) issues.. How best to do this - all assertions use total time for the test case likely to be the best approach -
-                // people aren't generally going to be interested in how long an individual assertion took.
-                result.StartTime = DateTimeOffset.Now;
                 testAssertion.Invoke();
-
                 result.Outcome = TestOutcome.Passed;
                 return true;
             }
@@ -154,7 +162,6 @@ namespace FlUnit.Adapters.VSTest
             }
             finally
             {
-                result.EndTime = DateTimeOffset.Now;
                 frameworkHandle.RecordResult(result);
             }
         }

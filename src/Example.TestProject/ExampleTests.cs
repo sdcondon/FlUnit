@@ -89,7 +89,7 @@ namespace Example.TestProject
             {
                 if (shouldThrow)
                 {
-                    throw new ArgumentException(nameof(shouldThrow));
+                    throw new ArgumentException("shouldThrow must be false.", nameof(shouldThrow));
                 }
             }
 
