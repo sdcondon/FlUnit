@@ -4,6 +4,14 @@
 
 Prototype for a test framework where tests are defined using a fluent builder. Includes a skeleton VSTest adapter which records each assertion in a separate result of the test. 
 
+### Usage
+
+Create a (.NET 5) class library and add a reference to the FlUnit Nuget package, as well as the FlUnit.VS.TestAdapter package for discovering and running the tests in Visual Studio or via the .NET CLI.
+You'll also probably want to include an assertion library of your choice - the example code below uses Shouldly, for example.
+Right now (because the adapter is just a hacked together prototype and doesn't deal with this for you) you'll also need to add Microsoft.NET.Test.Sdk. 
+
+As shown below, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them. More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
+
 ```csharp
 using FlUnit;
 // NB: Shouldly v4 adds optional parameters to many of its assertion methods - which Linq expressions can't
@@ -46,9 +54,7 @@ public static class MyTests
 }
 ```
 
-As shown above, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them. More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
-
-Pros
+### Pros
 - Succinct, readable
 - A richer model for tests than that found in many other test frameworks (without requiring the verbose code required by frameworks such as MSpec) makes a few things possible:
   - Parameterised tests are easy without requiring awkward attribute-based parameter retrieval.
@@ -57,7 +63,7 @@ Pros
   - LINQ expression-valued assertions can be named automatically via ToString of expression bodies. This can make it easy to write tests of which the results are easy to understand. Like so:  
   ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
 
-Cons
+### Cons
 - All of the passing of test objects (arranged prerequisites, test outcome objects, ..) between the provided delegates (as opposed to having a single test method) comes at a performance cost - though I've not run any explicit tests to validate the extent of this. The fact that the VSTest adapter is little more than a skeleton likely counteracts it to some degree at the moment.
 - LINQ expression-valued assertion clauses come with some drawbacks. Building an expression tree is relatively expensive, so there's an additional performance cost here. You also can't put breakpoints on them (though subjectively the desire to do this should be relatively rare - given that they're just assertions rather than the "meat" of the test).
 - Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above. Using C# 9's lambda discard parameters can also make things a little clearer.
