@@ -71,16 +71,7 @@ public static class MyTests
 ## Next Steps
 
 - Take some cues from the vstest adapter for mstest - what am I missing regarding general package structure, debugging, parallelisation, test attachments, instrumentation, filtering etc?
-- While separate result per assertion works well in VS itself, its not so clear on the command line. Work on the VSTest adapter to make it better from a test result perspective.
 - Quality of life ideas:
   - Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name..
   - Perhaps `ThenOfOutcome(o => o.Result.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
-  - We might have test cases where the prereqs aren't independent. E.g. allowing for: 
-    ```csharp
-    public static Test SumOfOddAndAdjacentEven => TestThat
-      .GivenEachOf(() => new[] { 1, 3, 5 })
-      .AndEachOf(x => new[] { x - 1, x + 1 })
-      ...  
-    ```
-    ..of course, people can generate these themselves in a single `GivenEachOf`, but supporting it as separate clauses might be handy. Maybe.
 
