@@ -6,9 +6,11 @@ Prototype for a test framework where tests are defined using a fluent builder. I
 
 ### Usage
 
-Create a (.NET 5) class library and add a reference to the FlUnit Nuget package, as well as the FlUnit.VS.TestAdapter package for discovering and running the tests in Visual Studio or via the .NET CLI.
-You'll also probably want to include an assertion library of your choice - the example code below uses Shouldly, for example.
-Right now (because the adapter is just a hacked together prototype and doesn't deal with this for you) you'll also need to add Microsoft.NET.Test.Sdk. 
+Create a (.NET 5) class library and add some references:
+- `Microsoft.NET.Test.Sdk` - to identify this as a test project
+- `FlUnit` - which contains the important stuff - the builder and test classes
+- `FlUnit.VS.TestAdapter` - the VSTest adapter package, so that the test platform knows how to find and run FlUnit tests.
+- You'll also probably want to include an assertion library of your choice - the example code below uses `Shouldly`, for example.
 
 As shown below, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them. More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
 
@@ -70,7 +72,7 @@ public static class MyTests
 
 ## Next Steps
 
-- Take some cues from the vstest adapter for mstest - what am I missing regarding general package structure, debugging, parallelisation, test attachments, instrumentation, filtering etc?
+- Take some cues from the vstest adapter for mstest - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
 - Quality of life ideas:
   - Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name..
   - Perhaps `ThenOfOutcome(o => o.Result.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
