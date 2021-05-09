@@ -6,7 +6,7 @@ Prototype for a test framework where tests are defined using a fluent builder. I
 
 ### Usage
 
-Create a (.NET 5) class library and add some references:
+Create a (.NET 5) class library and add some package references:
 - `Microsoft.NET.Test.Sdk` - to identify this as a test project
 - `FlUnit` - which contains the important stuff - the builder and test classes
 - `FlUnit.VS.TestAdapter` - the VSTest adapter package, so that the test platform knows how to find and run FlUnit tests.
