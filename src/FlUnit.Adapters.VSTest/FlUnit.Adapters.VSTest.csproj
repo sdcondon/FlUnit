@@ -7,6 +7,7 @@
 		<RootNamespace>FlUnit.Adapters.VSTest</RootNamespace>
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageIcon>FlUnitIcon.png</PackageIcon>
 		<Description>FlUnit adapter for VSTest</Description>
 		<DevelopmentDependency>true</DevelopmentDependency>
 		<BuildOutputTargetFolder>build</BuildOutputTargetFolder>
@@ -31,8 +32,11 @@
 	<ItemGroup>
 		<None Include="build\**\*" Pack="true" PackagePath="build\" />
 		<None Include="lib\**\*" Pack="true" PackagePath="lib\" />
-		<None Remove="bin\Debug\netstandard2.0\FlUnit.Abstractions.dll" />
 		<None Include="$(OutDir)FlUnit.Abstractions.dll" Pack="true" PackagePath="build\$(TargetFramework)" Visible="false" />
 	</ItemGroup>
+
+    <ItemGroup>
+        <None Include="$(SolutionDir)\FlUnitIcon.png" Link="FlUnitIcon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
 	
 </Project>
