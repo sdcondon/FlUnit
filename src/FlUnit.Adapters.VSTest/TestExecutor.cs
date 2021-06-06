@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace FlUnit.Adapters.VSTest
@@ -111,7 +109,7 @@ namespace FlUnit.Adapters.VSTest
                 {
                     StartTime = arrangementStartTime,
                     Outcome = TestOutcome.Skipped,
-                    ErrorMessage = $"Test arrangement failed: {e.Message}", // TODO: localisation needed if this ever takes off
+                    ErrorMessage = $"Test arrangement failed: {e.Message}", // TODO V2: localisation needed if this ever takes off
                     ErrorStackTrace = e.StackTrace,
                     EndTime = DateTimeOffset.Now,
                 });
@@ -135,7 +133,7 @@ namespace FlUnit.Adapters.VSTest
             // Perhaps room for some configuration of naming strategy at some point.
             if (flTest.Cases.Count > 1 && flCase.Assertions.Count > 1)
             {
-                result.DisplayName = string.IsNullOrEmpty(flCase.Description) ? testAssertion.Description : $"{testAssertion.Description} for test case {flCase.Description}";
+                result.DisplayName = string.IsNullOrEmpty(flCase.Description) ? testAssertion.Description : $"{testAssertion.Description} for test case {flCase.Description}"; // TODO V2: localisation needed if this ever takes off
             }
             else if (flTest.Cases.Count > 1)
             {

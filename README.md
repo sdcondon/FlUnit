@@ -70,10 +70,14 @@ public static class MyTests
 - LINQ expression-valued assertion clauses come with some drawbacks. Building an expression tree is relatively expensive, so there's an additional performance cost here. You also can't put breakpoints on them (though subjectively the desire to do this should be relatively rare - given that they're just assertions rather than the "meat" of the test).
 - Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above. Using C# 9's lambda discard parameters can also make things a little clearer.
 
-## Next Steps
+## Project Status
+
+The plan is to continue to chip away at this, but I have now more or less reached the limit of what can be hacked together - and properly getting to grips with (in particular) the VSTest platform may make for slow going for a little while..
 
 - Take some cues from the vstest adapter for mstest - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
 - Quality of life ideas:
   - Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name..
   - Perhaps `ThenOfOutcome(o => o.Result.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
+- Slightly zany ideas:
+  - If the abstractions in the abstractions package can be properly maintained, completely free of any test info beyond the Test class itself (including attributes and whatnot), it may actually be worth renaming them (and any depending adapters) to something like PropUnit... - because any implementation of tests as gettable properties could use the same adapter. Interesting notion - not sure how useful it'd actually turn out to be..
 
