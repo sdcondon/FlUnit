@@ -31,7 +31,8 @@ public static class MyTests
     .And((wi, th, t) => th.IsProcessed.ShouldBeTrue())
     .And((wi, th, t) => wi.HasProcessed.ShouldBeTrue());
 
-  // or..
+  // or, you may find that a single 'given' clause returning an anonymous
+  // object makes for more readable tests:
 
   public static Test WidgetCanProcessAThingy => TestThat
     .Given(() => new
@@ -76,7 +77,7 @@ The plan is to continue to chip away at this, but I have now more or less reache
 
 - Take some cues from the vstest adapter for mstest - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
 - Quality of life ideas:
-  - Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name..
+  - Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`?
   - Perhaps `ThenOfOutcome(o => o.Result.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
 - Slightly zany ideas:
   - If the abstractions in the abstractions package can be properly maintained, completely free of any test info beyond the Test class itself (including attributes and whatnot), it may actually be worth renaming them (and any depending adapters) to something like PropUnit... - because any implementation of tests as gettable properties could use the same adapter. Interesting notion - not sure how useful it'd actually turn out to be..
