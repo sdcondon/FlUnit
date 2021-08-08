@@ -79,6 +79,4 @@ The plan is to continue to chip away at this, but I have now more or less reache
 - Quality of life ideas:
   - Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`?
   - Perhaps `ThenOfOutcome(o => o.Result.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
-- Slightly zany ideas:
-  - If the abstractions in the abstractions package can be properly maintained, completely free of any test info beyond the Test class itself (including attributes and whatnot), it may actually be worth renaming them (and any depending adapters) to something like PropUnit... - because any implementation of tests as gettable properties could use the same adapter. Interesting notion - not sure how useful it'd actually turn out to be..
 
