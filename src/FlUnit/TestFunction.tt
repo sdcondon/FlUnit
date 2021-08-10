@@ -21,6 +21,7 @@ namespace FlUnit
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>TResult> act;
         private readonly IEnumerable<TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion> assertions;
+        private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
@@ -42,7 +43,7 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases => cases;
 
         /// <summary>
         /// Arranges the test.
@@ -50,11 +51,11 @@ namespace FlUnit
         public override void Arrange()
         {
 <# if (i == 0) { #>
-            Cases = new[] { new Case(act, assertions) };
+            cases = new[] { new Case(act, assertions) };
 <# } else if (i == 1) { #>
-            Cases = arrange().Select(p => new Case(p, act, assertions)).ToArray();
+            cases = arrange().Select(p => new Case(p, act, assertions)).ToArray();
 <# } else if (i > 1) { #>
-            Cases = (
+            cases = (
 <# for (int j = 0; j < i; j++) { #>
                 from p<#= j + 1 #> in arrange.Item<#= j + 1 #>()
 <# } #>

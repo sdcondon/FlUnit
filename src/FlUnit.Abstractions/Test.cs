@@ -11,12 +11,12 @@ namespace FlUnit
     public abstract class Test
     {
         /// <summary>
-        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
+        /// Gets a collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
-        public abstract IReadOnlyCollection<ITestCase> Cases { get; protected set; }
+        public abstract IReadOnlyCollection<ITestCase> Cases { get; }
 
         /// <summary>
-        /// Arranges the test.
+        /// Arranges the test - populating the <see cref="Cases"/> property.
         /// </summary>
         public abstract void Arrange();
     }

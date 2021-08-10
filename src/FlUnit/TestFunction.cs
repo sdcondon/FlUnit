@@ -11,6 +11,7 @@ namespace FlUnit
     {
         private readonly Func<TResult> act;
         private readonly IEnumerable<TestBuilderWithFunctionAndAssertions<TResult>.Assertion> assertions;
+        private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
@@ -29,14 +30,14 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases => cases;
 
         /// <summary>
         /// Arranges the test.
         /// </summary>
         public override void Arrange()
         {
-            Cases = new[] { new Case(act, assertions) };
+            cases = new[] { new Case(act, assertions) };
         }
 
         private class Case : ITestCase
@@ -100,6 +101,7 @@ namespace FlUnit
         private readonly Func<IEnumerable<T1>> arrange;
         private readonly Func<T1, TResult> act;
         private readonly IEnumerable<TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion> assertions;
+        private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
@@ -121,14 +123,14 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases => cases;
 
         /// <summary>
         /// Arranges the test.
         /// </summary>
         public override void Arrange()
         {
-            Cases = arrange().Select(p => new Case(p, act, assertions)).ToArray();
+            cases = arrange().Select(p => new Case(p, act, assertions)).ToArray();
         }
 
         private class Case : ITestCase
@@ -195,6 +197,7 @@ namespace FlUnit
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Func<T1, T2, TResult> act;
         private readonly IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion> assertions;
+        private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
@@ -216,14 +219,14 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases => cases;
 
         /// <summary>
         /// Arranges the test.
         /// </summary>
         public override void Arrange()
         {
-            Cases = (
+            cases = (
                 from p1 in arrange.Item1()
                 from p2 in arrange.Item2()
                 select new Case((p1, p2), act, assertions)).ToArray();
@@ -293,6 +296,7 @@ namespace FlUnit
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Func<T1, T2, T3, TResult> act;
         private readonly IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion> assertions;
+        private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
@@ -314,14 +318,14 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<ITestCase> Cases { get; protected set; }
+        public override IReadOnlyCollection<ITestCase> Cases => cases;
 
         /// <summary>
         /// Arranges the test.
         /// </summary>
         public override void Arrange()
         {
-            Cases = (
+            cases = (
                 from p1 in arrange.Item1()
                 from p2 in arrange.Item2()
                 from p3 in arrange.Item3()
