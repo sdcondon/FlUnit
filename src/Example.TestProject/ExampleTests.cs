@@ -36,6 +36,7 @@ namespace Example.TestProject
             .Then((sut, process) => process.Exception.ShouldBeOfType(typeof(ArgumentNullException)));
 
         // Test with failing assertion
+        [Trait("Category", "My Category")]
         public static Test ProcessDoesntThrowOnNullCollaborator => TestThat
             .Given(() => new TestSubject())
             .When(sut => sut.Process(null))

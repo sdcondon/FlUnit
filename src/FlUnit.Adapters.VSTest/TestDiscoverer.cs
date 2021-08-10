@@ -75,6 +75,10 @@ namespace FlUnit.Adapters.VSTest
                 TestProperties.FlUnitTestProp,
                 $"{p.DeclaringType.Assembly.GetName().Name}:{p.DeclaringType.FullName}:{p.Name}"); // Perhaps better to use JSON or similar..
 
+            // todo: instantiate test from prop, find attributes and apply.
+            // hmm, had forgotten that discovery doesn't otherwise require test instantiation.
+            // perhaps this isn't the best approach..
+
             return testCase;
         }
     }
