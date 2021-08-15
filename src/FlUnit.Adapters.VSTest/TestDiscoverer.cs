@@ -45,6 +45,11 @@ namespace FlUnit.Adapters.VSTest
                 .SelectMany(c => c.GetProperties(BindingFlags.Public | BindingFlags.Static))
                 .Where(p => p.PropertyType == typeof(Test) && p.CanRead);
 
+            //var testProps = assembly.ExportedTypes
+            //    .Select(t => (type: t, traitProviders: t.CustomAttributes.Where(a => a is ITraitProvider)))
+            //    .SelectMany(x => x.type.GetProperties(BindingFlags.Public | BindingFlags.Static).Select(p => (property: p, traitProviders: x.traitProviders.Concat(p.CustomAttributes.Where(a => a is ITraitProvider)))))
+            //    .Where(p => p.property.PropertyType == typeof(Test) && p.property.CanRead);
+
             var testCases = new List<TestCase>();
             using (var diaSession = new DiaSession(source))
             {
@@ -74,6 +79,11 @@ namespace FlUnit.Adapters.VSTest
             testCase.SetPropertyValue(
                 TestProperties.FlUnitTestProp,
                 $"{p.DeclaringType.Assembly.GetName().Name}:{p.DeclaringType.FullName}:{p.Name}"); // Perhaps better to use JSON or similar..
+
+            // Performance...
+            //p.DeclaringType.Assembly.CustomAttributes.
+            //p.DeclaringType.CustomAttributes.
+            //p.CustomAttributes
 
             return testCase;
         }

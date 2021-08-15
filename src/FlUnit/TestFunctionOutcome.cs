@@ -14,9 +14,10 @@ namespace FlUnit
 
         /// <summary>
         /// Gets the return value of the when clause, as long as an exception was not thrown.
-        /// <para/>
-        /// TODO: this should probably throw the exception if there is one - like Task does? Don't want to mess with the stack trace though.. Throw invalidop with an inner?
         /// </summary>
+        /// <remarks>
+        /// TODO: this should probably throw the exception if there is one - like Task does? Don't want to mess with the stack trace though.. Throw invalidop with an inner?
+        /// </remarks>
         public T Result { get; }
 
         /// <summary>
