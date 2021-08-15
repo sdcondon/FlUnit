@@ -19,6 +19,8 @@ using FlUnit;
 // NB: Shouldly v4 adds optional parameters to many of its assertion methods - which Linq expressions can't
 // represent - meaning that the examples here (which attempt to make use of LINQ expression-valued assertions
 // for automatic labelling - see below for more on this) only work with Shouldly v3-..
+// If you're using v4+, you'll need to add in a second parameter to each of the 'Then' clauses - a string-valued
+// label for the test result.
 using Shouldly;
 
 public static class MyTests
