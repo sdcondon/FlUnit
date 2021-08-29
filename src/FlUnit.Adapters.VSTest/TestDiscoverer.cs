@@ -7,19 +7,26 @@ using System.Reflection;
 namespace FlUnit.Adapters.VSTest
 {
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using System;
 
-    // TODO: This class probably needs splitting up - want to take a closer look at how MSTest V2 runner is structured (it looks quite a bit more organised than XUnit one..)
-    //
-    // References:
-    // https://github.com/microsoft/vstest
-    // https://github.com/microsoft/vstest/tree/master/src/Microsoft.TestPlatform.ObjectModel
-    // https://github.com/microsoft/testfx/tree/master/src/Adapter (MSTest adapter for VSTest)
+    /// <summary>
+    /// FlUnit's implementation of <see cref="ITestDiscoverer"/> - takes responsibility for discovering tests in a given assembly or assemblies.
+    /// </summary>
+    /// <remarks>
+    /// References:
+    /// <list type="bullet">
+    /// <item>https://github.com/microsoft/vstest</item>
+    /// <item>https://github.com/microsoft/vstest/tree/master/src/Microsoft.TestPlatform.ObjectModel</item>
+    /// <item>https://github.com/microsoft/testfx/tree/master/src/Adapter (MSTest adapter for VSTest)</item>
+    /// </list>
+    /// </remarks>
 
     [FileExtension(".exe")]
     [FileExtension(".dll")]
     [DefaultExecutorUri(Constants.ExecutorUriString)]
     public class TestDiscoverer : ITestDiscoverer
     {
+        /// <inheritdoc />
         public void DiscoverTests(
             IEnumerable<string> sources,
             IDiscoveryContext discoveryContext,
@@ -41,49 +48,45 @@ namespace FlUnit.Adapters.VSTest
                 TestMessageLevel.Informational,
                 $"Test discovery started for {assembly.FullName}");
 
-            var testProps = assembly.ExportedTypes
-                .SelectMany(c => c.GetProperties(BindingFlags.Public | BindingFlags.Static))
-                .Where(p => p.PropertyType == typeof(Test) && p.CanRead);
+            var assemblyTraitProviders = assembly.GetCustomAttributes().OfType<ITraitProvider>();
 
-            //var testProps = assembly.ExportedTypes
-            //    .Select(t => (type: t, traitProviders: t.CustomAttributes.Where(a => a is ITraitProvider)))
-            //    .SelectMany(x => x.type.GetProperties(BindingFlags.Public | BindingFlags.Static).Select(p => (property: p, traitProviders: x.traitProviders.Concat(p.CustomAttributes.Where(a => a is ITraitProvider)))))
-            //    .Where(p => p.property.PropertyType == typeof(Test) && p.property.CanRead);
+            // TODO-MAINTAINABILITY: Hmm, not massively readable, take a second look at this. 
+            var testProps = assembly
+                .ExportedTypes.Select(t => (type: t, traitProviders: assemblyTraitProviders.Concat(t.GetCustomAttributes().OfType<ITraitProvider>())))
+                .SelectMany(x => x.type.GetProperties(BindingFlags.Public | BindingFlags.Static).Select(p => (property: p, traitProviders: x.traitProviders.Concat(p.GetCustomAttributes().OfType<ITraitProvider>())))
+                .Where(p => typeof(Test).IsAssignableFrom(p.property.PropertyType) && p.property.CanRead));
 
             var testCases = new List<TestCase>();
             using (var diaSession = new DiaSession(source))
             {
                 foreach (var p in testProps)
                 {
-                    var testCase = MakeTestCase(source, p, diaSession);
+                    var testCase = MakeTestCase(source, p.property, p.traitProviders, diaSession);
                     testCases.Add(testCase);
                     logger?.SendMessage(
                         TestMessageLevel.Informational,
-                        $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}");
+                        $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");
                 }
             }
 
             return testCases;
         }
 
-        private static TestCase MakeTestCase(string source, PropertyInfo p, DiaSession diaSession)
+        private static TestCase MakeTestCase(string source, PropertyInfo p, IEnumerable<ITraitProvider> traitProviders, DiaSession diaSession)
         {
             var navigationData = diaSession.GetNavigationData(p.DeclaringType.FullName, p.GetGetMethod().Name);
 
             var testCase = new TestCase($"{p.DeclaringType.FullName}.{p.Name}", Constants.ExecutorUri, source)
             {
                 CodeFilePath = navigationData.FileName,
-                LineNumber = navigationData.MinLineNumber
+                LineNumber = navigationData.MinLineNumber,
             };
+
+            testCase.Traits.AddRange(traitProviders.Select(t => new Trait(t.Trait.Name, t.Trait.Value)));
 
             testCase.SetPropertyValue(
                 TestProperties.FlUnitTestProp,
                 $"{p.DeclaringType.Assembly.GetName().Name}:{p.DeclaringType.FullName}:{p.Name}"); // Perhaps better to use JSON or similar..
-
-            // Performance...
-            //p.DeclaringType.Assembly.CustomAttributes.
-            //p.DeclaringType.CustomAttributes.
-            //p.CustomAttributes
 
             return testCase;
         }

@@ -7,17 +7,23 @@ namespace FlUnit.Adapters.VSTest
 {
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 
-    // TODO: This class probably needs splitting up - want to take a closer look at how MSTest V2 runner is structured (it looks quite a bit more organised than XUnit one..)
-    //
-    // References:
-    // https://github.com/microsoft/vstest
-    // https://github.com/microsoft/vstest/tree/master/src/Microsoft.TestPlatform.ObjectModel
-    // https://github.com/microsoft/testfx/tree/master/src/Adapter (MSTest adapter for VSTest)
+    /// <summary>
+    /// FlUnit's implementation of <see cref="ITestExecutor"/> - takes responsibility for executing tests as discovered by <see cref="TestDiscoverer"/>.
+    /// </summary>
+    /// <remarks>
+    /// References:
+    /// <list type="bullet">
+    /// <item>https://github.com/microsoft/vstest</item>
+    /// <item>https://github.com/microsoft/vstest/tree/master/src/Microsoft.TestPlatform.ObjectModel</item>
+    /// <item>https://github.com/microsoft/testfx/tree/master/src/Adapter (MSTest adapter for VSTest)</item>
+    /// </list>
+    /// </remarks>
     [ExtensionUri(Constants.ExecutorUriString)]
     public class TestExecutor : ITestExecutor
     {
         private bool isCancelled = false;
 
+        /// <inheritdoc />
         public void RunTests(
             IEnumerable<string> sources,
             IRunContext runContext,
@@ -26,6 +32,7 @@ namespace FlUnit.Adapters.VSTest
             RunTests(TestDiscoverer.MakeTestCases(sources, runContext, null), runContext, frameworkHandle);
         }
 
+        /// <inheritdoc />
         public void RunTests(
             IEnumerable<TestCase> tests,
             IRunContext runContext,
@@ -44,6 +51,7 @@ namespace FlUnit.Adapters.VSTest
             }
         }
 
+        /// <inheritdoc />
         public void Cancel()
         {
             isCancelled = true;

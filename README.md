@@ -16,11 +16,13 @@ As shown below, tests are defined as public static gettable properties of public
 
 ```csharp
 using FlUnit;
-// NB: Shouldly v4 adds optional parameters to many of its assertion methods - which Linq expressions can't
-// represent - meaning that the examples here (which attempt to make use of LINQ expression-valued assertions
-// for automatic labelling - see below for more on this) only work with Shouldly v3-..
-// If you're using v4+, you'll need to add in a second parameter to each of the 'Then' clauses - a string-valued
-// label for the test result.
+// 
+// NB: The examples here use an overload of 'Then' clauses with a single LINQ expression-valued parameter,
+// which is used to automatically name the test result. Shouldly v4 adds optional parameters to many of its
+// assertion methods - which LINQ expressions can't represent - meaning that the examples here only work as-is
+// with Shouldly v3-. If you're using v4+, or a different assertion library that LINQ expressions also can't
+// represent - or indeed if you'd simply prefer it - you can use the overload of the 'Then' clauses that requires
+// the test result label to be provided explicitly as the second parameter.
 using Shouldly;
 
 public static class MyTests

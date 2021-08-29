@@ -4,9 +4,11 @@ using System;
 
 namespace Example.TestProject
 {
+    [Trait("ClassLevelTrait", "ExampleTests")]
     public static class ExampleTests
     {
         // Basic example
+        [Trait("PropertyLevelTrait", "ProcessHasSideEffects")]
         public static Test ProcessHasSideEffects => TestThat
             .Given(() => new TestSubject())
             .And(() => new Collaborator())
