@@ -20,7 +20,6 @@ namespace FlUnit.Adapters.VSTest
     /// <item>https://github.com/microsoft/testfx/tree/master/src/Adapter (MSTest adapter for VSTest)</item>
     /// </list>
     /// </remarks>
-
     [FileExtension(".exe")]
     [FileExtension(".dll")]
     [DefaultExecutorUri(Constants.ExecutorUriString)]
@@ -48,20 +47,32 @@ namespace FlUnit.Adapters.VSTest
                 TestMessageLevel.Informational,
                 $"Test discovery started for {assembly.FullName}");
 
+            (T member, IEnumerable<ITraitProvider> traitProviders) RollUpTraitProviders<T>(T memberInfo, IEnumerable<ITraitProvider> traitProviders)
+                where T : MemberInfo
+            {
+                return (memberInfo, traitProviders: traitProviders.Concat(memberInfo.GetCustomAttributes().OfType<ITraitProvider>()));
+            }
+
+            bool IsTestProperty(PropertyInfo p)
+            {
+                return p.CanRead
+                    && p.GetMethod.IsPublic
+                    && p.GetMethod.IsStatic
+                    && typeof(Test).IsAssignableFrom(p.PropertyType);
+            }
+
             var assemblyTraitProviders = assembly.GetCustomAttributes().OfType<ITraitProvider>();
 
-            // TODO-MAINTAINABILITY: Hmm, not massively readable, take a second look at this. 
             var testProps = assembly
-                .ExportedTypes.Select(t => (type: t, traitProviders: assemblyTraitProviders.Concat(t.GetCustomAttributes().OfType<ITraitProvider>())))
-                .SelectMany(x => x.type.GetProperties(BindingFlags.Public | BindingFlags.Static).Select(p => (property: p, traitProviders: x.traitProviders.Concat(p.GetCustomAttributes().OfType<ITraitProvider>())))
-                .Where(p => typeof(Test).IsAssignableFrom(p.property.PropertyType) && p.property.CanRead));
+                .ExportedTypes.Select(t => RollUpTraitProviders(t, assemblyTraitProviders))
+                .SelectMany(t => t.member.GetProperties().Where(IsTestProperty).Select(p => RollUpTraitProviders(p, t.traitProviders)));
 
             var testCases = new List<TestCase>();
             using (var diaSession = new DiaSession(source))
             {
                 foreach (var p in testProps)
                 {
-                    var testCase = MakeTestCase(source, p.property, p.traitProviders, diaSession);
+                    var testCase = MakeTestCase(source, p.member, p.traitProviders, diaSession);
                     testCases.Add(testCase);
                     logger?.SendMessage(
                         TestMessageLevel.Informational,

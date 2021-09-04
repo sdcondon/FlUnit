@@ -10,7 +10,7 @@ Create a (.NET 5) class library and add some package references:
 - `Microsoft.NET.Test.Sdk` - to identify this as a test project
 - `FlUnit` - which contains the important stuff - the builder and test classes
 - `FlUnit.Adapters.VSTest` - the VSTest adapter package, so that the VSTest platform knows how to find and run FlUnit tests.
-- You'll also probably want to include an assertion library of your choice - the example code below uses `Shouldly`, for example.
+- You'll also need to include an assertion library of your choice - the example code below uses `Shouldly`, for example.
 
 As shown below, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them. More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
 
