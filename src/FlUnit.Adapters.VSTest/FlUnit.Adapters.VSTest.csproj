@@ -5,7 +5,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<AssemblyName>FlUnit.VS.TestAdapter</AssemblyName>
 		<RootNamespace>FlUnit.Adapters.VSTest</RootNamespace>
-		<PackageId>FlUnit.Adapters.VSTest</PackageId>
+		<!--<PackageId>FlUnit.Adapters.VSTest</PackageId>-->
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageIcon>FlUnitIcon.png</PackageIcon>
