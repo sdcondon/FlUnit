@@ -29,8 +29,7 @@ namespace FlUnit
         /// <summary>
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
-        // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<ITestCase> Cases => cases;
+        public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
         public override void Arrange()
@@ -126,8 +125,7 @@ namespace FlUnit
         /// <summary>
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
-        // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<ITestCase> Cases => cases;
+        public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
         public override void Arrange()
@@ -226,8 +224,7 @@ namespace FlUnit
         /// <summary>
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
-        // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<ITestCase> Cases => cases;
+        public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
         public override void Arrange()
@@ -329,8 +326,7 @@ namespace FlUnit
         /// <summary>
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
-        // TODO: Better errors: throw new InvalidOperationException("Test not yet arranged") on premature access rather than returning null.
-        public override IReadOnlyCollection<ITestCase> Cases => cases;
+        public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
         public override void Arrange()
