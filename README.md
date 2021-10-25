@@ -88,7 +88,7 @@ public static class MyTests
 - Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above. Using C# 9's lambda discard parameters can also make things a little clearer.
 - LINQ expression-valued assertion clauses come with some drawbacks. Building an expression tree is relatively expensive, so there's an additional performance cost here. You also can't put breakpoints on them (though subjectively the desire to do this should be relatively rare - given that they're just assertions rather than the "meat" of the test).
 
-## Project Status
+## Plans
 
 The plan is to continue to chip away at this, but I have now more or less reached the limit of what can be hacked together - and properly getting to grips with (in particular) the VSTest platform may make for slow going for a little while.. Vague plan of attack (not worth issue tracking just yet, so just bullet list to organise my thoughts..):
 
@@ -99,7 +99,7 @@ The plan is to continue to chip away at this, but I have now more or less reache
   - QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`?
   - Add in initial test settings - initial settings likely to include allowing specification of strategy for result naming and duration records (both of which currently make some "sensible" decisions which may not be appropriate in all situations)
   - Look into parallelisation. Partition configuration likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Initial factoring of core logic away from VSTest-specific classes may happen as part of this - though I'm wary of needless complexity until such time as a second adapter exists. Also may provide more powerful trait specification as part of this (e.g. specify single trait at assembly level to give all tests a trait for their class/prop name).
-  - Think a little more about target frameworks. Unlikely to ever explicitly support full framework (meaning, among other things, that Full PDBs unlikely to ever be supported - unless complaints). But will give some thought to explicit targeting beyond .NET standard. Not something I've had to consider before, so will need to do some research into factors to consider.
+  - Think a little more about target frameworks. Unlikely to ever explicitly support full framework (meaning, among other things, that Full PDBs unlikely to ever be supported) - unless overwhelming complaints. But will give some thought to explicit targeting beyond .NET standard. Not something I've had to consider before, so will need to do some research into factors to consider.
   - Basic attachment & output support
   - V1 milestone
 - On the back-burner (probably not, at least in the near future):
