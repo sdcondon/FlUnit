@@ -6,7 +6,7 @@ namespace FlUnit
     /// Container for the outcome of the invoking the "When" clause of a test.
     /// </summary>
     /// <typeparam name="T">The return type of test function.</typeparam>
-    public sealed class TestFunctionOutcome<T>
+    internal sealed class TestFunctionOutcome<T>
     {
         internal TestFunctionOutcome(T result) => Result = result;
 

@@ -15,9 +15,9 @@ namespace Example.TestProject
 
             .When((sut, collaborator) => sut.Process(collaborator))
 
-            .Then((sut, collaborator, process) => process.Result.ShouldBeTrue())
-            .And((sut, collaborator, process) => sut.HasProcessed.ShouldBeTrue())
-            .And((sut, collaborator, process) => collaborator.HasBeenProcessed.ShouldBeTrue());
+            .Then((sut, collaborator, retVal) => retVal.ShouldBeTrue())
+            .And((sut, collaborator, retVal) => sut.HasProcessed.ShouldBeTrue())
+            .And((sut, collaborator, retVal) => collaborator.HasBeenProcessed.ShouldBeTrue());
          
         // Basic example with single anonymous object-valued 'Given' clause
         public static Test ProcessHasSideEffects2 => TestThat
@@ -27,32 +27,32 @@ namespace Example.TestProject
                 collaborator = new Collaborator()
             })
             .When(given => given.sut.Process(given.collaborator))
-            .Then((given, process) => process.Result.ShouldBeTrue())
-            .And((given, process) => given.sut.HasProcessed.ShouldBeTrue())
-            .And((given, process) => given.collaborator.HasBeenProcessed.ShouldBeTrue());
+            .Then((given, retVal) => retVal.ShouldBeTrue())
+            .And((given, retVal) => given.sut.HasProcessed.ShouldBeTrue())
+            .And((given, retVal) => given.collaborator.HasBeenProcessed.ShouldBeTrue());
 
         // Negative test
         public static Test ProcessThrowsOnNullCollaborator => TestThat
             .Given(() => new TestSubject())
             .When(sut => sut.Process(null))
-            .Then((sut, process) => process.Exception.ShouldBeOfType(typeof(ArgumentNullException)));
+            .ThenThrows((sut, exception) => exception.ShouldBeOfType(typeof(ArgumentNullException)));
 
         // Test with failing assertion
         public static Test ProcessDoesntThrowOnNullCollaborator => TestThat
             .Given(() => new TestSubject())
             .When(sut => sut.Process(null))
-            .Then((sut, process) => process.Exception.ShouldBeNull());
+            .Then((sut, retVal) => retVal.ShouldBeTrue());
 
         // Test with failing arrangement
         public static Test ProcessDoesntThrowOnNullCollaborator2 => TestThat
             .Given(() => new TestSubject(shouldThrow: true))
             .When(sut => sut.Process(null))
-            .Then((sut, process) => process.Exception.ShouldBeNull());
+            .Then((sut, retVal) => retVal.ShouldBeTrue());
 
         // Test with no prereqs
         public static Test CtorDoesntThrow => TestThat
             .When(() => new TestSubject())
-            .Then(ctor => ctor.Exception.ShouldBeNull());
+            .Then(retVal => retVal.ShouldBeOfType<TestSubject>());
 
         // Block bodies
         public static Test BlockBodies => TestThat
@@ -63,18 +63,18 @@ namespace Example.TestProject
             })
             .When(given =>
             {
-                given.sut.Process(given.collaborator);
+                return given.sut.Process(given.collaborator);
             })
-            .Then((given, process) =>
+            .Then((given, retVal) =>
             {
-                process.Exception.ShouldBeNull();
+                retVal.ShouldBeTrue();
             }, "Exception should be null");
 
         // Multiple test cases
         public static Test SumOfOddAndSixIsOdd => TestThat
             .GivenEachOf(() => new[] { 1, 3, 5 })
             .When(x => x + 6)
-            .Then((x, addition) => (addition.Result % 2).ShouldBe(1));
+            .Then((x, sum) => (sum % 2).ShouldBe(1));
 
         // Test cases in combination with multiple assertions,
         // with discard params to make assertion clauses clearer
@@ -82,8 +82,8 @@ namespace Example.TestProject
             .GivenEachOf(() => new[] { 1, 3, 5 })
             .AndEachOf(() => new[] { 2, 4, 6 })
             .When((x, y) => x + y)
-            .Then((_, _, addition) => (addition.Result % 2).ShouldBe(1))
-            .And((x, _, addition) => addition.Result.ShouldBeGreaterThan(x));
+            .Then((_, _, sum) => (sum % 2).ShouldBe(1))
+            .And((x, _, sum) => sum.ShouldBeGreaterThan(x));
 
         private class TestSubject
         {

@@ -5,7 +5,7 @@ namespace FlUnit
     /// <summary>
     /// Container for the outcome of the invoking the "When" clause of a test.
     /// </summary>
-    public sealed class TestActionOutcome
+    internal sealed class TestActionOutcome
     {
         internal TestActionOutcome() { }
 

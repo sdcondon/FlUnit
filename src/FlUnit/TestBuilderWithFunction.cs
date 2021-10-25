@@ -24,7 +24,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<TResult> Then(Expression<Action<TestFunctionOutcome<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<TResult> Then(Expression<Action<TResult>> assertion)
         {
             return new TestBuilderWithFunctionAndAssertions<TResult>(
                 testFunction,
@@ -38,12 +38,39 @@ namespace FlUnit
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<TResult> Then(
-            Action<TestFunctionOutcome<TResult>> assertion,
+            Action<TResult> assertion,
             string description)
         {
             return new TestBuilderWithFunctionAndAssertions<TResult>(
                 testFunction,
                 new TestBuilderWithFunctionAndAssertions<TResult>.Assertion(assertion, description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test function is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndExAssertions<TResult> ThenThrows(Expression<Action<Exception>> assertion)
+        {
+            return new TestBuilderWithFunctionAndExAssertions<TResult>(
+                testFunction,
+                new TestBuilderWithFunctionAndExAssertions<TResult>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test function is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndExAssertions<TResult> ThenThrows(
+            Action<Exception> assertion,
+            string description)
+        {
+            return new TestBuilderWithFunctionAndExAssertions<TResult>(
+                testFunction,
+                new TestBuilderWithFunctionAndExAssertions<TResult>.Assertion(assertion, description));
         }
     }
 
@@ -71,7 +98,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, TResult> Then(Expression<Action<T1, TestFunctionOutcome<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, TResult> Then(Expression<Action<T1, TResult>> assertion)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, TResult>(
                 arrange,
@@ -86,13 +113,42 @@ namespace FlUnit
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, TResult> Then(
-            Action<T1, TestFunctionOutcome<TResult>> assertion,
+            Action<T1, TResult> assertion,
             string description)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, TResult>(
                 arrange,
                 testFunction,
                 new TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion(assertion, description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test function is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndExAssertions<T1, TResult> ThenThrows(Expression<Action<T1, Exception>> assertion)
+        {
+            return new TestBuilderWithFunctionAndExAssertions<T1, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndExAssertions<T1, TResult>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test function is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndExAssertions<T1, TResult> ThenThrows(
+            Action<T1, Exception> assertion,
+            string description)
+        {
+            return new TestBuilderWithFunctionAndExAssertions<T1, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndExAssertions<T1, TResult>.Assertion(assertion, description));
         }
     }
 
@@ -121,7 +177,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> Then(Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> Then(Expression<Action<T1, T2, TResult>> assertion)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>(
                 arrange,
@@ -136,13 +192,42 @@ namespace FlUnit
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> Then(
-            Action<T1, T2, TestFunctionOutcome<TResult>> assertion,
+            Action<T1, T2, TResult> assertion,
             string description)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>(
                 arrange,
                 testFunction,
                 new TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion(assertion, description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test function is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndExAssertions<T1, T2, TResult> ThenThrows(Expression<Action<T1, T2, Exception>> assertion)
+        {
+            return new TestBuilderWithFunctionAndExAssertions<T1, T2, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndExAssertions<T1, T2, TResult>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test function is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndExAssertions<T1, T2, TResult> ThenThrows(
+            Action<T1, T2, Exception> assertion,
+            string description)
+        {
+            return new TestBuilderWithFunctionAndExAssertions<T1, T2, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndExAssertions<T1, T2, TResult>.Assertion(assertion, description));
         }
     }
 
@@ -172,7 +257,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> Then(Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> Then(Expression<Action<T1, T2, T3, TResult>> assertion)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>(
                 arrange,
@@ -187,13 +272,42 @@ namespace FlUnit
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> Then(
-            Action<T1, T2, T3, TestFunctionOutcome<TResult>> assertion,
+            Action<T1, T2, T3, TResult> assertion,
             string description)
         {
             return new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>(
                 arrange,
                 testFunction,
                 new TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion(assertion, description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test function is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult> ThenThrows(Expression<Action<T1, T2, T3, Exception>> assertion)
+        {
+            return new TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test function is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult> ThenThrows(
+            Action<T1, T2, T3, Exception> assertion,
+            string description)
+        {
+            return new TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult>(
+                arrange,
+                testFunction,
+                new TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult>.Assertion(assertion, description));
         }
     }
 }

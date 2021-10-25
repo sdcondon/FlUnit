@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.ExceptionServices;
 
 namespace FlUnit
 {
@@ -17,17 +16,17 @@ namespace FlUnit
 <# WriteLineIf(i > 0); #>
     /// <summary>
     /// Builder for providing the additional assertions for a test with <#= i #> "Given" clause<#= Plural(i) #>
-    /// and for which the "When" clause returns a value.
+    /// and for which the "When" clause returns a value - but is expected to throw an exception.
     /// </summary>
 <# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public sealed class TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>
+    public sealed class TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>
     {
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
-        internal TestBuilderWithFunctionAndAssertions(
+        internal TestBuilderWithFunctionAndExAssertions(
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>TResult> testFunction,
             Assertion assertion)
@@ -38,10 +37,10 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndAssertions{<#= TList(i, "", ", ") #>TResult}"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndExAssertions{<#= TList(i, "", ", ") #>TResult}"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> builder)
+        public static implicit operator Test(TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult> builder)
         {
             return new TestFunction<<#= TList(i, "", ", ") #>TResult>(
 <# WriteLineIf(i > 0, "builder.arrange,", 4); #>
@@ -54,7 +53,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> And(Expression<Action<<#= TList(i, "", ", ") #>TResult>> assertion)
+        public TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult> And(Expression<Action<<#= TList(i, "", ", ") #>Exception>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -66,7 +65,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> And(Action<<#= TList(i, "", ", ") #>TResult> assertion, string description)
+        public TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult> And(Action<<#= TList(i, "", ", ") #>Exception> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -74,30 +73,30 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<<#= TList(i, "", ", ") #>TResult> action, string description)
+            internal Assertion(Action<<#= TList(i, "", ", ") #>Exception> action, string description)
             {
                 Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
                 {
-                    if (outcome.Exception != null)
+                    if (outcome.Exception == null)
                     {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
+                        throw new Exception("An exception was expected but the When clause didn't throw one");
                     }
 
-                    action(<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome.Result);
+                    action(<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome.Exception);
                 };
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<<#= TList(i, "", ", ") #>TResult>> expression)
+            internal Assertion(Expression<Action<<#= TList(i, "", ", ") #>Exception>> expression)
             {
                 Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
                 {
-                    if (outcome.Exception != null)
+                    if (outcome.Exception == null)
                     {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
+                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
                     }
 
-                    expression.Compile()(<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome.Result);
+                    expression.Compile()(<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome.Exception);
                 };
                 Description = expression.Body.ToString();
             }

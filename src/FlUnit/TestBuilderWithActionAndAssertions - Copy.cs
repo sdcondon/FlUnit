@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.ExceptionServices;
 
 namespace FlUnit
 {
@@ -31,7 +29,7 @@ namespace FlUnit
         {
             return new TestAction(
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction.Case.Assertion(tc, a.Action, a.Description)));
+                builder.assertions);
         }
 
         /// <summary>
@@ -39,7 +37,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions And(Expression<Action> assertion)
+        public TestBuilderWithActionAndAssertions And(Expression<Action<TestActionOutcome>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -51,7 +49,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions And(Action assertion, string description)
+        public TestBuilderWithActionAndAssertions And(Action<TestActionOutcome> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -59,31 +57,15 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action action, string description)
+            internal Assertion(Action<TestActionOutcome> action, string description)
             {
-                Action = (outcome) =>
-                {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
-                    action();
-                };
+                Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action> expression)
+            internal Assertion(Expression<Action<TestActionOutcome>> expression)
             {
-                Action = (outcome) =>
-                {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
-                    expression.Compile()();
-                };
+                Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 
@@ -123,7 +105,7 @@ namespace FlUnit
             return new TestAction<T1>(
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1>.Case.Assertion(tc, a.Action, a.Description)));
+                builder.assertions);
         }
 
         /// <summary>
@@ -131,7 +113,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> And(Expression<Action<T1>> assertion)
+        public TestBuilderWithActionAndAssertions<T1> And(Expression<Action<T1, TestActionOutcome>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -143,7 +125,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> And(Action<T1> assertion, string description)
+        public TestBuilderWithActionAndAssertions<T1> And(Action<T1, TestActionOutcome> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -151,31 +133,15 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<T1> action, string description)
+            internal Assertion(Action<T1, TestActionOutcome> action, string description)
             {
-                Action = (a, outcome) =>
-                {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
-                    action(a);
-                };
+                Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<T1>> expression)
+            internal Assertion(Expression<Action<T1, TestActionOutcome>> expression)
             {
-                Action = (a, outcome) =>
-                {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
-                    expression.Compile()(a);
-                };
+                Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 
@@ -216,7 +182,7 @@ namespace FlUnit
             return new TestAction<T1, T2>(
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1, T2>.Case.Assertion(tc, a.Action, a.Description)));
+                builder.assertions);
         }
 
         /// <summary>
@@ -224,7 +190,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> And(Expression<Action<T1, T2>> assertion)
+        public TestBuilderWithActionAndAssertions<T1, T2> And(Expression<Action<T1, T2, TestActionOutcome>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -236,7 +202,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> And(Action<T1, T2> assertion, string description)
+        public TestBuilderWithActionAndAssertions<T1, T2> And(Action<T1, T2, TestActionOutcome> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -244,31 +210,15 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<T1, T2> action, string description)
+            internal Assertion(Action<T1, T2, TestActionOutcome> action, string description)
             {
-                Action = (a1, a2, outcome) =>
-                {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
-                    action(a1, a2);
-                };
+                Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<T1, T2>> expression)
+            internal Assertion(Expression<Action<T1, T2, TestActionOutcome>> expression)
             {
-                Action = (a1, a2, outcome) =>
-                {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
-                    expression.Compile()(a1, a2);
-                };
+                Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 
@@ -310,7 +260,7 @@ namespace FlUnit
             return new TestAction<T1, T2, T3>(
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1, T2, T3>.Case.Assertion(tc, a.Action, a.Description)));
+                builder.assertions);
         }
 
         /// <summary>
@@ -318,7 +268,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3>> assertion)
+        public TestBuilderWithActionAndAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3, TestActionOutcome>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -330,7 +280,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> And(Action<T1, T2, T3> assertion, string description)
+        public TestBuilderWithActionAndAssertions<T1, T2, T3> And(Action<T1, T2, T3, TestActionOutcome> assertion, string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
@@ -338,31 +288,15 @@ namespace FlUnit
 
         internal class Assertion
         {
-            internal Assertion(Action<T1, T2, T3> action, string description)
+            internal Assertion(Action<T1, T2, T3, TestActionOutcome> action, string description)
             {
-                Action = (a1, a2, a3, outcome) =>
-                {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
-                    action(a1, a2, a3);
-                };
+                Action = action;
                 Description = description;
             }
 
-            internal Assertion(Expression<Action<T1, T2, T3>> expression)
+            internal Assertion(Expression<Action<T1, T2, T3, TestActionOutcome>> expression)
             {
-                Action = (a1, a2, a3, outcome) =>
-                {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
-                    expression.Compile()(a1, a2, a3);
-                };
+                Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 

@@ -20,7 +20,7 @@ namespace FlUnit
     {
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Action<#= TList(i, "<", ">") #> act;
-        private readonly IEnumerable<TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion> assertions;
+        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
@@ -28,15 +28,15 @@ namespace FlUnit
         /// </summary>
 <# WriteLineIf(i > 0, "/// <param name=\"arrange\"></param>", 2); #>
         /// <param name="act"></param>
-        /// <param name="assertions"></param>
+        /// <param name="makeAssertions"></param>
         internal TestAction(
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Action<#= TList(i, "<", ">") #> act,
-            IEnumerable<TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion> assertions)
+            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
             this.act = act;
-            this.assertions = assertions;
+            this.makeAssertions = makeAssertions;
         }
 
         /// <summary>
@@ -48,19 +48,19 @@ namespace FlUnit
         public override void Arrange()
         {
 <# if (i == 0) { #>
-            cases = new[] { new Case(act, assertions) };
+            cases = new[] { new Case(act, makeAssertions) };
 <# } else if (i == 1) { #>
-            cases = arrange().Select(p => new Case(p, act, assertions)).ToArray();
+            cases = arrange().Select(p => new Case(p, act, makeAssertions)).ToArray();
 <# } else if (i > 1) { #>
             cases = (
 <# for (int j = 0; j < i; j++) { #>
                 from p<#= j + 1 #> in arrange.Item<#= j + 1 #>()
 <# } #>
-                select new Case((<#= List(i, i => $"p{i}") #>), act, assertions)).ToArray();
+                select new Case((<#= List(i, i => $"p{i}") #>), act, makeAssertions)).ToArray();
 <# } #>
         }
 
-        private class Case : ITestCase
+        internal class Case : ITestCase
         {
             private readonly Action<#= TList(i, "<", ">") #> act;
 <# WriteLineIf(i > 0, $"private readonly {PrereqsFieldType(i)} prereqs;", 3); #>
@@ -69,11 +69,11 @@ namespace FlUnit
             internal Case(
 <# WriteLineIf(i > 0, $"{PrereqsFieldType(i)} prereqs,", 4); #>
                 Action<#= TList(i, "<", ">") #> act,
-                IEnumerable<TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion> assertions)
+                Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
 <# WriteLineIf(i > 0, "this.prereqs = prereqs;", 4); #>
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray(); // assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
             }
 
 <# if (i == 0) { #>
@@ -104,7 +104,7 @@ namespace FlUnit
                 }
             }
 
-            private class Assertion : ITestAssertion
+            internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<<#= TList(i, "", ", ") #>TestActionOutcome> action;

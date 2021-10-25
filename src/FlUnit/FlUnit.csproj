@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TestBuilderWithActionAndAssertions - Copy.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="FlUnit.xml" />
   </ItemGroup>
 
@@ -36,16 +40,26 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithActionAndAssertions.tt</DependentUpon>
     </None>
+	<None Include="TestBuilderWithActionAndExAssertions.cs">
+      <DependentUpon>TestBuilderWithActionAndExAssertions.tt</DependentUpon>
+	  <DesignTime>True</DesignTime>
+	  <AutoGen>True</AutoGen>
+	</None>
     <None Include="TestBuilderWithFunction.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithFunction.tt</DependentUpon>
     </None>
-    <None Include="TestBuilderWithFunctionAndAssertions.cs">
+	<None Include="TestBuilderWithFunctionAndAssertions.cs">
+	  <DesignTime>True</DesignTime>
+	  <AutoGen>True</AutoGen>
+	  <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+	</None>
+	<None Include="TestBuilderWithFunctionAndExAssertions.cs">
+      <DependentUpon>TestBuilderWithFunctionAndExAssertions.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
-    </None>
+	</None>
     <None Include="TestBuilderWithPrerequisites.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -71,9 +85,17 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestBuilderWithActionAndAssertions.cs</LastGenOutput>
     </None>
+	<None Update="TestBuilderWithActionAndExAssertions.tt">
+      <LastGenOutput>TestBuilderWithActionAndExAssertions.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+	</None>
     <None Update="TestBuilderWithFunction.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestBuilderWithFunction.cs</LastGenOutput>
+    </None>
+    <None Update="TestBuilderWithFunctionAndExAssertions.tt">
+      <LastGenOutput>TestBuilderWithFunctionAndExAssertions.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="TestBuilderWithFunctionAndAssertions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -105,15 +127,25 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithActionAndAssertions.tt</DependentUpon>
     </Compile>
+	<Compile Update="TestBuilderWithActionAndExAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+	  <DependentUpon>TestBuilderWithActionAndExAssertions.tt</DependentUpon>
+	</Compile>
     <Compile Update="TestBuilderWithFunction.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithFunction.tt</DependentUpon>
     </Compile>
-    <Compile Update="TestBuilderWithFunctionAndAssertions.cs">
+	  <Compile Update="TestBuilderWithFunctionAndAssertions.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+	  </Compile>
+    <Compile Update="TestBuilderWithFunctionAndExAssertions.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+      <DependentUpon>TestBuilderWithFunctionAndExAssertions.tt</DependentUpon>
     </Compile>
     <Compile Update="TestBuilderWithPrerequisites.cs">
       <DesignTime>True</DesignTime>

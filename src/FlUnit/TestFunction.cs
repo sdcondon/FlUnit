@@ -10,20 +10,20 @@ namespace FlUnit
     public sealed class TestFunction<TResult> : Test
     {
         private readonly Func<TResult> act;
-        private readonly IEnumerable<TestBuilderWithFunctionAndAssertions<TResult>.Assertion> assertions;
+        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
         /// </summary>
         /// <param name="act"></param>
-        /// <param name="assertions"></param>
+        /// <param name="makeAssertions"></param>
         internal TestFunction(
             Func<TResult> act,
-            IEnumerable<TestBuilderWithFunctionAndAssertions<TResult>.Assertion> assertions)
+            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
             this.act = act;
-            this.assertions = assertions;
+            this.makeAssertions = makeAssertions;
         }
 
         /// <summary>
@@ -36,20 +36,20 @@ namespace FlUnit
         /// </summary>
         public override void Arrange()
         {
-            cases = new[] { new Case(act, assertions) };
+            cases = new[] { new Case(act, makeAssertions) };
         }
 
-        private class Case : ITestCase
+        internal class Case : ITestCase
         {
             private readonly Func<TResult> act;
             private TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
                 Func<TResult> act,
-                IEnumerable<TestBuilderWithFunctionAndAssertions<TResult>.Assertion> assertions)
+                Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray();
             }
 
             public string Description => string.Empty;
@@ -73,7 +73,7 @@ namespace FlUnit
                 }
             }
 
-            private class Assertion : ITestAssertion
+            internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<TestFunctionOutcome<TResult>> action;
@@ -99,7 +99,7 @@ namespace FlUnit
     {
         private readonly Func<IEnumerable<T1>> arrange;
         private readonly Func<T1, TResult> act;
-        private readonly IEnumerable<TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion> assertions;
+        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
@@ -107,15 +107,15 @@ namespace FlUnit
         /// </summary>
         /// <param name="arrange"></param>
         /// <param name="act"></param>
-        /// <param name="assertions"></param>
+        /// <param name="makeAssertions"></param>
         internal TestFunction(
             Func<IEnumerable<T1>> arrange,
             Func<T1, TResult> act,
-            IEnumerable<TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion> assertions)
+            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
             this.arrange = arrange;
             this.act = act;
-            this.assertions = assertions;
+            this.makeAssertions = makeAssertions;
         }
 
         /// <summary>
@@ -128,10 +128,10 @@ namespace FlUnit
         /// </summary>
         public override void Arrange()
         {
-            cases = arrange().Select(p => new Case(p, act, assertions)).ToArray();
+            cases = arrange().Select(p => new Case(p, act, makeAssertions)).ToArray();
         }
 
-        private class Case : ITestCase
+        internal class Case : ITestCase
         {
             private readonly Func<T1, TResult> act;
             private readonly T1 prereqs;
@@ -140,11 +140,11 @@ namespace FlUnit
             internal Case(
                 T1 prereqs,
                 Func<T1, TResult> act,
-                IEnumerable<TestBuilderWithFunctionAndAssertions<T1, TResult>.Assertion> assertions)
+                Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.prereqs = prereqs;
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray();
             }
 
             public string Description => prereqs.ToString();
@@ -168,7 +168,7 @@ namespace FlUnit
                 }
             }
 
-            private class Assertion : ITestAssertion
+            internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<T1, TestFunctionOutcome<TResult>> action;
@@ -194,7 +194,7 @@ namespace FlUnit
     {
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Func<T1, T2, TResult> act;
-        private readonly IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion> assertions;
+        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
@@ -202,15 +202,15 @@ namespace FlUnit
         /// </summary>
         /// <param name="arrange"></param>
         /// <param name="act"></param>
-        /// <param name="assertions"></param>
+        /// <param name="makeAssertions"></param>
         internal TestFunction(
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Func<T1, T2, TResult> act,
-            IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion> assertions)
+            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
             this.arrange = arrange;
             this.act = act;
-            this.assertions = assertions;
+            this.makeAssertions = makeAssertions;
         }
 
         /// <summary>
@@ -226,10 +226,10 @@ namespace FlUnit
             cases = (
                 from p1 in arrange.Item1()
                 from p2 in arrange.Item2()
-                select new Case((p1, p2), act, assertions)).ToArray();
+                select new Case((p1, p2), act, makeAssertions)).ToArray();
         }
 
-        private class Case : ITestCase
+        internal class Case : ITestCase
         {
             private readonly Func<T1, T2, TResult> act;
             private readonly (T1, T2) prereqs;
@@ -238,11 +238,11 @@ namespace FlUnit
             internal Case(
                 (T1, T2) prereqs,
                 Func<T1, T2, TResult> act,
-                IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, TResult>.Assertion> assertions)
+                Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.prereqs = prereqs;
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray();
             }
 
             public string Description => prereqs.ToString();
@@ -266,7 +266,7 @@ namespace FlUnit
                 }
             }
 
-            private class Assertion : ITestAssertion
+            internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<T1, T2, TestFunctionOutcome<TResult>> action;
@@ -292,7 +292,7 @@ namespace FlUnit
     {
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Func<T1, T2, T3, TResult> act;
-        private readonly IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion> assertions;
+        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
@@ -300,15 +300,15 @@ namespace FlUnit
         /// </summary>
         /// <param name="arrange"></param>
         /// <param name="act"></param>
-        /// <param name="assertions"></param>
+        /// <param name="makeAssertions"></param>
         internal TestFunction(
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Func<T1, T2, T3, TResult> act,
-            IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion> assertions)
+            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
             this.arrange = arrange;
             this.act = act;
-            this.assertions = assertions;
+            this.makeAssertions = makeAssertions;
         }
 
         /// <summary>
@@ -325,10 +325,10 @@ namespace FlUnit
                 from p1 in arrange.Item1()
                 from p2 in arrange.Item2()
                 from p3 in arrange.Item3()
-                select new Case((p1, p2, p3), act, assertions)).ToArray();
+                select new Case((p1, p2, p3), act, makeAssertions)).ToArray();
         }
 
-        private class Case : ITestCase
+        internal class Case : ITestCase
         {
             private readonly Func<T1, T2, T3, TResult> act;
             private readonly (T1, T2, T3) prereqs;
@@ -337,11 +337,11 @@ namespace FlUnit
             internal Case(
                 (T1, T2, T3) prereqs,
                 Func<T1, T2, T3, TResult> act,
-                IEnumerable<TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult>.Assertion> assertions)
+                Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.prereqs = prereqs;
                 this.act = act;
-                this.Assertions = assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray();
             }
 
             public string Description => prereqs.ToString();
@@ -365,7 +365,7 @@ namespace FlUnit
                 }
             }
 
-            private class Assertion : ITestAssertion
+            internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
                 private readonly Action<T1, T2, T3, TestFunctionOutcome<TResult>> action;
