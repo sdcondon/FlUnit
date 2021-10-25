@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="TestBuilderWithActionAndAssertions - Copy.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="FlUnit.xml" />
   </ItemGroup>
 
