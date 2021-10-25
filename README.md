@@ -56,7 +56,7 @@ public static class MyTests
     .Given(() => new
     {
       widget = new Widget("widget1"),
-      thingy = null
+      thingy = (Thingy)null
     })
     .When(given => given.widget.TryProcess(given.thingy))
     .ThenThrows((_, ex) => ex.ShouldBeOfType<ArgumentNullException>())
