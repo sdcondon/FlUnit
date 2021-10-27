@@ -99,8 +99,12 @@ The plan is to continue to chip away at this, but I have now more or less reache
   - *(Nov)* Add in initial test settings - initial settings likely to include allowing specification of strategy for result naming and duration records (both of which currently make some "sensible" decisions which may not be appropriate in all situations. Also possibly a setting for the default naming strategy (overridable by inidividual tests) might be useful.
   - *(Nov/Dec)* Look into parallelisation. Partition configuration likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Initial factoring of core logic away from VSTest-specific classes may happen as part of this - though I'm wary of needless complexity until such time as a second adapter exists. Also may provide more powerful trait specification as part of this (e.g. specify single trait at assembly level to give all tests a trait for their class/prop name).
   - *(Dec)* Think a little more about target frameworks. Unlikely to ever explicitly support full framework (meaning, among other things, that Full PDBs unlikely to ever be supported) - unless overwhelming complaints. But will give some thought to explicit targeting beyond .NET Standard. Not something I've had to consider before, so will need to do some research into factors to consider.
-  - *(Dec/Jan)* Basic attachment & output support
-  - *(Jan)* V1 milestone
+  - *(Dec/Jan)* Basic attachment & output support?
+  - *(Jan)* V1 diligence & release
+    - Split into separate repos
+    - Separate usage docs
+    - README in packages
+    - Signing? Perhaps not. £££..
 - On the back-burner (probably not, at least in the near future):
   - QoL: dependent assertions - some assertions only make sense if a prior assertion has succeeded (easy for method-based test frameworks, but not for us..). Such assertions should probably give an inconclusive result? Assertions that return a value (assert a value is of a particular type, cast and return it) also a possibility - though thats probably inviting unacceptable complexity. A basic version of this could be useful though - perhaps an `AndAlso` (echoing C# operator name) - which will make all following assertions inconclusive if any prior assertion failed?
   - QoL: Perhaps `ThenOfReturnValue(rv => rv.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
