@@ -62,11 +62,7 @@ namespace FlUnit
             {
                 Action = (outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one");
-                    }
-
+                    outcome.ThrowIfNoException();
                     action(outcome.Exception);
                 };
                 Description = description;
@@ -76,14 +72,19 @@ namespace FlUnit
             {
                 Action = (outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
-                    }
-
+                    outcome.ThrowIfNoException();
                     expression.Compile()(outcome.Exception);
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (outcome) =>
+                {
+                    outcome.ThrowIfNoException();
+                };
+                Description = description;
             }
 
             public Action<TestActionOutcome> Action { get; }
@@ -154,11 +155,7 @@ namespace FlUnit
             {
                 Action = (a, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one");
-                    }
-
+                    outcome.ThrowIfNoException();
                     action(a, outcome.Exception);
                 };
                 Description = description;
@@ -168,14 +165,19 @@ namespace FlUnit
             {
                 Action = (a, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
-                    }
-
+                    outcome.ThrowIfNoException();
                     expression.Compile()(a, outcome.Exception);
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (a, outcome) =>
+                {
+                    outcome.ThrowIfNoException();
+                };
+                Description = description;
             }
 
             public Action<T1, TestActionOutcome> Action { get; }
@@ -247,11 +249,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one");
-                    }
-
+                    outcome.ThrowIfNoException();
                     action(a1, a2, outcome.Exception);
                 };
                 Description = description;
@@ -261,14 +259,19 @@ namespace FlUnit
             {
                 Action = (a1, a2, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
-                    }
-
+                    outcome.ThrowIfNoException();
                     expression.Compile()(a1, a2, outcome.Exception);
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (a1, a2, outcome) =>
+                {
+                    outcome.ThrowIfNoException();
+                };
+                Description = description;
             }
 
             public Action<T1, T2, TestActionOutcome> Action { get; }
@@ -341,11 +344,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, a3, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one");
-                    }
-
+                    outcome.ThrowIfNoException();
                     action(a1, a2, a3, outcome.Exception);
                 };
                 Description = description;
@@ -355,14 +354,19 @@ namespace FlUnit
             {
                 Action = (a1, a2, a3, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
-                    }
-
+                    outcome.ThrowIfNoException();
                     expression.Compile()(a1, a2, a3, outcome.Exception);
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (a1, a2, a3, outcome) =>
+                {
+                    outcome.ThrowIfNoException();
+                };
+                Description = description;
             }
 
             public Action<T1, T2, T3, TestActionOutcome> Action { get; }

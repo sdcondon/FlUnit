@@ -19,11 +19,34 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions ThenReturns()
+        {
+            return new TestBuilderWithActionAndAssertions(
+                testAction,
+                new TestBuilderWithActionAndAssertions.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions ThenReturns(string description)
+        {
+            return new TestBuilderWithActionAndAssertions(
+                testAction,
+                new TestBuilderWithActionAndAssertions.Assertion(description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions Then(Expression<Action> assertion)
+        public TestBuilderWithActionAndAssertions ThenReturns(Expression<Action> assertion)
         {
             return new TestBuilderWithActionAndAssertions(
                 testAction,
@@ -31,16 +54,39 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions Then(Action assertion, string description)
+        public TestBuilderWithActionAndAssertions ThenReturns(Action assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions(
                 testAction,
                 new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions ThenThrows()
+        {
+            return new TestBuilderWithActionAndExAssertions(
+                testAction,
+                new TestBuilderWithActionAndExAssertions.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions ThenThrows(string description)
+        {
+            return new TestBuilderWithActionAndExAssertions(
+                testAction,
+                new TestBuilderWithActionAndExAssertions.Assertion(description));
         }
 
         /// <summary>
@@ -61,14 +107,15 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndExAssertions ThenThrows(
-            Action<Exception> assertion,
-            string description)
+        public TestBuilderWithActionAndExAssertions ThenThrows(Action<Exception> assertion, string description)
         {
             return new TestBuilderWithActionAndExAssertions(
                 testAction,
                 new TestBuilderWithActionAndExAssertions.Assertion(assertion, description));
         }
+
+        //// NB: Hmmm, I think there is room for a little more here. Treading on assertion libraries toes a little, but it is probably enough of a special
+        //// case that there is value: generic methods that assert that the exception thrown is of a particular type (and possibly even gives that type to the assertion)
     }
 
     /// <summary>
@@ -90,11 +137,36 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<T1> ThenReturns()
+        {
+            return new TestBuilderWithActionAndAssertions<T1>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<T1> ThenReturns(string description)
+        {
+            return new TestBuilderWithActionAndAssertions<T1>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1>.Assertion(description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> Then(Expression<Action<T1>> assertion)
+        public TestBuilderWithActionAndAssertions<T1> ThenReturns(Expression<Action<T1>> assertion)
         {
             return new TestBuilderWithActionAndAssertions<T1>(
                 arrange,
@@ -103,17 +175,42 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> Then(Action<T1> assertion, string description)
+        public TestBuilderWithActionAndAssertions<T1> ThenReturns(Action<T1> assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions<T1>(
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions<T1> ThenThrows()
+        {
+            return new TestBuilderWithActionAndExAssertions<T1>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndExAssertions<T1>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions<T1> ThenThrows(string description)
+        {
+            return new TestBuilderWithActionAndExAssertions<T1>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndExAssertions<T1>.Assertion(description));
         }
 
         /// <summary>
@@ -135,15 +232,16 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndExAssertions<T1> ThenThrows(
-            Action<T1, Exception> assertion,
-            string description)
+        public TestBuilderWithActionAndExAssertions<T1> ThenThrows(Action<T1, Exception> assertion, string description)
         {
             return new TestBuilderWithActionAndExAssertions<T1>(
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion, description));
         }
+
+        //// NB: Hmmm, I think there is room for a little more here. Treading on assertion libraries toes a little, but it is probably enough of a special
+        //// case that there is value: generic methods that assert that the exception thrown is of a particular type (and possibly even gives that type to the assertion)
     }
 
     /// <summary>
@@ -166,11 +264,36 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<T1, T2> ThenReturns()
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<T1, T2> ThenReturns(string description)
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> Then(Expression<Action<T1, T2>> assertion)
+        public TestBuilderWithActionAndAssertions<T1, T2> ThenReturns(Expression<Action<T1, T2>> assertion)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2>(
                 arrange,
@@ -179,17 +302,42 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> Then(Action<T1, T2> assertion, string description)
+        public TestBuilderWithActionAndAssertions<T1, T2> ThenReturns(Action<T1, T2> assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2>(
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions<T1, T2> ThenThrows()
+        {
+            return new TestBuilderWithActionAndExAssertions<T1, T2>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions<T1, T2> ThenThrows(string description)
+        {
+            return new TestBuilderWithActionAndExAssertions<T1, T2>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(description));
         }
 
         /// <summary>
@@ -211,15 +359,16 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndExAssertions<T1, T2> ThenThrows(
-            Action<T1, T2, Exception> assertion,
-            string description)
+        public TestBuilderWithActionAndExAssertions<T1, T2> ThenThrows(Action<T1, T2, Exception> assertion, string description)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2>(
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion, description));
         }
+
+        //// NB: Hmmm, I think there is room for a little more here. Treading on assertion libraries toes a little, but it is probably enough of a special
+        //// case that there is value: generic methods that assert that the exception thrown is of a particular type (and possibly even gives that type to the assertion)
     }
 
     /// <summary>
@@ -243,11 +392,36 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<T1, T2, T3> ThenReturns()
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<T1, T2, T3> ThenReturns(string description)
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> Then(Expression<Action<T1, T2, T3>> assertion)
+        public TestBuilderWithActionAndAssertions<T1, T2, T3> ThenReturns(Expression<Action<T1, T2, T3>> assertion)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
                 arrange,
@@ -256,17 +430,42 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Adds the first assertion for the test.
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> Then(Action<T1, T2, T3> assertion, string description)
+        public TestBuilderWithActionAndAssertions<T1, T2, T3> ThenReturns(Action<T1, T2, T3> assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions<T1, T2, T3> ThenThrows()
+        {
+            return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions<T1, T2, T3> ThenThrows(string description)
+        {
+            return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(description));
         }
 
         /// <summary>
@@ -288,14 +487,15 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndExAssertions<T1, T2, T3> ThenThrows(
-            Action<T1, T2, T3, Exception> assertion,
-            string description)
+        public TestBuilderWithActionAndExAssertions<T1, T2, T3> ThenThrows(Action<T1, T2, T3, Exception> assertion, string description)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion, description));
         }
+
+        //// NB: Hmmm, I think there is room for a little more here. Treading on assertion libraries toes a little, but it is probably enough of a special
+        //// case that there is value: generic methods that assert that the exception thrown is of a particular type (and possibly even gives that type to the assertion)
     }
 }

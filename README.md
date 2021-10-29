@@ -1,3 +1,5 @@
+![FlUnit Logo](src/FlUnitIcon.png)
+
 # FlUnit
 
 [![NuGet version (FlUnit)](https://img.shields.io/nuget/v/FlUnit.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit/)

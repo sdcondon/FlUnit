@@ -63,11 +63,7 @@ namespace FlUnit
             {
                 Action = (outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     action();
                 };
                 Description = description;
@@ -77,14 +73,19 @@ namespace FlUnit
             {
                 Action = (outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     expression.Compile()();
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (outcome) =>
+                {
+                    outcome.ThrowIfException();
+                };
+                Description = description;
             }
 
             public Action<TestActionOutcome> Action { get; }
@@ -155,11 +156,7 @@ namespace FlUnit
             {
                 Action = (a, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     action(a);
                 };
                 Description = description;
@@ -169,14 +166,19 @@ namespace FlUnit
             {
                 Action = (a, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     expression.Compile()(a);
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (a, outcome) =>
+                {
+                    outcome.ThrowIfException();
+                };
+                Description = description;
             }
 
             public Action<T1, TestActionOutcome> Action { get; }
@@ -248,11 +250,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     action(a1, a2);
                 };
                 Description = description;
@@ -262,14 +260,19 @@ namespace FlUnit
             {
                 Action = (a1, a2, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     expression.Compile()(a1, a2);
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (a1, a2, outcome) =>
+                {
+                    outcome.ThrowIfException();
+                };
+                Description = description;
             }
 
             public Action<T1, T2, TestActionOutcome> Action { get; }
@@ -342,11 +345,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, a3, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     action(a1, a2, a3);
                 };
                 Description = description;
@@ -356,14 +355,19 @@ namespace FlUnit
             {
                 Action = (a1, a2, a3, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     expression.Compile()(a1, a2, a3);
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (a1, a2, a3, outcome) =>
+                {
+                    outcome.ThrowIfException();
+                };
+                Description = description;
             }
 
             public Action<T1, T2, T3, TestActionOutcome> Action { get; }

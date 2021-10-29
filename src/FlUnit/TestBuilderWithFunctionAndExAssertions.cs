@@ -87,6 +87,15 @@ namespace FlUnit
                 Description = expression.Body.ToString();
             }
 
+            internal Assertion(string description)
+            {
+                Action = (outcome) =>
+                {
+                    outcome.ThrowIfNoException();
+                };
+                Description = description;
+            }
+
             public Action<TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
@@ -178,6 +187,15 @@ namespace FlUnit
                     expression.Compile()(a, outcome.Exception);
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (a, outcome) =>
+                {
+                    outcome.ThrowIfNoException();
+                };
+                Description = description;
             }
 
             public Action<T1, TestFunctionOutcome<TResult>> Action { get; }
@@ -274,6 +292,15 @@ namespace FlUnit
                 Description = expression.Body.ToString();
             }
 
+            internal Assertion(string description)
+            {
+                Action = (a1, a2, outcome) =>
+                {
+                    outcome.ThrowIfNoException();
+                };
+                Description = description;
+            }
+
             public Action<T1, T2, TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
@@ -367,6 +394,15 @@ namespace FlUnit
                     expression.Compile()(a1, a2, a3, outcome.Exception);
                 };
                 Description = expression.Body.ToString();
+            }
+
+            internal Assertion(string description)
+            {
+                Action = (a1, a2, a3, outcome) =>
+                {
+                    outcome.ThrowIfNoException();
+                };
+                Description = description;
             }
 
             public Action<T1, T2, T3, TestFunctionOutcome<TResult>> Action { get; }

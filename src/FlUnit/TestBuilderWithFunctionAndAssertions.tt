@@ -102,6 +102,15 @@ namespace FlUnit
                 Description = expression.Body.ToString();
             }
 
+            internal Assertion(string description)
+            {
+                Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
+                {
+                    outcome.ThrowIfException();
+                };
+                Description = description;
+            }
+
             public Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }

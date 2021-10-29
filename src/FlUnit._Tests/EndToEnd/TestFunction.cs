@@ -14,7 +14,7 @@ namespace FlUnit._Tests
             // Arrange
             Test test = TestThat
                 .When(() => 1)
-                .Then(retVal => { }, "Empty assertion");
+                .ThenReturns();
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -24,7 +24,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("Empty assertion");
+            assertion.Description.ShouldBe("Test function should return successfully");
             ((Action)assertion.Invoke).ShouldNotThrow();
         }
 
@@ -35,7 +35,7 @@ namespace FlUnit._Tests
             Test test = TestThat
                 .Given(() => new { x = 1, y = 1 })
                 .When(given => given.x + given.y)
-                .Then((_, sum) => sum.ShouldBe(2));
+                .ThenReturns((_, sum) => sum.ShouldBe(2));
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -57,7 +57,7 @@ namespace FlUnit._Tests
                 .Given(() => 1)
                 .And(() => 1)
                 .When((x, y) => x + y)
-                .Then((x, _, sum) => sum.ShouldBeGreaterThan(x))
+                .ThenReturns((x, _, sum) => sum.ShouldBeGreaterThan(x))
                 .And((_, y, sum) => sum.ShouldBeGreaterThan(y));
 
             // Act & Assert
@@ -98,13 +98,34 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
+        public void ExpectedExceptionThrown_Shorthand()
+        {
+            // Arrange
+            Test test = TestThat
+                .Given(() => new { x = 1, y = 0 })
+                .When(given => given.x / given.y)
+                .ThenThrows();
+
+            // Act & Assert
+            ((Action)test.Arrange).ShouldNotThrow();
+            test.Cases.Count.ShouldBe(1);
+
+            ((Action)test.Cases.Single().Act).ShouldNotThrow();
+            test.Cases.Single().Assertions.Count.ShouldBe(1);
+
+            var assertion = test.Cases.Single().Assertions.Single();
+            assertion.Description.ShouldBe("Test function should throw an exception");
+            ((Action)assertion.Invoke).ShouldNotThrow();
+        }
+
+        [TestMethod]
         public void FailingAssertion()
         {
             // Arrange
             Test test = TestThat
                 .Given(() => new { x = 1, y = 1 })
                 .When(given => given.x + given.y)
-                .Then((_, sum) => sum.ShouldBe(3));
+                .ThenReturns((_, sum) => sum.ShouldBe(3));
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -123,7 +144,7 @@ namespace FlUnit._Tests
         {
             Test test = TestThat
                 .When(() => 1)
-                .Then(retVal => { }, "Empty assertion");
+                .ThenReturns(retVal => { }, "Empty assertion");
 
             ((Action)test.Arrange).ShouldNotThrow();
             test.Cases.Count.ShouldBe(1);

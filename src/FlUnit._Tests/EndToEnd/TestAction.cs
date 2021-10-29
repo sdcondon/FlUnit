@@ -15,7 +15,7 @@ namespace FlUnit._Tests
             // Arrange
             Test test = TestThat
                 .When(() => { })
-                .Then(() => { }, "Empty assertion");
+                .ThenReturns();
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -25,7 +25,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("Empty assertion");
+            assertion.Description.ShouldBe("Test action should return successfully");
             ((Action)assertion.Invoke).ShouldNotThrow();
         }
 
@@ -36,7 +36,7 @@ namespace FlUnit._Tests
             Test test = TestThat
                 .Given(() => new StringBuilder())
                 .When(sb => { sb.Append("A"); })
-                .Then(sb => sb.Length.ShouldBe(1));
+                .ThenReturns(sb => sb.Length.ShouldBe(1));
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -58,7 +58,7 @@ namespace FlUnit._Tests
                 .Given(() => new StringBuilder())
                 .And(() => "A")
                 .When((sb, str) => { sb.Append(str); })
-                .Then((sb, str) => sb.Length.ShouldBe(str.Length))
+                .ThenReturns((sb, str) => sb.Length.ShouldBe(str.Length))
                 .And((sb, str) => sb.Capacity.ShouldBeGreaterThanOrEqualTo(sb.Length));
 
             // Act & Assert
@@ -99,13 +99,34 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
+        public void ExpectedExceptionThrown_Shorthand()
+        {
+            // Arrange
+            Test test = TestThat
+                .Given(() => new StringBuilder(capacity: 0, maxCapacity: 1))
+                .When(sb => { sb.Append("AB"); })
+                .ThenThrows();
+
+            // Act & Assert
+            ((Action)test.Arrange).ShouldNotThrow();
+            test.Cases.Count.ShouldBe(1);
+
+            ((Action)test.Cases.Single().Act).ShouldNotThrow();
+            test.Cases.Single().Assertions.Count.ShouldBe(1);
+
+            var assertion = test.Cases.Single().Assertions.Single();
+            assertion.Description.ShouldBe("Test action should throw an exception");
+            ((Action)assertion.Invoke).ShouldNotThrow();
+        }
+
+        [TestMethod]
         public void FailingAssertion()
         {
             // Arrange
             Test test = TestThat
                 .Given(() => new StringBuilder())
                 .When(sb => { sb.Append("A"); })
-                .Then(sb => sb.Length.ShouldBe(2));
+                .ThenReturns(sb => sb.Length.ShouldBe(2));
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -124,7 +145,7 @@ namespace FlUnit._Tests
         {
             Test test = TestThat
                 .When(() => { })
-                .Then(() => { }, "Empty assertion");
+                .ThenReturns(() => { }, "Empty assertion");
 
             ((Action)test.Arrange).ShouldNotThrow();
             test.Cases.Count.ShouldBe(1);
