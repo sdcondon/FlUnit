@@ -46,7 +46,7 @@ namespace FlUnit
 <# } #>
 
         /// <summary>
-        /// Adds a "When" clause that returns a value.
+        /// Adds a "When" clause that does not return a value.
         /// </summary>
         /// <param name="testAction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
