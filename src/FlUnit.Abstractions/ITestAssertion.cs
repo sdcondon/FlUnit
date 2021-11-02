@@ -11,7 +11,7 @@
         string Description { get; }
 
         /// <summary>
-        /// Invokes the assertion.
+        /// Invokes the assertion. Failures are indicated by thrown exceptions.
         /// </summary>
         void Invoke();
     }

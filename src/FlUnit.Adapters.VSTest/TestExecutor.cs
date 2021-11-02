@@ -136,7 +136,7 @@ namespace FlUnit.Adapters.VSTest
                 EndTime = flCaseEnd,
             };
 
-            // Use different descriptions depending on multiplicity of csses and assertions.
+            // Use different descriptions depending on multiplicity of cases and assertions.
             // This makes results in Visual Studio itself look good - but the actual results miss out on some info (so not as good for TRX files).
             // Perhaps room for some configuration of naming strategy at some point.
             if (flTest.Cases.Count > 1 && flCase.Assertions.Count > 1)

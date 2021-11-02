@@ -4,16 +4,18 @@
 
 [![NuGet version (FlUnit)](https://img.shields.io/nuget/v/FlUnit.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit/) [![NuGet downloads (FlUnit)](https://img.shields.io/nuget/dt/FlUnit.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit/)
 
-Prototype for a test framework where tests are defined using a fluent builder. Includes a skeleton VSTest adapter which records each assertion in a separate result of the test. 
+A test framework in which tests are defined using a fluent builder. Includes a very basic VSTest adapter which records each assertion in a separate result of the test. 
 
-### Usage
+## Usage Guidance
+
+### Getting Started
 
 Create a (.NET 5) class library and add some package references:
-- `Microsoft.NET.Test.Sdk` - to identify this as a test project
-- `FlUnit` - which contains the important stuff - the builder and test classes
-- `FlUnit.Adapters.VSTest` - the VSTest adapter package, so that the VSTest platform knows how to find and run FlUnit tests.
-- You'll also need to include an assertion library of your choice - the example code below uses [`Shouldly`](https://shouldly.io/), for example.
-- [`coverlet.collector`](https://github.com/coverlet-coverage/coverlet) does work with FlUnit tests - so feel free to add that, too.
+- [`Microsoft.NET.Test.Sdk`](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/) - to identify this as a test project
+- [`FlUnit`](https://www.nuget.org/packages/FlUnit/) - which contains the important stuff - the builder and test classes
+- [`FlUnit.Adapters.VSTest`](https://www.nuget.org/packages/FlUnit.Adapters.VSTest/) - the VSTest adapter package, so that the VSTest platform knows how to find and run FlUnit tests.
+- You'll also need to include an assertion library of your choice - the example code below uses [`Shouldly`](https://www.nuget.org/packages/Shouldly/), for example.
+- [`coverlet.collector`](https://www.nuget.org/packages/coverlet.collector/) does work with FlUnit tests - so feel free to add that, too.
 
 As shown below, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them. More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
 
@@ -53,14 +55,16 @@ public static class MyTests
     .And((given, _) => given.thingy.IsProcessed.ShouldBeTrue())
     .And((given, _) => given.widget.HasProcessed.ShouldBeTrue());
 
-  // Expecting exceptions:
+  // Expecting exceptions is easy, and test traits are supported
+  // (at the test, class or assembly level):
+  [Trait("Category", "Negative Tests")]
   public static Test WidgetThrowsOnNullArg => TestThat
     .Given(() => new Widget("widget1"))
     .When(widget => widget.TryProcess(null))
     .ThenThrows((_, ex) => ex.ShouldBeOfType<ArgumentNullException>())
     .And((widget, _) => widget.HasProcessed.ShouldBeFalse());
 
-  // multiple test cases are supported without awkward attribute-based
+  // Parameterised tests are supported without awkward attribute-based
   // parameter retrieval:
   public static Test SumOfEvenAndOdd => TestThat
     .GivenEachOf(() => new[] { 1, 3, 5 })
@@ -71,7 +75,16 @@ public static class MyTests
 }
 ```
 
-### Pros
+With the VSTest adapter:
+* Tests are named for the name of the property.
+* Tests with multiple cases or multiple assertions give one result per test case per assertion. For now (configurability coming soon, though this is likely to remain the default), the label of each result depends on the multiplicity of cases and assertions:
+  * With a single case and multiple assertions, the result label is the description of the assertion.
+  * With multiple cases each with a single assertion, the result label is the ToString of the case (which when there are multiple given clauses, is a value tuple of each)
+  * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for test case \{case ToString\}"
+
+For more guidance, please see the [Extended Usage Guidance document](docs/extended-usage-guidance.md).
+
+### Notable Strengths
 - Succinct & readable.
   - I would argue that the resultant reduced thinking time & confusion risk significantly mitigates any performance shortfalls (which I should stress I don't necessarily know are there, end-to-end - but see the "cons" section for some suspicions).
   - In particular, the enforced structure for tests (notably, no interlacing of action and assertion) pushes you to write easily understandable tests. Unconvinced readers are invited to look at the [migration to FlUnit of the SCGraphTheory.Search tests](https://github.com/sdcondon/SCGraphTheory.Search/commit/e9e7a67d9fe15f0060e1a8d772ad556de05e73e2) for an example.
@@ -82,7 +95,7 @@ public static class MyTests
   - LINQ expression-valued assertions can be named automatically via ToString of expression bodies. This can make it easy to write tests of which the results are easy to understand. Like so:  
   ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
 
-### Cons
+### Notable Weaknesses
 - The enforced test structure can make certain scenarios mildly awkward. Consider for example what is needed to check the value of an out parameter.
 - All of the passing of test objects (arranged prerequisites, return values ..) between the provided delegates (as opposed to having a single test method) comes at a performance cost - though I've not run any explicit tests to validate the extent of this. The fact that the VSTest adapter is little more than a skeleton likely counteracts it to some degree at the moment.
 - LINQ expression-valued assertion clauses come with some drawbacks. Building an expression tree is relatively expensive, so there's an additional performance cost here. You also can't put breakpoints on them (though subjectively the desire to do this should be relatively rare - given that they're just assertions rather than the "meat" of the test).
