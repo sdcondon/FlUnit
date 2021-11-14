@@ -35,12 +35,12 @@ namespace FlUnit
         /// Adds the first assertion for the test if the test function is expected to return successfully. Specifically, adds an assertion that simply verifies that the test function returned successfully.
         /// </summary>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns()
+        public TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns()
         {
-            return new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>(
+            return new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>(
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
-                new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion("Test function should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion("Test function should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
         }
 
         /// <summary>
@@ -48,12 +48,12 @@ namespace FlUnit
         /// </summary>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns(string description)
+        public TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns(string description)
         {
-            return new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>(
+            return new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>(
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
-                new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(description));
+                new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(description));
         }
 
         /// <summary>
@@ -61,12 +61,12 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns(Expression<Action<<#= TList(i, "", ", ") #>TResult>> assertion)
+        public TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns(Expression<Action<<#= TList(i, "", ", ") #>TResult>> assertion)
         {
-            return new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>(
+            return new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>(
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
-                new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion));
+                new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion));
         }
 
         /// <summary>
@@ -75,12 +75,12 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns(Action<<#= TList(i, "", ", ") #>TResult> assertion, string description)
+        public TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns(Action<<#= TList(i, "", ", ") #>TResult> assertion, string description)
         {
-            return new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>(
+            return new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>(
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
-                new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion, description));
+                new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion, description));
         }
 
         /// <summary>

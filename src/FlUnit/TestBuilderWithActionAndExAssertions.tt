@@ -15,8 +15,8 @@ namespace FlUnit
 <# for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
 <# WriteLineIf(i > 0); #>
     /// <summary>
-    /// Builder for providing additional assertions for a test with a <#= i #> "Given" clause<#= Plural(i) #>
-    /// and for which the "When" clause does not return a value.
+    /// Builder for providing additional assertions for a test with <#= i #> "Given" clause<#= Plural(i) #>
+    /// and for which the "When" clause does not return a value, and is in fact expected to throw an exception.
     /// </summary>
 <# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
     public sealed class TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>

@@ -6,8 +6,8 @@ using System.Linq.Expressions;
 namespace FlUnit
 {
     /// <summary>
-    /// Builder for providing additional assertions for a test with a 0 "Given" clauses
-    /// and for which the "When" clause does not return a value.
+    /// Builder for providing additional assertions for a test with 0 "Given" clauses
+    /// and for which the "When" clause does not return a value, and is in fact expected to throw an exception.
     /// </summary>
     public sealed class TestBuilderWithActionAndExAssertions
     {
@@ -94,8 +94,8 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing additional assertions for a test with a 1 "Given" clause
-    /// and for which the "When" clause does not return a value.
+    /// Builder for providing additional assertions for a test with 1 "Given" clause
+    /// and for which the "When" clause does not return a value, and is in fact expected to throw an exception.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndExAssertions<T1>
@@ -187,8 +187,8 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing additional assertions for a test with a 2 "Given" clauses
-    /// and for which the "When" clause does not return a value.
+    /// Builder for providing additional assertions for a test with 2 "Given" clauses
+    /// and for which the "When" clause does not return a value, and is in fact expected to throw an exception.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
@@ -281,8 +281,8 @@ namespace FlUnit
     }
 
     /// <summary>
-    /// Builder for providing additional assertions for a test with a 3 "Given" clauses
-    /// and for which the "When" clause does not return a value.
+    /// Builder for providing additional assertions for a test with 3 "Given" clauses
+    /// and for which the "When" clause does not return a value, and is in fact expected to throw an exception.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>

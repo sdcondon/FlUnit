@@ -82,9 +82,13 @@ With the VSTest adapter:
   * With multiple cases each with a single assertion, the result label is the ToString of the case (which when there are multiple given clauses, is a value tuple of each)
   * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for test case \{case ToString\}"
 
+### Beyond Getting Started
+
 For more guidance, please see the [Extended Usage Guidance document](docs/extended-usage-guidance.md).
 
-### Notable Strengths
+### Notable Strengths & Weaknesses
+
+FlUnits notable strengths include:
 - Succinct & readable.
   - I would argue that the resultant reduced thinking time & confusion risk significantly mitigates any performance shortfalls (which I should stress I don't necessarily know are there, end-to-end - but see the "cons" section for some suspicions).
   - In particular, the enforced structure for tests (notably, no interlacing of action and assertion) pushes you to write easily understandable tests. Unconvinced readers are invited to look at the [migration to FlUnit of the SCGraphTheory.Search tests](https://github.com/sdcondon/SCGraphTheory.Search/commit/e9e7a67d9fe15f0060e1a8d772ad556de05e73e2) for an example.
@@ -95,7 +99,7 @@ For more guidance, please see the [Extended Usage Guidance document](docs/extend
   - LINQ expression-valued assertions can be named automatically via ToString of expression bodies. This can make it easy to write tests of which the results are easy to understand. Like so:  
   ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
 
-### Notable Weaknesses
+FlUnit's notable weaknesses include:
 - The enforced test structure can make certain scenarios mildly awkward. Consider for example what is needed to check the value of an out parameter.
 - All of the passing of test objects (arranged prerequisites, return values ..) between the provided delegates (as opposed to having a single test method) comes at a performance cost - though I've not run any explicit tests to validate the extent of this. The fact that the VSTest adapter is little more than a skeleton likely counteracts it to some degree at the moment.
 - LINQ expression-valued assertion clauses come with some drawbacks. Building an expression tree is relatively expensive, so there's an additional performance cost here. You also can't put breakpoints on them (though subjectively the desire to do this should be relatively rare - given that they're just assertions rather than the "meat" of the test).

@@ -22,11 +22,11 @@ namespace FlUnit
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
         /// </summary>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions ThenReturns()
+        public TestBuilderWithActionAndRVAssertions ThenReturns()
         {
-            return new TestBuilderWithActionAndAssertions(
+            return new TestBuilderWithActionAndRVAssertions(
                 testAction,
-                new TestBuilderWithActionAndAssertions.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndRVAssertions.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
         }
 
         /// <summary>
@@ -34,11 +34,11 @@ namespace FlUnit
         /// </summary>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions ThenReturns(string description)
+        public TestBuilderWithActionAndRVAssertions ThenReturns(string description)
         {
-            return new TestBuilderWithActionAndAssertions(
+            return new TestBuilderWithActionAndRVAssertions(
                 testAction,
-                new TestBuilderWithActionAndAssertions.Assertion(description));
+                new TestBuilderWithActionAndRVAssertions.Assertion(description));
         }
 
         /// <summary>
@@ -46,11 +46,11 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions ThenReturns(Expression<Action> assertion)
+        public TestBuilderWithActionAndRVAssertions ThenReturns(Expression<Action> assertion)
         {
-            return new TestBuilderWithActionAndAssertions(
+            return new TestBuilderWithActionAndRVAssertions(
                 testAction,
-                new TestBuilderWithActionAndAssertions.Assertion(assertion));
+                new TestBuilderWithActionAndRVAssertions.Assertion(assertion));
         }
 
         /// <summary>
@@ -59,11 +59,11 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions ThenReturns(Action assertion, string description)
+        public TestBuilderWithActionAndRVAssertions ThenReturns(Action assertion, string description)
         {
-            return new TestBuilderWithActionAndAssertions(
+            return new TestBuilderWithActionAndRVAssertions(
                 testAction,
-                new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
+                new TestBuilderWithActionAndRVAssertions.Assertion(assertion, description));
         }
 
         /// <summary>
@@ -140,12 +140,12 @@ namespace FlUnit
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
         /// </summary>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> ThenReturns()
+        public TestBuilderWithActionAndRVAssertions<T1> ThenReturns()
         {
-            return new TestBuilderWithActionAndAssertions<T1>(
+            return new TestBuilderWithActionAndRVAssertions<T1>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndRVAssertions<T1>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
         }
 
         /// <summary>
@@ -153,12 +153,12 @@ namespace FlUnit
         /// </summary>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> ThenReturns(string description)
+        public TestBuilderWithActionAndRVAssertions<T1> ThenReturns(string description)
         {
-            return new TestBuilderWithActionAndAssertions<T1>(
+            return new TestBuilderWithActionAndRVAssertions<T1>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1>.Assertion(description));
+                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(description));
         }
 
         /// <summary>
@@ -166,12 +166,12 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> ThenReturns(Expression<Action<T1>> assertion)
+        public TestBuilderWithActionAndRVAssertions<T1> ThenReturns(Expression<Action<T1>> assertion)
         {
-            return new TestBuilderWithActionAndAssertions<T1>(
+            return new TestBuilderWithActionAndRVAssertions<T1>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion));
+                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion));
         }
 
         /// <summary>
@@ -180,12 +180,12 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> ThenReturns(Action<T1> assertion, string description)
+        public TestBuilderWithActionAndRVAssertions<T1> ThenReturns(Action<T1> assertion, string description)
         {
-            return new TestBuilderWithActionAndAssertions<T1>(
+            return new TestBuilderWithActionAndRVAssertions<T1>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description));
+                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion, description));
         }
 
         /// <summary>
@@ -267,12 +267,12 @@ namespace FlUnit
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
         /// </summary>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> ThenReturns()
+        public TestBuilderWithActionAndRVAssertions<T1, T2> ThenReturns()
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2>(
+            return new TestBuilderWithActionAndRVAssertions<T1, T2>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
         }
 
         /// <summary>
@@ -280,12 +280,12 @@ namespace FlUnit
         /// </summary>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> ThenReturns(string description)
+        public TestBuilderWithActionAndRVAssertions<T1, T2> ThenReturns(string description)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2>(
+            return new TestBuilderWithActionAndRVAssertions<T1, T2>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(description));
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(description));
         }
 
         /// <summary>
@@ -293,12 +293,12 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> ThenReturns(Expression<Action<T1, T2>> assertion)
+        public TestBuilderWithActionAndRVAssertions<T1, T2> ThenReturns(Expression<Action<T1, T2>> assertion)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2>(
+            return new TestBuilderWithActionAndRVAssertions<T1, T2>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion));
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion));
         }
 
         /// <summary>
@@ -307,12 +307,12 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> ThenReturns(Action<T1, T2> assertion, string description)
+        public TestBuilderWithActionAndRVAssertions<T1, T2> ThenReturns(Action<T1, T2> assertion, string description)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2>(
+            return new TestBuilderWithActionAndRVAssertions<T1, T2>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description));
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion, description));
         }
 
         /// <summary>
@@ -395,12 +395,12 @@ namespace FlUnit
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
         /// </summary>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> ThenReturns()
+        public TestBuilderWithActionAndRVAssertions<T1, T2, T3> ThenReturns()
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+            return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
         }
 
         /// <summary>
@@ -408,12 +408,12 @@ namespace FlUnit
         /// </summary>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> ThenReturns(string description)
+        public TestBuilderWithActionAndRVAssertions<T1, T2, T3> ThenReturns(string description)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+            return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(description));
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(description));
         }
 
         /// <summary>
@@ -421,12 +421,12 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> ThenReturns(Expression<Action<T1, T2, T3>> assertion)
+        public TestBuilderWithActionAndRVAssertions<T1, T2, T3> ThenReturns(Expression<Action<T1, T2, T3>> assertion)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+            return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion));
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion));
         }
 
         /// <summary>
@@ -435,12 +435,12 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> ThenReturns(Action<T1, T2, T3> assertion, string description)
+        public TestBuilderWithActionAndRVAssertions<T1, T2, T3> ThenReturns(Action<T1, T2, T3> assertion, string description)
         {
-            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+            return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description));
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion, description));
         }
 
         /// <summary>

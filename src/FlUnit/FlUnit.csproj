@@ -31,10 +31,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithAction.tt</DependentUpon>
     </None>
-    <None Include="TestBuilderWithActionAndAssertions.cs">
+    <None Include="TestBuilderWithActionAndRVAssertions.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestBuilderWithActionAndAssertions.tt</DependentUpon>
+      <DependentUpon>TestBuilderWithActionAndRVAssertions.tt</DependentUpon>
     </None>
 	<None Include="TestBuilderWithActionAndExAssertions.cs">
       <DependentUpon>TestBuilderWithActionAndExAssertions.tt</DependentUpon>
@@ -46,10 +46,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithFunction.tt</DependentUpon>
     </None>
-	<None Include="TestBuilderWithFunctionAndAssertions.cs">
+	<None Include="TestBuilderWithFunctionAndRVAssertions.cs">
 	  <DesignTime>True</DesignTime>
 	  <AutoGen>True</AutoGen>
-	  <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+	  <DependentUpon>TestBuilderWithFunctionAndRVAssertions.tt</DependentUpon>
 	</None>
 	<None Include="TestBuilderWithFunctionAndExAssertions.cs">
       <DependentUpon>TestBuilderWithFunctionAndExAssertions.tt</DependentUpon>
@@ -77,9 +77,9 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestBuilderWithAction.cs</LastGenOutput>
     </None>
-    <None Update="TestBuilderWithActionAndAssertions.tt">
+    <None Update="TestBuilderWithActionAndRVAssertions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestBuilderWithActionAndAssertions.cs</LastGenOutput>
+      <LastGenOutput>TestBuilderWithActionAndRVAssertions.cs</LastGenOutput>
     </None>
 	<None Update="TestBuilderWithActionAndExAssertions.tt">
       <LastGenOutput>TestBuilderWithActionAndExAssertions.cs</LastGenOutput>
@@ -93,9 +93,9 @@
       <LastGenOutput>TestBuilderWithFunctionAndExAssertions.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="TestBuilderWithFunctionAndAssertions.tt">
+    <None Update="TestBuilderWithFunctionAndRVAssertions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestBuilderWithFunctionAndAssertions.cs</LastGenOutput>
+      <LastGenOutput>TestBuilderWithFunctionAndRVAssertions.cs</LastGenOutput>
     </None>
     <None Update="TestBuilderWithPrerequisites.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -128,6 +128,11 @@
       <AutoGen>True</AutoGen>
 	  <DependentUpon>TestBuilderWithActionAndExAssertions.tt</DependentUpon>
 	</Compile>
+	<Compile Update="TestBuilderWithActionAndRVAssertions.cs">
+	  <DesignTime>True</DesignTime>
+	  <AutoGen>True</AutoGen>
+	  <DependentUpon>TestBuilderWithActionAndRVAssertions.tt</DependentUpon>
+	</Compile>
     <Compile Update="TestBuilderWithFunction.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -142,6 +147,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithFunctionAndExAssertions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TestBuilderWithFunctionAndRVAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestBuilderWithFunctionAndRVAssertions.tt</DependentUpon>
     </Compile>
     <Compile Update="TestBuilderWithPrerequisites.cs">
       <DesignTime>True</DesignTime>
