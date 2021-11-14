@@ -77,6 +77,56 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
+        public void MultipleCases_SomeExpectedToThrow()
+        {
+            // Arrange
+            // This is a horrible test - and I suspect that all tests where 
+            // some cases are expected to throw and others aren't would look terible to me.
+            // Hence feeling very conflicted about adding Then(..) back in.
+            // With a TestCase class containing some logic it might be better though, and libraries
+            // should empower people, not constrain them..
+            Test test = TestThat
+                .GivenEachOf(() => new[] { 2, 1, 0 })
+                .When(x => 2 / x)
+                .Then((x, outcome) =>
+                {
+                    if (x > 0)
+                    {
+                        outcome.Result.ShouldBeGreaterThan(0);
+                    }
+                    else
+                    {
+                        outcome.Exception.ShouldBeOfType<DivideByZeroException>();
+                    }
+                }, "Outcome should be as expected");
+
+            // Act & Assert
+            ((Action)test.Arrange).ShouldNotThrow();
+            test.Cases.Count.ShouldBe(3);
+
+            var case1 = test.Cases.First();
+            case1.Description.ShouldBe("2");
+            ((Action)case1.Act).ShouldNotThrow();
+            case1.Assertions.Count.ShouldBe(1);
+            case1.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
+            ((Action)case1.Assertions.Single().Invoke).ShouldNotThrow();
+
+            var case2 = test.Cases.Skip(1).First();
+            case2.Description.ShouldBe("1");
+            ((Action)case2.Act).ShouldNotThrow();
+            case2.Assertions.Count.ShouldBe(1);
+            case2.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
+            ((Action)case2.Assertions.Single().Invoke).ShouldNotThrow();
+
+            var case3 = test.Cases.Skip(2).First();
+            case3.Description.ShouldBe("0");
+            ((Action)case3.Act).ShouldNotThrow();
+            case3.Assertions.Count.ShouldBe(1);
+            case3.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
+            ((Action)case3.Assertions.Single().Invoke).ShouldNotThrow();
+        }
+
+        [TestMethod]
         public void ExpectedExceptionThrown()
         {
             // Arrange

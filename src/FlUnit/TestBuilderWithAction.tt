@@ -31,6 +31,41 @@ namespace FlUnit
         }
 
         /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> assertion)
+        {
+            return new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>(
+<# WriteLineIf(i > 0, "arrange,", 4); #>
+                testAction,
+                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Action<<#= TList(i, "", ", ") #>TestActionOutcome> assertion, string description)
+        {
+            return new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>(
+<# WriteLineIf(i > 0, "arrange,", 4); #>
+                testAction,
+                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description));
+        }
+
+        /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
         /// </summary>
         /// <returns>A builder for providing additional assertions for the test.</returns>

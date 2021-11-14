@@ -13,6 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TestBuilderWithActionAndRVAssertions - Copy.cs" />
+    <Compile Remove="TestBuilderWithFunctionAndRVAssertions - Copy.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="FlUnit.xml" />
   </ItemGroup>
 
@@ -31,6 +36,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithAction.tt</DependentUpon>
     </None>
+    <None Include="TestBuilderWithActionAndAssertions.cs">
+      <DependentUpon>TestBuilderWithActionAndAssertions.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </None>
     <None Include="TestBuilderWithActionAndRVAssertions.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -45,6 +55,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithFunction.tt</DependentUpon>
+    </None>
+    <None Include="TestBuilderWithFunctionAndAssertions.cs">
+      <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </None>
 	<None Include="TestBuilderWithFunctionAndRVAssertions.cs">
 	  <DesignTime>True</DesignTime>
@@ -77,6 +92,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestBuilderWithAction.cs</LastGenOutput>
     </None>
+    <None Update="TestBuilderWithActionAndAssertions.tt">
+      <LastGenOutput>TestBuilderWithActionAndAssertions.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="TestBuilderWithActionAndRVAssertions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestBuilderWithActionAndRVAssertions.cs</LastGenOutput>
@@ -91,6 +110,10 @@
     </None>
     <None Update="TestBuilderWithFunctionAndExAssertions.tt">
       <LastGenOutput>TestBuilderWithFunctionAndExAssertions.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="TestBuilderWithFunctionAndAssertions.tt">
+      <LastGenOutput>TestBuilderWithFunctionAndAssertions.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="TestBuilderWithFunctionAndRVAssertions.tt">

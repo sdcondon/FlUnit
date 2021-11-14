@@ -1,0 +1,93 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="_Common.t4" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+
+namespace FlUnit
+{
+<# for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
+<# WriteLineIf(i > 0); #>
+    /// <summary>
+    /// Builder for providing additional assertions for a test with a <#= i #> "Given" clause<#= Plural(i) #>
+    /// and for which the "When" clause does not return a value.
+    /// </summary>
+<# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
+    public sealed class TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>
+    {
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
+        private readonly Action<#= TList(i, "<", ">") #> testAction;
+        private readonly List<Assertion> assertions = new List<Assertion>();
+
+        internal TestBuilderWithActionAndAssertions(
+<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
+            Action<#= TList(i, "<", ">") #> testAction,
+            Assertion assertion)
+        {
+<# WriteLineIf(i > 0, $"this.arrange = arrange;", 3); #>
+            this.testAction = testAction;
+            assertions.Add(assertion);
+        }
+
+        /// <summary>
+        /// Implicitly converts a <see cref="TestBuilderWithActionAndAssertions<#= TList(i, "{", "}") #>"/> to a <see cref="Test"/> (by building it).
+        /// </summary>
+        /// <param name="builder">The builder to convert.</param>
+        public static implicit operator Test(TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> builder)
+        {
+            return new TestAction<#= TList(i, "<", ">") #>(
+<# WriteLineIf(i > 0, $"builder.arrange,", 4); #>
+                builder.testAction,
+                tc => builder.assertions.Select(a => new TestAction<#= TList(i, "<", ">") #>.Case.Assertion(tc, a.Action, a.Description)));
+        }
+
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> And(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> assertion)
+        {
+            assertions.Add(new Assertion(assertion));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> And(Action<<#= TList(i, "", ", ") #>TestActionOutcome> assertion, string description)
+        {
+            assertions.Add(new Assertion(assertion, description));
+            return this;
+        }
+
+        internal class Assertion
+        {
+            internal Assertion(Action<<#= TList(i, "", ", ") #>TestActionOutcome> action, string description)
+            {
+                Action = action;
+                Description = description;
+            }
+
+            internal Assertion(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> expression)
+            {
+                Action = expression.Compile();
+                Description = expression.Body.ToString();
+            }
+
+            public Action<<#= TList(i, "", ", ") #>TestActionOutcome> Action { get; }
+
+            public string Description { get; }
+        }
+    }
+<# } #>
+}

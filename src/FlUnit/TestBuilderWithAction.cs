@@ -19,6 +19,39 @@ namespace FlUnit
         }
 
         /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions Then(Expression<Action<TestActionOutcome>> assertion)
+        {
+            return new TestBuilderWithActionAndAssertions(
+                testAction,
+                new TestBuilderWithActionAndAssertions.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions Then(Action<TestActionOutcome> assertion, string description)
+        {
+            return new TestBuilderWithActionAndAssertions(
+                testAction,
+                new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
+        }
+
+        /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
         /// </summary>
         /// <returns>A builder for providing additional assertions for the test.</returns>
@@ -134,6 +167,41 @@ namespace FlUnit
         {
             this.arrange = arrange;
             this.testAction = testAction;
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<T1> Then(Expression<Action<T1, TestActionOutcome>> assertion)
+        {
+            return new TestBuilderWithActionAndAssertions<T1>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<T1> Then(Action<T1, TestActionOutcome> assertion, string description)
+        {
+            return new TestBuilderWithActionAndAssertions<T1>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description));
         }
 
         /// <summary>
@@ -264,6 +332,41 @@ namespace FlUnit
         }
 
         /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<T1, T2> Then(Expression<Action<T1, T2, TestActionOutcome>> assertion)
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<T1, T2> Then(Action<T1, T2, TestActionOutcome> assertion, string description)
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description));
+        }
+
+        /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
         /// </summary>
         /// <returns>A builder for providing additional assertions for the test.</returns>
@@ -389,6 +492,41 @@ namespace FlUnit
         {
             this.arrange = arrange;
             this.testAction = testAction;
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<T1, T2, T3> Then(Expression<Action<T1, T2, T3, TestActionOutcome>> assertion)
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<T1, T2, T3> Then(Action<T1, T2, T3, TestActionOutcome> assertion, string description)
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description));
         }
 
         /// <summary>
