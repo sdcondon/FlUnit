@@ -77,11 +77,7 @@ namespace FlUnit
             {
                 Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one");
-                    }
-
+                    outcome.ThrowIfNoException();
                     action(<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome.Exception);
                 };
                 Description = description;
@@ -91,11 +87,7 @@ namespace FlUnit
             {
                 Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
-                    }
-
+                    outcome.ThrowIfNoException();
                     expression.Compile()(<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome.Exception);
                 };
                 Description = expression.Body.ToString();

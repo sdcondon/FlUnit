@@ -63,11 +63,7 @@ namespace FlUnit
             {
                 Action = (outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one");
-                    }
-
+                    outcome.ThrowIfNoException();
                     action(outcome.Exception);
                 };
                 Description = description;
@@ -77,11 +73,7 @@ namespace FlUnit
             {
                 Action = (outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
-                    }
-
+                    outcome.ThrowIfNoException();
                     expression.Compile()(outcome.Exception);
                 };
                 Description = expression.Body.ToString();
@@ -165,11 +157,7 @@ namespace FlUnit
             {
                 Action = (a, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one");
-                    }
-
+                    outcome.ThrowIfNoException();
                     action(a, outcome.Exception);
                 };
                 Description = description;
@@ -179,11 +167,7 @@ namespace FlUnit
             {
                 Action = (a, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
-                    }
-
+                    outcome.ThrowIfNoException();
                     expression.Compile()(a, outcome.Exception);
                 };
                 Description = expression.Body.ToString();
@@ -268,11 +252,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one");
-                    }
-
+                    outcome.ThrowIfNoException();
                     action(a1, a2, outcome.Exception);
                 };
                 Description = description;
@@ -282,11 +262,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
-                    }
-
+                    outcome.ThrowIfNoException();
                     expression.Compile()(a1, a2, outcome.Exception);
                 };
                 Description = expression.Body.ToString();
@@ -372,11 +348,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, a3, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one");
-                    }
-
+                    outcome.ThrowIfNoException();
                     action(a1, a2, a3, outcome.Exception);
                 };
                 Description = description;
@@ -386,11 +358,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, a3, outcome) =>
                 {
-                    if (outcome.Exception == null)
-                    {
-                        throw new Exception("An exception was expected but the When clause didn't throw one", outcome.Exception);
-                    }
-
+                    outcome.ThrowIfNoException();
                     expression.Compile()(a1, a2, a3, outcome.Exception);
                 };
                 Description = expression.Body.ToString();

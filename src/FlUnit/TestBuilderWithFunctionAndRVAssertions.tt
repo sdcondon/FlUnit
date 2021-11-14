@@ -78,11 +78,7 @@ namespace FlUnit
             {
                 Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     action(<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome.Result);
                 };
                 Description = description;
@@ -92,11 +88,7 @@ namespace FlUnit
             {
                 Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     expression.Compile()(<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome.Result);
                 };
                 Description = expression.Body.ToString();

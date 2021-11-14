@@ -64,11 +64,7 @@ namespace FlUnit
             {
                 Action = (outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     action(outcome.Result);
                 };
                 Description = description;
@@ -78,11 +74,7 @@ namespace FlUnit
             {
                 Action = (outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     expression.Compile()(outcome.Result);
                 };
                 Description = expression.Body.ToString();
@@ -166,11 +158,7 @@ namespace FlUnit
             {
                 Action = (a, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     action(a, outcome.Result);
                 };
                 Description = description;
@@ -180,11 +168,7 @@ namespace FlUnit
             {
                 Action = (a, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     expression.Compile()(a, outcome.Result);
                 };
                 Description = expression.Body.ToString();
@@ -269,11 +253,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     action(a1, a2, outcome.Result);
                 };
                 Description = description;
@@ -283,11 +263,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     expression.Compile()(a1, a2, outcome.Result);
                 };
                 Description = expression.Body.ToString();
@@ -373,11 +349,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, a3, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     action(a1, a2, a3, outcome.Result);
                 };
                 Description = description;
@@ -387,11 +359,7 @@ namespace FlUnit
             {
                 Action = (a1, a2, a3, outcome) =>
                 {
-                    if (outcome.Exception != null)
-                    {
-                        ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-                    }
-
+                    outcome.ThrowIfException();
                     expression.Compile()(a1, a2, a3, outcome.Result);
                 };
                 Description = expression.Body.ToString();
