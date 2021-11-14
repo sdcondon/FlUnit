@@ -30,9 +30,9 @@ public static class MyTests
 ### Pre-Requisite Builder Re-Use
 
 Re-use of the builders that are returned at each step of building up the pre-requisites of a test is one way to achieve succinct and readable test code re-use.
-A simple example follows - which doesn't actually re-use a builder instance, but would work just as well if it did).
+A simple example follows - which doesn't actually re-use a builder instance, but would work just as well if it did.
 
-Note that once you start specifying assertions, the builder is mutable (each "And" modifies the existing builder..), so can't re-use (the getter approach below would work though). Might revisit this decision at some point. Not sure why people would want to re-use a builder once the "When" clause has been specified - but there is something to be said for consistent behaviour..
+Note that once you start specifying assertions, the builders are mutable (each "And" modifies the existing builder..), so can't be re-used (the getter approach below would work though). Might revisit this decision at some point. Not sure why people would want to re-use a builder once the "When" clause has been specified, but there is something to be said for consistent behaviour..
 
 ```
 public static class MyTests
