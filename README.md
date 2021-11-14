@@ -37,7 +37,7 @@ public static class MyTests
     .Given(() => new Widget("widget1"))
     .And(() => new Thingy("thingy1"))
     .When((wi, th) => wi.TryProcess(th))
-    .Then((wi, th, retVal) => retVal.ShouldBeTrue())
+    .ThenReturns((wi, th, retVal) => retVal.ShouldBeTrue())
     .And((wi, th, retVal) => th.IsProcessed.ShouldBeTrue())
     .And((wi, th, retVal) => wi.HasProcessed.ShouldBeTrue());
 
@@ -51,7 +51,7 @@ public static class MyTests
       thingy = new Thingy("thingy1")
     })
     .When(given => given.widget.TryProcess(given.thingy))
-    .Then((_, retVal) => retVal.ShouldBeTrue())
+    .ThenReturns((_, retVal) => retVal.ShouldBeTrue())
     .And((given, _) => given.thingy.IsProcessed.ShouldBeTrue())
     .And((given, _) => given.widget.HasProcessed.ShouldBeTrue());
 
@@ -70,7 +70,7 @@ public static class MyTests
     .GivenEachOf(() => new[] { 1, 3, 5 })
     .AndEachOf(() => new[] { 2, 4, 6 })
     .When((x, y) => x + y)
-    .Then((_, _, sum) => (sum % 2).ShouldBe(1))
+    .ThenReturns((_, _, sum) => (sum % 2).ShouldBe(1))
     .And((x, _, sum) => sum.ShouldBeGreaterThan(x));
 }
 ```
@@ -112,11 +112,10 @@ The plan is to continue to chip away at this, but I have now more or less reache
 - General ongoing:
   - Take some cues from the vstest adapter for mstest - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
 - Specific, highest-priority first:
-  - *(Oct)* QoL: Add parameterless `ThenThrows()` and `ThenDoesntThrow()` for simple assertions that an exception was thrown or not. Perhaps actually put the version that accepts an Outcome back in (useful in the "TestCase" prereq pattern, where some expected to throw an exception and others not). Perhaps `Then()` (outcome), `ThenReturns()` (ret val - including parameterless overload), `ThenThrows()` (exception, including parameterless overload)..
-  - *(Oct/Nov)* QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`? 
   - *(Nov)* Assertions: Simply interpreting exceptions as failure and leaving this to other libraries for the most part, but e.g. equivalents of Assert.Fail and Assert.Inconclusive may be useful?
   - *(Nov)* Add in initial test settings - initial settings likely to include allowing specification of strategy for result naming and duration records - overridable by inidividual tests (both of which currently make some "sensible" decisions which may not be appropriate in all situations.
   - *(Nov/Dec)* Look into parallelisation. Partition configuration likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Initial factoring of core logic away from VSTest-specific classes may happen as part of this - though I'm wary of needless complexity until such time as a second adapter exists. Also may provide more powerful trait specification as part of this (e.g. specify single trait at assembly level to give all tests a trait for their class/prop name).
+  - *(Dec)* QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`? Perhaps somehow support IFormatProviders for test cases (thus making it easy to specify with test settings)? Needs careful thought..
   - *(Dec)* Think a little more about target frameworks. Unlikely to ever explicitly support full framework (meaning, among other things, that Full PDBs unlikely to ever be supported) - unless overwhelming complaints. But will give some thought to explicit targeting beyond .NET Standard. Not something I've had to consider before, so will need to do some research into factors to consider.
   - *(Dec/Jan)* Basic attachment & output support?
   - *(Jan)* V1 diligence & release
