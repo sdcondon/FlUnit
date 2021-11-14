@@ -29,7 +29,8 @@ public static class MyTests
 
 ### Builder Re-Use
 
-Re-use of the builders that are returned at each step of building a test is one way to achieve succinct and readable test code re-use. A simple example follows (though of course there a large number of possible variations on this):
+Re-use of the builders that are returned at each step of building a test is one way to achieve succinct and readable test code re-use.
+A simple example follows (which doesn't actually re-use a builder instance, but you can do so if you wish - and of course there a large number of possible variations on this):
 
 ```
 public static class MyTests
