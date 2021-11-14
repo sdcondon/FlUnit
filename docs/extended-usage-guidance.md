@@ -23,7 +23,7 @@ public static class MyTests
             new TestCase(Char: 'A', Count: 2, Expected: "AA"),
         })
         .When(tc => new string(tc.Char, tc.Count))
-        .Then((tc, retVal) => retVal.ShouldBe(tc.Expected));
+        .ThenReturns((tc, retVal) => retVal.ShouldBe(tc.Expected));
 }
 ```
 
@@ -67,7 +67,7 @@ public static class MyTests
 {   
     public static Test StandardProcessBehaviour => GivenAWidgetAndCollaborator
         .When((w, c) => w.NonExisting(collaborator))
-        .Then((Widget w, Collaborator c, int retVal) => ...);
+        .ThenReturns((Widget w, Collaborator c, int retVal) => ...);
 }
 ```
 
