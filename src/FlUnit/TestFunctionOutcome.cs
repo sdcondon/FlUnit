@@ -9,17 +9,27 @@ namespace FlUnit
     /// <typeparam name="T">The return type of test function.</typeparam>
     internal sealed class TestFunctionOutcome<T>
     {
-        internal TestFunctionOutcome(T result) => Result = result;
+        private readonly T result;
+
+        internal TestFunctionOutcome(T result) => this.result = result;
 
         internal TestFunctionOutcome(Exception exception) => Exception = exception;
 
         /// <summary>
         /// Gets the return value of the when clause, as long as an exception was not thrown.
         /// </summary>
-        /// <remarks>
-        /// TODO: this should probably throw the exception if there is one - like Task does? Don't want to mess with the stack trace though.. Throw invalidop with an inner?
-        /// </remarks>
-        public T Result { get; }
+        public T Result
+        {
+            get
+            {
+                if (Exception != null)
+                {
+                    throw new InvalidOperationException("When clause threw an exception", Exception);
+                }
+
+                return result;
+            }
+        }
 
         /// <summary>
         /// Gets the exception that was thrown, or null.

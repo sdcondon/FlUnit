@@ -117,7 +117,7 @@ namespace FlUnit.Adapters.VSTest
                 {
                     StartTime = arrangementStartTime,
                     Outcome = TestOutcome.Skipped,
-                    ErrorMessage = $"Test arrangement failed: {e.Message}", // TODO V2: localisation needed if this ever takes off
+                    ErrorMessage = $"Test arrangement failed: {e.Message}", // TODO-LOCALISATION: localisation needed if this ever takes off
                     ErrorStackTrace = e.StackTrace,
                     EndTime = DateTimeOffset.Now,
                 });
@@ -130,6 +130,7 @@ namespace FlUnit.Adapters.VSTest
         {
             // NB: We use the start and end time for the test action as the start and end time for each assertion result.
             // The assumption being that assertions themselves will generally be (fast and) less interesting.
+            // This is something to consider configurability for at some point.
             var result = new TestResult(testCase)
             {
                 StartTime = flCaseStart,
@@ -138,10 +139,10 @@ namespace FlUnit.Adapters.VSTest
 
             // Use different descriptions depending on multiplicity of cases and assertions.
             // This makes results in Visual Studio itself look good - but the actual results miss out on some info (so not as good for TRX files).
-            // Perhaps room for some configuration of naming strategy at some point.
+            // As with duration, there is room for some configuration of naming strategy at some point.
             if (flTest.Cases.Count > 1 && flCase.Assertions.Count > 1)
             {
-                result.DisplayName = string.IsNullOrEmpty(flCase.Description) ? testAssertion.Description : $"{testAssertion.Description} for test case {flCase.Description}"; // TODO V2: localisation needed if this ever takes off
+                result.DisplayName = string.IsNullOrEmpty(flCase.Description) ? testAssertion.Description : $"{testAssertion.Description} for test case {flCase.Description}"; // TODO-LOCALISATION: localisation needed if this ever takes off
             }
             else if (flTest.Cases.Count > 1)
             {
