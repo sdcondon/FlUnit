@@ -75,15 +75,13 @@ public static class MyTests
 
 ### Test Lifetime - Test Property Getter vs Initializer
 
-Test object lifetime is something you don't really need to worry about when writing tests (since its the test adapter that manages this stuff).
+Test object lifetime is something you don't really need to worry about when writing tests (since its the test adapter that manages this).
 However, you may find of interest if you are wondering if the examples are `public static Test MyTest => ...` rather than `public static Test MyTest { get; } = ...` for succinctness only.
-While the abstraction doesn't require this*, FlUnits `Test` implementations actually serve as containers for the pre-reqs and test action/function outcome - and are thus intended to be short-lived (to the extent that an invalidoperationexception is thrown if an adapter tries to run a Test instance twice).
+While the abstraction doesn't require this, FlUnits `Test` implementations actually serve as containers for the pre-reqs and test action/function outcome - and are thus intended to be short-lived (to the extent that an invalidoperationexception is thrown if an adapter tries to run a Test instance twice).
 It is thus very intentional that the examples use a getter rather than an auto-initializer..
-
-*\* this inconsistency is something that mildly concerns me about the design - and is the reason I figure its worth mentioning here.*
 
 ### On the Reduced Responsibility of Assertion Libraries
 
-Note how, by allowing for individual assertions as part of the test model and explicit test results for them, we remove some of the responsibility adopted by the richer assertion libraries out there (e.g. custom error messages as part of assertions if used to just describe the failed assertion, Shouldly's awesome PDB-reading stuff thats unfortunately limited to Full PDBs..).
+Note how, by allowing for individual named assertions as part of the test model and explicit test results for them, we remove some of the responsibility adopted by the richer assertion libraries out there (e.g. custom error messages as part of assertions if used to just describe the failed assertion, Shouldly's awesome PDB-reading stuff thats unfortunately limited to Full PDBs..).
 
 I view this as a positive - because being able to see at a glance what I'm asserting without that assertion failing is a powerful thing. Others may disagree..

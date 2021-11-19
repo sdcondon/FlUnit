@@ -4,18 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageIcon>FlUnitIcon.png</PackageIcon>
-    <Description>Prototype for a test framework where tests are defined using a fluent builder.
+    <Description>A test framework within which tests are defined using a fluent builder.
 </Description>
   </PropertyGroup>
 
   <PropertyGroup>
     <DocumentationFile>FlUnit.xml</DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="TestBuilderWithActionAndRVAssertions - Copy.cs" />
-    <Compile Remove="TestBuilderWithFunctionAndRVAssertions - Copy.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Remove="FlUnit.xml" />

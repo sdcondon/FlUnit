@@ -8,7 +8,7 @@
     <PackageProjectUrl>https://github.com/sdcondon/FlUnit</PackageProjectUrl>
 	<PackageReleaseNotes>https://github.com/sdcondon/FlUnit/releases</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>2020 Simon Condon</Copyright>
+    <Copyright>2019-2021 Simon Condon</Copyright>
     <PackageTags>unit test fluent</PackageTags>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>

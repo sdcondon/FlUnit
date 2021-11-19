@@ -41,7 +41,7 @@ public static class MyTests
     .And((wi, th, retVal) => th.IsProcessed.ShouldBeTrue())
     .And((wi, th, retVal) => wi.HasProcessed.ShouldBeTrue());
 
-  // or, you may find that a single 'given' clause returning an anonymous
+  // You may find that a single 'given' clause returning an anonymous
   // object makes for more readable tests. Also note how C# 9's lambda discard
   // parameters can make assertion clauses clearer:
   public static Test WidgetCanProcessAThingy => TestThat
@@ -61,6 +61,8 @@ public static class MyTests
   public static Test WidgetThrowsOnNullArg => TestThat
     .Given(() => new Widget("widget1"))
     .When(widget => widget.TryProcess(null))
+    // Obviously, the difference between this and 'ThenReturns' is that the
+    // final parameter of the delegate is the thrown exception, not the return value.
     .ThenThrows((_, ex) => ex.ShouldBeOfType<ArgumentNullException>())
     .And((widget, _) => widget.HasProcessed.ShouldBeFalse());
 
@@ -80,7 +82,8 @@ With the VSTest adapter:
 * Tests with multiple cases or multiple assertions give one result per test case per assertion. For now (configurability coming soon, though this is likely to remain the default), the label of each result depends on the multiplicity of cases and assertions:
   * With a single case and multiple assertions, the result label is the description of the assertion.
   * With multiple cases each with a single assertion, the result label is the ToString of the case (which when there are multiple given clauses, is a value tuple of each)
-  * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for test case \{case ToString\}"
+  * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for test case \{case ToString\}", like this:  
+    ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
 
 ### Beyond Getting Started
 
@@ -92,12 +95,11 @@ FlUnits notable strengths include:
 - Succinct & readable.
   - I would argue that the resultant reduced thinking time & confusion risk significantly mitigates any performance shortfalls (which I should stress I don't necessarily know are there, end-to-end - but see the "cons" section for some suspicions).
   - In particular, the enforced structure for tests (notably, no interlacing of action and assertion) pushes you to write easily understandable tests. Unconvinced readers are invited to look at the [migration to FlUnit of the SCGraphTheory.Search tests](https://github.com/sdcondon/SCGraphTheory.Search/commit/e9e7a67d9fe15f0060e1a8d772ad556de05e73e2) for an example.
-- A richer model for tests than that found in many other test frameworks (without requiring the verbose code required by frameworks such as MSpec) makes a few things possible:
+- A richer model for tests than that found in many other test frameworks (without requiring the verbose code required by frameworks such as MSpec) makes a few things possible, some of which are demonstrated in the "getting started" guidance, above.
   - Parameterised tests are easy without requiring awkward attribute-based parameter retrieval.
   - The "arrange" clauses of a test don't have to be counted as part of the test proper, providing an easy way to distinguish inconclusive tests (because their arrangements failed) from failed ones - providing some assistance to the isolation of issues.
   - Similarly, each assertion can be recorded as a separate result of the test - providing an easy way to achieve the best practice of a single assertion per test result without requiring complex code factoring when a single action should have multiple consequences.
-  - LINQ expression-valued assertions can be named automatically via ToString of expression bodies. This can make it easy to write tests of which the results are easy to understand. Like so:  
-  ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
+  - LINQ expression-valued assertions can be named automatically via ToString of expression bodies. This can make it easy to write tests of which the results are easy to understand.
 
 FlUnit's notable weaknesses include:
 - The enforced test structure can make certain scenarios mildly awkward. Consider for example what is needed to check the value of an out parameter.

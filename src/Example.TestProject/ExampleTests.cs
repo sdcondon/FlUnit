@@ -18,8 +18,9 @@ namespace Example.TestProject
             .ThenReturns((sut, collaborator, retVal) => retVal.ShouldBeTrue())
             .And((sut, collaborator, retVal) => sut.HasProcessed.ShouldBeTrue())
             .And((sut, collaborator, retVal) => collaborator.HasBeenProcessed.ShouldBeTrue());
-         
-        // Basic example with single anonymous object-valued 'Given' clause
+
+        // Basic example with single anonymous object-valued 'Given' clause,
+        // and discard params to make assertion clauses clearer
         public static Test ProcessHasSideEffects2 => TestThat
             .Given(() => new
             {
@@ -27,27 +28,27 @@ namespace Example.TestProject
                 collaborator = new Collaborator()
             })
             .When(given => given.sut.Process(given.collaborator))
-            .ThenReturns((given, retVal) => retVal.ShouldBeTrue())
-            .And((given, retVal) => given.sut.HasProcessed.ShouldBeTrue())
-            .And((given, retVal) => given.collaborator.HasBeenProcessed.ShouldBeTrue());
+            .ThenReturns((_, retVal) => retVal.ShouldBeTrue())
+            .And((given, _) => given.sut.HasProcessed.ShouldBeTrue())
+            .And((given, _) => given.collaborator.HasBeenProcessed.ShouldBeTrue());
 
         // Negative test
         public static Test ProcessThrowsOnNullCollaborator => TestThat
             .Given(() => new TestSubject())
             .When(sut => sut.Process(null))
-            .ThenThrows((sut, exception) => exception.ShouldBeOfType(typeof(ArgumentNullException)));
+            .ThenThrows((_, exception) => exception.ShouldBeOfType(typeof(ArgumentNullException)));
 
         // Test with failing assertion
         public static Test ProcessDoesntThrowOnNullCollaborator => TestThat
             .Given(() => new TestSubject())
             .When(sut => sut.Process(null))
-            .ThenReturns((sut, retVal) => retVal.ShouldBeTrue());
+            .ThenReturns((_, retVal) => retVal.ShouldBeTrue());
 
         // Test with failing arrangement
         public static Test ProcessDoesntThrowOnNullCollaborator2 => TestThat
             .Given(() => new TestSubject(shouldThrow: true))
             .When(sut => sut.Process(null))
-            .ThenReturns((sut, retVal) => retVal.ShouldBeTrue());
+            .ThenReturns((_, retVal) => retVal.ShouldBeTrue());
 
         // Test with no prereqs
         public static Test CtorDoesntThrow => TestThat
@@ -65,7 +66,7 @@ namespace Example.TestProject
             {
                 return given.sut.Process(given.collaborator);
             })
-            .ThenReturns((given, retVal) =>
+            .ThenReturns((_, retVal) =>
             {
                 retVal.ShouldBeTrue();
             }, "Return value should be true");
@@ -74,10 +75,9 @@ namespace Example.TestProject
         public static Test SumOfOddAndSixIsOdd => TestThat
             .GivenEachOf(() => new[] { 1, 3, 5 })
             .When(x => x + 6)
-            .ThenReturns((x, sum) => (sum % 2).ShouldBe(1));
+            .ThenReturns((_, sum) => (sum % 2).ShouldBe(1));
 
-        // Test cases in combination with multiple assertions,
-        // with discard params to make assertion clauses clearer
+        // Test cases in combination with multiple assertions
         public static Test SumOfEvenAndOdd => TestThat
             .GivenEachOf(() => new[] { 1, 3, 5 })
             .AndEachOf(() => new[] { 2, 4, 6 })
