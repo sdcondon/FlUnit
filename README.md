@@ -33,22 +33,25 @@ using Shouldly;
 
 public static class MyTests
 {
-  // First, a heavily annotated example.
-  // Start by calling a method on the "TestThat" static class - each of which return a builder to continue with.
+  // First, a heavily annotated example. Start by calling a method on the "TestThat" static class,
+  // each of which return a builder to continue with.
   public static Test WidgetCanProcessAThingy => TestThat
-    // Arrange: Use the "Given" and "And" methods to provide delegates for obtaining each pre-requisite of the test.
-    // Specifying pre-requisites is optional. Starting your test with "When" is equally valid.
+    // Arrange: Use the "Given" and "And" methods to provide delegates for obtaining each
+    // pre-requisite of the test. Specifying pre-requisites is optional. Starting your test
+    // with "When" is equally valid.
     .Given(() => new Widget("widget1"))
     .And(() => new Thingy("thingy1"))
     // Act: Once all pre-requisites are specified, call "When" to specify the "Act" part of the test.
-    // Provide a delegate that accepts one parameter for each pre-requisite. The delegate can return a value or be void.
+    // Provide a delegate that accepts one parameter for each pre-requisite. The delegate can return
+    // a value or be void.
     .When((wi, th) => wi.TryProcess(th))
-    // Assert: assertions can be provided with the "ThenReturns" and "And" methods, or the "ThenThrows" and "And" methods.
-    // You can provide a delegate and a string description for the associated test result; or a LINQ expression.
-    // If you provide a LINQ expression, its string representation will be used as the description of the associated test result.
-    // For "ThenReturns", the expression/delegate should accept one parameter for each pre-requisite, and one for the return
-    // value of the When clause (assuming it returns one). For "ThenThrows", see the third example, below.
-    // Assertion failure should be indicated by a thrown exception.
+    // Assert: assertions can be provided with the "ThenReturns" and "And" methods, or the "ThenThrows"
+    // and "And" methods. You can provide a delegate and a string description for the associated test
+    // result; or a LINQ expression. If you provide a LINQ expression, its string representation will be
+    // used as the description of the associated test result. For "ThenReturns", the expression/delegate
+    // should accept one parameter for each pre-requisite, and one for the return value of the When clause
+    // (assuming it returns one). For "ThenThrows", see the third example, below. Assertion failure
+    // should be indicated by a thrown exception.
     .ThenReturns((wi, th, retVal) => retVal.ShouldBeTrue())
     .And((wi, th, retVal) => th.IsProcessed.ShouldBeTrue())
     .And((wi, th, retVal) => wi.HasProcessed.ShouldBeTrue());
