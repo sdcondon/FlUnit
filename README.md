@@ -128,10 +128,10 @@ Proper issue tracking would be overkill at this point, so just a bullet list to 
   - *(Dec)* Look into parallelisation. Partition configuration likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Initial factoring of core logic away from VSTest-specific classes may happen as part of this - though I'm wary of needless complexity until such time as a second adapter exists. Also may provide more powerful trait specification as part of this (e.g. specify single trait at assembly level to give all tests a trait for their class/prop name).
   - *(Dec)* QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`? Perhaps somehow support IFormatProviders for test cases (thus making it easy to specify with test settings)? Needs careful thought..
   - *(Jan)* V1 diligence & release
+    - Any required "doing it properly" stuff in the test adapter.
     - Split into separate repos
     - Separate usage docs
     - README in packages
-    - Signing? Perhaps not. £££..
   - *(2022)* Post-v1 additions:
     - Assertions: Simply interpreting exceptions as failure and leaving this to other libraries for the most part, but e.g. equivalents of Assert.Fail and Assert.Inconclusive may be useful?
     - Basic attachment & output support?
