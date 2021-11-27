@@ -124,18 +124,20 @@ Proper issue tracking would be overkill at this point, so just a bullet list to 
 - General ongoing:
   - Take some cues from the vstest adapter for mstest - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
 - Specific, highest-priority first:
-  - *(Dec)* Add in initial test settings - initial settings likely to include allowing specification of strategy for result naming and duration records - overridable by inidividual tests (both of which currently make some "sensible" decisions which may not be appropriate in all situations.
-  - *(Dec)* Look into parallelisation. Partition configuration likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Initial factoring of core logic away from VSTest-specific classes may happen as part of this - though I'm wary of needless complexity until such time as a second adapter exists. Also may provide more powerful trait specification as part of this (e.g. specify single trait at assembly level to give all tests a trait for their class/prop name).
+  - *(Dec)* Add in initial test settings - initial settings likely to include allowing specification of strategy for result naming and duration records (both of which currently make some "sensible" decisions which may not be appropriate in all situations). Initial factoring of core logic away from VSTest-specific classes may happen as part of this - though I'm wary of needless complexity until such time as a second adapter exists. So likely to stop short of fullly-developed abstractions for test platform.
+  - *(Dec)* Look into parallelisation. Partition configuration likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Also may provide more powerful trait specification as part of this (e.g. specify single trait at assembly level to give all tests a trait for their class/prop name).
   - *(Dec)* QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`? Perhaps somehow support IFormatProviders for test cases (thus making it easy to specify with test settings)? Needs careful thought..
   - *(Jan)* V1 diligence & release
     - Any required "doing it properly" stuff in the test adapter.
     - Split into separate repos
     - Separate usage docs
     - README in packages
-  - *(2022)* Post-v1 additions:
+  - *(Feb / Mar / Apr)* Possible post-v1 additions:
+    - For settings that affect individual tests, perhaps make them overridable (a `UsingSettings(settings => ..)` builder method)
     - Assertions: Simply interpreting exceptions as failure and leaving this to other libraries for the most part, but e.g. equivalents of Assert.Fail and Assert.Inconclusive may be useful?
     - Basic attachment & output support?
-- On the back-burner (probably not, at least in the near future):
-  - QoL: dependent assertions - some assertions only make sense if a prior assertion has succeeded (easy for method-based test frameworks, but not for us..). Such assertions should probably give an inconclusive result? Assertions that return a value (assert a value is of a particular type, cast and return it) also a possibility - though thats probably inviting unacceptable complexity. A basic version of this could be useful though - perhaps an `AndAlso` (echoing C# operator name) - which will make all following assertions inconclusive if any prior assertion failed?
+- Probably not, at least in the near future:
   - QoL: Perhaps `ThenOfReturnValue(rv => rv.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
+  - QoL: dependent assertions - some assertions only make sense if a prior assertion has succeeded (easy for method-based test frameworks, but not for us..). Such assertions should probably give an inconclusive result? Assertions that return a value (assert a value is of a particular type, cast and return it) also a possibility - though thats probably inviting unacceptable complexity. A basic version of this could be useful though - perhaps an `AndAlso` (echoing C# operator name) - which will make all following assertions inconclusive if any prior assertion failed?
+
 
