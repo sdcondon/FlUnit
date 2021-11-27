@@ -10,26 +10,20 @@ A test framework in which tests are defined using a fluent builder. Includes a v
 
 ### Getting Started
 
-Create a (.NET 5) class library and add some package references:
+Create a .NET 6 class library and add some package references:
 - [`Microsoft.NET.Test.Sdk`](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/) - to identify this as a test project
 - [`FlUnit`](https://www.nuget.org/packages/FlUnit/) - which contains the important stuff - the builder and test classes
 - [`FlUnit.Adapters.VSTest`](https://www.nuget.org/packages/FlUnit.Adapters.VSTest/) - the VSTest adapter package, so that the VSTest platform knows how to find and run FlUnit tests.
-- You'll also need to include an assertion library of your choice - the example code below uses [`Shouldly`](https://www.nuget.org/packages/Shouldly/), for example.
+- You'll also need to include an assertion library of your choice - the example code below uses [`FluentAssertions`](https://www.nuget.org/packages/FluentAssertions/), for example.
 - [`coverlet.collector`](https://www.nuget.org/packages/coverlet.collector/) does work with FlUnit tests - so feel free to add that, too.
+
+NB: a .NET standard 2.0 version of the framework does exist, and targeting earlier versions of the framework does work, but there are some caveats. Details can be found [here](docs/extended-usage-guidance.md#caveats-when-targeting-.net-5-or-earlier). All the examples and documentation below assumes .NET 6.
 
 As shown below, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them. More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
 
 ```csharp
 using FlUnit;
-// 
-// NB: The examples here use an overload of 'Then' clauses with a single LINQ expression-valued
-// parameter, which is used to automatically name the test result. Shouldly v4 adds optional
-// parameters to many of its assertion methods - which LINQ expressions can't represent - meaning
-// that the examples here only work as-is with Shouldly v3-. If you're using v4+, or a different
-// assertion library that LINQ expressions also can't represent - or indeed if you'd simply prefer
-// it - you can use the overload of the 'Then' clauses that requires the test result label to be
-// provided explicitly as the second parameter.
-using Shouldly;
+using FluentAssertions;
 
 public static class MyTests
 {
@@ -46,15 +40,15 @@ public static class MyTests
     // a value or be void.
     .When((wi, th) => wi.TryProcess(th))
     // Assert: assertions can be provided with the "ThenReturns" and "And" methods, or the "ThenThrows"
-    // and "And" methods. You can provide a delegate and a string description for the associated test
-    // result; or a LINQ expression. If you provide a LINQ expression, its string representation will be
-    // used as the description of the associated test result. For "ThenReturns", the expression/delegate
-    // should accept one parameter for each pre-requisite, and one for the return value of the When clause
-    // (assuming it returns one). For "ThenThrows", see the third example, below. Assertion failure
-    // should be indicated by a thrown exception.
-    .ThenReturns((wi, th, retVal) => retVal.ShouldBeTrue())
-    .And((wi, th, retVal) => th.IsProcessed.ShouldBeTrue())
-    .And((wi, th, retVal) => wi.HasProcessed.ShouldBeTrue());
+    // and "And" methods. You provide a delegate for the assertion itself and (optionally) a string
+    // description for the associated test result. If you do not provide an explicit description, the text
+    // of the assertion argument will be used - trimmed down to just its body if it is a lambda. For
+    // "ThenReturns", the delegate should accept one parameter for each pre-requisite, and one for the
+    // return value of the When clause (assuming it returns one). For "ThenThrows", see the third example,
+    // below. Assertion failure should be indicated by a thrown exception.
+    .ThenReturns((wi, th, retVal) => retVal.Should().BeTrue())
+    .And((wi, th, retVal) => th.IsProcessed.Should().BeTrue())
+    .And((wi, th, retVal) => wi.HasProcessed.Should().BeTrue());
 
   // You may find that a single 'given' clause returning an anonymous
   // object makes for more readable tests (separate given clauses is more useful when
@@ -67,9 +61,9 @@ public static class MyTests
       thingy = new Thingy("thingy1")
     })
     .When(given => given.widget.TryProcess(given.thingy))
-    .ThenReturns((_, retVal) => retVal.ShouldBeTrue())
-    .And((given, _) => given.thingy.IsProcessed.ShouldBeTrue())
-    .And((given, _) => given.widget.HasProcessed.ShouldBeTrue());
+    .ThenReturns((_, retVal) => retVal.Should().BeTrue())
+    .And((given, _) => given.thingy.IsProcessed.Should().BeTrue())
+    .And((given, _) => given.widget.HasProcessed.Should().BeTrue());
 
   // Expecting exceptions is easy, and test traits are supported
   // (at the test, class or assembly level):
@@ -79,8 +73,8 @@ public static class MyTests
     .When(widget => widget.TryProcess(null))
     // Obviously, the difference between this and 'ThenReturns' is that the
     // final parameter of the delegate is the thrown exception, not the return value.
-    .ThenThrows((_, ex) => ex.ShouldBeOfType<ArgumentNullException>())
-    .And((widget, _) => widget.HasProcessed.ShouldBeFalse());
+    .ThenThrows((_, ex) => ex.Should().BeOfType<ArgumentNullException>())
+    .And((widget, _) => widget.HasProcessed.Should().BeFalse());
 
   // Parameterised tests are supported without awkward attribute-based
   // parameter retrieval:
@@ -88,8 +82,8 @@ public static class MyTests
     .GivenEachOf(() => new[] { 1, 3, 5 })
     .AndEachOf(() => new[] { 2, 4, 6 })
     .When((x, y) => x + y)
-    .ThenReturns((_, _, sum) => (sum % 2).ShouldBe(1))
-    .And((x, _, sum) => sum.ShouldBeGreaterThan(x));
+    .ThenReturns((_, _, sum) => (sum % 2).Should().Be(1))
+    .And((x, _, sum) => sum.Should().BeGreaterThan(x));
 }
 ```
 
@@ -130,7 +124,6 @@ Proper issue tracking would be overkill at this point, so just a bullet list to 
 - General ongoing:
   - Take some cues from the vstest adapter for mstest - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
 - Specific, highest-priority first:
-  - *(Nov)* CallerArgumentExpression: check if .NET 6 / C# 10's CallerArgumentExpression could do away with the need for LINQ expressions for automatic assertion naming. If so, multitarget and replace LINQ in .NET 6 version.
   - *(Dec)* Add in initial test settings - initial settings likely to include allowing specification of strategy for result naming and duration records - overridable by inidividual tests (both of which currently make some "sensible" decisions which may not be appropriate in all situations.
   - *(Dec)* Look into parallelisation. Partition configuration likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Initial factoring of core logic away from VSTest-specific classes may happen as part of this - though I'm wary of needless complexity until such time as a second adapter exists. Also may provide more powerful trait specification as part of this (e.g. specify single trait at assembly level to give all tests a trait for their class/prop name).
   - *(Dec)* QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`? Perhaps somehow support IFormatProviders for test cases (thus making it easy to specify with test settings)? Needs careful thought..

@@ -44,9 +44,9 @@ namespace FlUnit.Adapters.VSTest._Tests
                 TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = "retVal.ShouldBeTrue()", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sut.HasProcessed.ShouldBeTrue()", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "collaborator.HasBeenProcessed.ShouldBeTrue()", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "retVal.Should().BeTrue()", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sut.HasProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "collaborator.HasBeenProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
                 });
 
             AssertTestResult(
@@ -58,9 +58,9 @@ namespace FlUnit.Adapters.VSTest._Tests
                 TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = "retVal.ShouldBeTrue()", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "given.sut.HasProcessed.ShouldBeTrue()", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "given.collaborator.HasBeenProcessed.ShouldBeTrue()", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "retVal.Should().BeTrue()", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "given.sut.HasProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "given.collaborator.HasBeenProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
                 });
             AssertTestResult(
                 "Example.TestProject.ExampleTests.ProcessThrowsOnNullCollaborator",
@@ -145,24 +145,24 @@ namespace FlUnit.Adapters.VSTest._Tests
                 TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = "(sum % 2).ShouldBe(1) for test case (1, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.ShouldBeGreaterThan(x) for test case (1, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).ShouldBe(1) for test case (1, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.ShouldBeGreaterThan(x) for test case (1, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).ShouldBe(1) for test case (1, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.ShouldBeGreaterThan(x) for test case (1, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).ShouldBe(1) for test case (3, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.ShouldBeGreaterThan(x) for test case (3, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).ShouldBe(1) for test case (3, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.ShouldBeGreaterThan(x) for test case (3, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).ShouldBe(1) for test case (3, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.ShouldBeGreaterThan(x) for test case (3, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).ShouldBe(1) for test case (5, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.ShouldBeGreaterThan(x) for test case (5, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).ShouldBe(1) for test case (5, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.ShouldBeGreaterThan(x) for test case (5, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).ShouldBe(1) for test case (5, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.ShouldBeGreaterThan(x) for test case (5, 6)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 2)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 2)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 4)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 4)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 6)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 6)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 2)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 2)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 4)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 4)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 6)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 6)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 2)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 2)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 4)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 4)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 6)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 6)", Outcome = TestOutcome.Passed },
                 });
         }
     }
