@@ -192,7 +192,7 @@ namespace FlUnit
         {
             return new TestBuilderWithActionAndExAssertions(
                 testAction,
-                new TestBuilderWithActionAndExAssertions.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -421,7 +421,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions<T1>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -653,7 +653,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions<T1, T2>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -886,7 +886,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>

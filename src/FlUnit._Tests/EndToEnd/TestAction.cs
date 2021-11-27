@@ -132,7 +132,7 @@ namespace FlUnit._Tests
             Test test = TestThat
                 .Given(() => new StringBuilder(capacity: 0, maxCapacity: 1))
                 .When(sb => { sb.Append("AB"); })
-                .ThenThrows((_, exception) => exception.ShouldBeOfType(typeof(ArgumentOutOfRangeException)));
+                .ThenThrows((_, exception) => exception.ShouldBeOfType<ArgumentOutOfRangeException>());
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -143,7 +143,7 @@ namespace FlUnit._Tests
 
             var assertion = test.Cases.Single().Assertions.Single();
 #if NET6_0
-            assertion.Description.ShouldBe("exception.ShouldBeOfType<DivideByZeroException>()");
+            assertion.Description.ShouldBe("exception.ShouldBeOfType<ArgumentOutOfRangeException>()");
 #else // Example of LINQ not being a great solution - round trip..
             assertion.Description.ShouldBe("exception.ShouldBeOfType()");
 #endif

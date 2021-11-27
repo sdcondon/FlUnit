@@ -215,7 +215,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>(
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
