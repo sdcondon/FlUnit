@@ -51,15 +51,15 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
-        public void MultiplePrereqsAndAssertions()
+        public void ComplexTest()
         {
-            // Arrange
+            // Arrange: multiple prerequisites and assertions; also explicit assertion labels
             Test test = TestThat
                 .Given(() => new StringBuilder())
                 .And(() => "A")
                 .When((sb, str) => { sb.Append(str); })
-                .ThenReturns((sb, str) => sb.Length.ShouldBe(str.Length))
-                .And((sb, str) => sb.Capacity.ShouldBeGreaterThanOrEqualTo(sb.Length));
+                .ThenReturns((sb, str) => sb.Length.ShouldBe(str.Length), "Length should be correct")
+                .And((sb, str) => sb.Capacity.ShouldBeGreaterThanOrEqualTo(sb.Length), "Capacity should be consistent");
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -69,11 +69,11 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(2);
 
             var assertion1 = test.Cases.Single().Assertions.First();
-            assertion1.Description.ShouldBe("sb.Length.ShouldBe(str.Length)");
+            assertion1.Description.ShouldBe("Length should be correct");
             ((Action)assertion1.Invoke).ShouldNotThrow();
 
             var assertion2 = test.Cases.Single().Assertions.Skip(1).First();
-            assertion2.Description.ShouldBe("sb.Capacity.ShouldBeGreaterThanOrEqualTo(sb.Length)");
+            assertion2.Description.ShouldBe("Capacity should be consistent");
             ((Action)assertion2.Invoke).ShouldNotThrow();
         }
 
@@ -142,7 +142,11 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("exception.ShouldBeOfType(System.ArgumentOutOfRangeException)");
+#if NET6_0
+            assertion.Description.ShouldBe("exception.ShouldBeOfType<DivideByZeroException>()");
+#else // Example of LINQ not being a great solution - round trip..
+            assertion.Description.ShouldBe("exception.ShouldBeOfType()");
+#endif
             ((Action)assertion.Invoke).ShouldNotThrow();
         }
 

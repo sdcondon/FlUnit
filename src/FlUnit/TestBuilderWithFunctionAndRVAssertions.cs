@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+#if NET6_0
+using System.Runtime.CompilerServices;
+#else
 using System.Linq.Expressions;
+#endif
 using System.Runtime.ExceptionServices;
 
 namespace FlUnit
@@ -35,6 +39,26 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new TestFunction<TResult>.Case.Assertion(tc, a.Action, a.Description)));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndRVAssertions<TResult> And(
+            Action<TResult> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            return this;
+        }
+#else
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -57,6 +81,7 @@ namespace FlUnit
             assertions.Add(new Assertion(assertion, description));
             return this;
         }
+#endif
 
         internal class Assertion
         {
@@ -70,6 +95,7 @@ namespace FlUnit
                 Description = description;
             }
 
+#if !NET6_0
             internal Assertion(Expression<Action<TResult>> expression)
             {
                 Action = (outcome) =>
@@ -79,6 +105,7 @@ namespace FlUnit
                 };
                 Description = expression.Body.ToString();
             }
+#endif
 
             internal Assertion(string description)
             {
@@ -129,6 +156,26 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new TestFunction<T1, TResult>.Case.Assertion(tc, a.Action, a.Description)));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndRVAssertions<T1, TResult> And(
+            Action<T1, TResult> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            return this;
+        }
+#else
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -151,6 +198,7 @@ namespace FlUnit
             assertions.Add(new Assertion(assertion, description));
             return this;
         }
+#endif
 
         internal class Assertion
         {
@@ -164,6 +212,7 @@ namespace FlUnit
                 Description = description;
             }
 
+#if !NET6_0
             internal Assertion(Expression<Action<T1, TResult>> expression)
             {
                 Action = (a, outcome) =>
@@ -173,6 +222,7 @@ namespace FlUnit
                 };
                 Description = expression.Body.ToString();
             }
+#endif
 
             internal Assertion(string description)
             {
@@ -224,6 +274,26 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new TestFunction<T1, T2, TResult>.Case.Assertion(tc, a.Action, a.Description)));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndRVAssertions<T1, T2, TResult> And(
+            Action<T1, T2, TResult> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            return this;
+        }
+#else
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -246,6 +316,7 @@ namespace FlUnit
             assertions.Add(new Assertion(assertion, description));
             return this;
         }
+#endif
 
         internal class Assertion
         {
@@ -259,6 +330,7 @@ namespace FlUnit
                 Description = description;
             }
 
+#if !NET6_0
             internal Assertion(Expression<Action<T1, T2, TResult>> expression)
             {
                 Action = (a1, a2, outcome) =>
@@ -268,6 +340,7 @@ namespace FlUnit
                 };
                 Description = expression.Body.ToString();
             }
+#endif
 
             internal Assertion(string description)
             {
@@ -320,6 +393,26 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new TestFunction<T1, T2, T3, TResult>.Case.Assertion(tc, a.Action, a.Description)));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndRVAssertions<T1, T2, T3, TResult> And(
+            Action<T1, T2, T3, TResult> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            return this;
+        }
+#else
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -342,6 +435,7 @@ namespace FlUnit
             assertions.Add(new Assertion(assertion, description));
             return this;
         }
+#endif
 
         internal class Assertion
         {
@@ -355,6 +449,7 @@ namespace FlUnit
                 Description = description;
             }
 
+#if !NET6_0
             internal Assertion(Expression<Action<T1, T2, T3, TResult>> expression)
             {
                 Action = (a1, a2, a3, outcome) =>
@@ -364,6 +459,7 @@ namespace FlUnit
                 };
                 Description = expression.Body.ToString();
             }
+#endif
 
             internal Assertion(string description)
             {

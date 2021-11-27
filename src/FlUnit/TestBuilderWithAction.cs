@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+#if NET6_0
+using System.Runtime.CompilerServices;
+#else
 using System.Linq.Expressions;
+#endif
 
 namespace FlUnit
 {
@@ -18,6 +22,31 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions Then(
+            Action<TestActionOutcome> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndAssertions(
+                testAction,
+                new TestBuilderWithActionAndAssertions.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test.
         /// </summary>
@@ -50,6 +79,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
         }
+#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
@@ -74,6 +104,27 @@ namespace FlUnit
                 new TestBuilderWithActionAndRVAssertions.Assertion(description));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndRVAssertions ThenReturns(
+            Action assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndRVAssertions(
+                testAction,
+                new TestBuilderWithActionAndRVAssertions.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
@@ -98,6 +149,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndRVAssertions.Assertion(assertion, description));
         }
+#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
@@ -122,6 +174,27 @@ namespace FlUnit
                 new TestBuilderWithActionAndExAssertions.Assertion(description));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions ThenThrows(
+            Action<Exception> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndExAssertions(
+                testAction,
+                new TestBuilderWithActionAndExAssertions.Assertion(assertion, description));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception.
         /// </summary>
@@ -146,9 +219,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndExAssertions.Assertion(assertion, description));
         }
-
-        //// NB: Hmmm, I think there is room for a little more here. Treading on assertion libraries toes a little, but it is probably enough of a special
-        //// case that there is value: generic methods that assert that the exception thrown is of a particular type (and possibly even gives that type to the assertion)
+#endif
     }
 
     /// <summary>
@@ -169,6 +240,32 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<T1> Then(
+            Action<T1, TestActionOutcome> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndAssertions<T1>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test.
         /// </summary>
@@ -203,6 +300,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description));
         }
+#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
@@ -229,6 +327,28 @@ namespace FlUnit
                 new TestBuilderWithActionAndRVAssertions<T1>.Assertion(description));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndRVAssertions<T1> ThenReturns(
+            Action<T1> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndRVAssertions<T1>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
@@ -255,6 +375,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion, description));
         }
+#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
@@ -281,6 +402,28 @@ namespace FlUnit
                 new TestBuilderWithActionAndExAssertions<T1>.Assertion(description));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions<T1> ThenThrows(
+            Action<T1, Exception> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndExAssertions<T1>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion, description));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception.
         /// </summary>
@@ -307,9 +450,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion, description));
         }
-
-        //// NB: Hmmm, I think there is room for a little more here. Treading on assertion libraries toes a little, but it is probably enough of a special
-        //// case that there is value: generic methods that assert that the exception thrown is of a particular type (and possibly even gives that type to the assertion)
+#endif
     }
 
     /// <summary>
@@ -331,6 +472,32 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<T1, T2> Then(
+            Action<T1, T2, TestActionOutcome> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test.
         /// </summary>
@@ -365,6 +532,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description));
         }
+#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
@@ -391,6 +559,28 @@ namespace FlUnit
                 new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(description));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndRVAssertions<T1, T2> ThenReturns(
+            Action<T1, T2> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndRVAssertions<T1, T2>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
@@ -417,6 +607,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion, description));
         }
+#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
@@ -443,6 +634,28 @@ namespace FlUnit
                 new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(description));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions<T1, T2> ThenThrows(
+            Action<T1, T2, Exception> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndExAssertions<T1, T2>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion, description));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception.
         /// </summary>
@@ -469,9 +682,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion, description));
         }
-
-        //// NB: Hmmm, I think there is room for a little more here. Treading on assertion libraries toes a little, but it is probably enough of a special
-        //// case that there is value: generic methods that assert that the exception thrown is of a particular type (and possibly even gives that type to the assertion)
+#endif
     }
 
     /// <summary>
@@ -494,6 +705,32 @@ namespace FlUnit
             this.testAction = testAction;
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        /// <remarks>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </remarks>
+        public TestBuilderWithActionAndAssertions<T1, T2, T3> Then(
+            Action<T1, T2, T3, TestActionOutcome> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test.
         /// </summary>
@@ -528,6 +765,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description));
         }
+#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
@@ -554,6 +792,28 @@ namespace FlUnit
                 new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(description));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndRVAssertions<T1, T2, T3> ThenReturns(
+            Action<T1, T2, T3> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
@@ -580,6 +840,7 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion, description));
         }
+#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
@@ -606,6 +867,28 @@ namespace FlUnit
                 new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(description));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithActionAndExAssertions<T1, T2, T3> ThenThrows(
+            Action<T1, T2, T3, Exception> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
+                arrange,
+                testAction,
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion, description));
+        }
+#else
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception.
         /// </summary>
@@ -632,8 +915,6 @@ namespace FlUnit
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion, description));
         }
-
-        //// NB: Hmmm, I think there is room for a little more here. Treading on assertion libraries toes a little, but it is probably enough of a special
-        //// case that there is value: generic methods that assert that the exception thrown is of a particular type (and possibly even gives that type to the assertion)
+#endif
     }
 }

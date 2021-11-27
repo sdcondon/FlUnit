@@ -50,15 +50,15 @@ namespace FlUnit._Tests
         }
 
         [TestMethod]
-        public void MultiplePrereqsAndAssertions()
+        public void ComplexTest()
         {
-            // Arrange
+            // Arrange: multiple prerequisites and assertions; also explicit assertion labels
             Test test = TestThat
                 .Given(() => 1)
                 .And(() => 1)
                 .When((x, y) => x + y)
-                .ThenReturns((x, _, sum) => sum.ShouldBeGreaterThan(x))
-                .And((_, y, sum) => sum.ShouldBeGreaterThan(y));
+                .ThenReturns((x, _, sum) => sum.ShouldBeGreaterThan(x), "Sum should be greater than x")
+                .And((_, y, sum) => sum.ShouldBeGreaterThan(y), "Sum should be greater than y");
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -68,11 +68,11 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(2);
 
             var assertion1 = test.Cases.Single().Assertions.First();
-            assertion1.Description.ShouldBe("sum.ShouldBeGreaterThan(x)");
+            assertion1.Description.ShouldBe("Sum should be greater than x");
             ((Action)assertion1.Invoke).ShouldNotThrow();
 
             var assertion2 = test.Cases.Single().Assertions.Skip(1).First();
-            assertion2.Description.ShouldBe("sum.ShouldBeGreaterThan(y)");
+            assertion2.Description.ShouldBe("Sum should be greater than y");
             ((Action)assertion2.Invoke).ShouldNotThrow();
         }
 
@@ -133,7 +133,7 @@ namespace FlUnit._Tests
             Test test = TestThat
                 .Given(() => new { x = 1, y = 0 })
                 .When(given => given.x / given.y)
-                .ThenThrows((_, exception) => exception.ShouldBeOfType(typeof(DivideByZeroException)));
+                .ThenThrows((_, exception) => exception.ShouldBeOfType<DivideByZeroException>());
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -143,7 +143,11 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("exception.ShouldBeOfType(System.DivideByZeroException)");
+#if NET6_0
+            assertion.Description.ShouldBe("exception.ShouldBeOfType<DivideByZeroException>()");
+#else // Example of LINQ not being a great solution - round trip..
+            assertion.Description.ShouldBe("exception.ShouldBeOfType()");
+#endif
             ((Action)assertion.Invoke).ShouldNotThrow();
         }
 

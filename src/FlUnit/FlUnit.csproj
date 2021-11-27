@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageIcon>FlUnitIcon.png</PackageIcon>
     <Description>A test framework within which tests are defined using a fluent builder.
@@ -25,11 +25,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TestAction.tt</DependentUpon>
-    </None>
-    <None Include="TestBuilderWithAction.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TestBuilderWithAction.tt</DependentUpon>
     </None>
     <None Include="TestBuilderWithActionAndAssertions.cs">
       <DependentUpon>TestBuilderWithActionAndAssertions.tt</DependentUpon>
@@ -66,16 +61,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
 	</None>
-    <None Include="TestBuilderWithPrerequisites.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TestBuilderWithPrerequisites.tt</DependentUpon>
-    </None>
-    <None Include="TestFunction.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TestFunction.tt</DependentUpon>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

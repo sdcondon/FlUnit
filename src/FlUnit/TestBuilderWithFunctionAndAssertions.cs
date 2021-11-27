@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+#if NET6_0
+using System.Runtime.CompilerServices;
+#else
 using System.Linq.Expressions;
+#endif
 
 namespace FlUnit
 {
@@ -34,12 +38,33 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new TestFunction<TResult>.Case.Assertion(tc, a.Action, a.Description)));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndAssertions<TResult> And(
+            Action<TestFunctionOutcome<TResult>> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            return this;
+        }
+#else
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<TResult> And(Expression<Action<TestFunctionOutcome<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<TResult> And(
+            Expression<Action<TestFunctionOutcome<TResult>>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -51,11 +76,14 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<TResult> And(Action<TestFunctionOutcome<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<TResult> And(
+            Action<TestFunctionOutcome<TResult>> assertion,
+            string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
         }
+#endif
 
         internal class Assertion
         {
@@ -65,11 +93,13 @@ namespace FlUnit
                 Description = description;
             }
 
+#if !NET6_0
             internal Assertion(Expression<Action<TestFunctionOutcome<TResult>>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
+#endif
 
             public Action<TestFunctionOutcome<TResult>> Action { get; }
 
@@ -111,12 +141,33 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new TestFunction<T1, TResult>.Case.Assertion(tc, a.Action, a.Description)));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndAssertions<T1, TResult> And(
+            Action<T1, TestFunctionOutcome<TResult>> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            return this;
+        }
+#else
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, TResult> And(Expression<Action<T1, TestFunctionOutcome<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, TResult> And(
+            Expression<Action<T1, TestFunctionOutcome<TResult>>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -128,11 +179,14 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, TResult> And(Action<T1, TestFunctionOutcome<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<T1, TResult> And(
+            Action<T1, TestFunctionOutcome<TResult>> assertion,
+            string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
         }
+#endif
 
         internal class Assertion
         {
@@ -142,11 +196,13 @@ namespace FlUnit
                 Description = description;
             }
 
+#if !NET6_0
             internal Assertion(Expression<Action<T1, TestFunctionOutcome<TResult>>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
+#endif
 
             public Action<T1, TestFunctionOutcome<TResult>> Action { get; }
 
@@ -189,12 +245,33 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new TestFunction<T1, T2, TResult>.Case.Assertion(tc, a.Action, a.Description)));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(
+            Action<T1, T2, TestFunctionOutcome<TResult>> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            return this;
+        }
+#else
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(
+            Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -206,11 +283,14 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(Action<T1, T2, TestFunctionOutcome<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(
+            Action<T1, T2, TestFunctionOutcome<TResult>> assertion,
+            string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
         }
+#endif
 
         internal class Assertion
         {
@@ -220,11 +300,13 @@ namespace FlUnit
                 Description = description;
             }
 
+#if !NET6_0
             internal Assertion(Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
+#endif
 
             public Action<T1, T2, TestFunctionOutcome<TResult>> Action { get; }
 
@@ -268,12 +350,33 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new TestFunction<T1, T2, T3, TResult>.Case.Assertion(tc, a.Action, a.Description)));
         }
 
+#if NET6_0
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(
+            Action<T1, T2, T3, TestFunctionOutcome<TResult>> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            return this;
+        }
+#else
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> assertion)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(
+            Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> assertion)
         {
             assertions.Add(new Assertion(assertion));
             return this;
@@ -285,11 +388,14 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(Action<T1, T2, T3, TestFunctionOutcome<TResult>> assertion, string description)
+        public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(
+            Action<T1, T2, T3, TestFunctionOutcome<TResult>> assertion,
+            string description)
         {
             assertions.Add(new Assertion(assertion, description));
             return this;
         }
+#endif
 
         internal class Assertion
         {
@@ -299,11 +405,13 @@ namespace FlUnit
                 Description = description;
             }
 
+#if !NET6_0
             internal Assertion(Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> expression)
             {
                 Action = expression.Compile();
                 Description = expression.Body.ToString();
             }
+#endif
 
             public Action<T1, T2, T3, TestFunctionOutcome<TResult>> Action { get; }
 
