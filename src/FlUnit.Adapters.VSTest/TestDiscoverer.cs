@@ -7,7 +7,7 @@ using System.Reflection;
 namespace FlUnit.Adapters.VSTest
 {
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using System;
+    using System.IO;
 
     /// <summary>
     /// FlUnit's implementation of <see cref="ITestDiscoverer"/> - takes responsibility for discovering tests in a given assembly or assemblies.
@@ -68,8 +68,17 @@ namespace FlUnit.Adapters.VSTest
                 .SelectMany(t => t.member.GetProperties().Where(IsTestProperty).Select(p => RollUpTraitProviders(p, t.traitProviders)));
 
             var testCases = new List<TestCase>();
-            using (var diaSession = new DiaSession(source))
+            DiaSession diaSession = null;
+            try
             {
+                try
+                {
+                    diaSession = new DiaSession(source);
+                }
+                catch (FileNotFoundException)
+                {
+                }
+
                 foreach (var p in testProps)
                 {
                     var testCase = MakeTestCase(source, p.member, p.traitProviders, diaSession);
@@ -79,18 +88,22 @@ namespace FlUnit.Adapters.VSTest
                         $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");
                 }
             }
+            finally
+            {
+                diaSession?.Dispose();
+            }
 
             return testCases;
         }
 
         private static TestCase MakeTestCase(string source, PropertyInfo p, IEnumerable<ITraitProvider> traitProviders, DiaSession diaSession)
         {
-            var navigationData = diaSession.GetNavigationData(p.DeclaringType.FullName, p.GetGetMethod().Name);
+            var navigationData = diaSession?.GetNavigationData(p.DeclaringType.FullName, p.GetGetMethod().Name);
 
             var testCase = new TestCase($"{p.DeclaringType.FullName}.{p.Name}", Constants.ExecutorUri, source)
             {
-                CodeFilePath = navigationData.FileName,
-                LineNumber = navigationData.MinLineNumber,
+                CodeFilePath = navigationData?.FileName,
+                LineNumber = navigationData?.MinLineNumber ?? 0,
             };
 
             testCase.Traits.AddRange(traitProviders.Select(t => new Trait(t.Trait.Name, t.Trait.Value)));
