@@ -17,7 +17,7 @@ Create a .NET 6 class library and add some package references:
 - You'll also need to include an assertion library of your choice - the example code below uses [`FluentAssertions`](https://www.nuget.org/packages/FluentAssertions/), for example.
 - [`coverlet.collector`](https://www.nuget.org/packages/coverlet.collector/) does work with FlUnit tests - so feel free to add that, too.
 
-NB: a .NET standard 2.0 version of the framework does exist, and targeting earlier versions of the framework does work, but there are some caveats. Details can be found [here](docs/extended-usage-guidance.md#caveats-when-targeting-net-5-or-earlier). All the examples and documentation below assumes .NET 6.
+NB: a .NET Standard 2.0 version of the framework does exist, and targeting earlier versions of the framework does work, but there are some caveats. Details can be found [here](docs/extended-usage-guidance.md#caveats-when-targeting-net-5-or-earlier). All the examples and documentation below assumes .NET 6.
 
 As shown below, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them. More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
 
@@ -49,6 +49,8 @@ public static class MyTests
     .ThenReturns((wi, th, retVal) => retVal.Should().BeTrue())
     .And((wi, th, retVal) => th.IsProcessed.Should().BeTrue())
     .And((wi, th, retVal) => wi.HasProcessed.Should().BeTrue());
+    // NB: No call required to build a test from a builder - builders with at least one declared assertion
+    // are implicitly convertible to Test instances.
 
   // You may find that a single 'given' clause returning an anonymous
   // object makes for more readable tests (separate given clauses is more useful when
@@ -77,7 +79,7 @@ public static class MyTests
     .And((widget, _) => widget.HasProcessed.Should().BeFalse());
 
   // Parameterised tests are supported without awkward attribute-based
-  // parameter retrieval:
+  // argument retrieval:
   public static Test SumOfEvenAndOdd => TestThat
     .GivenEachOf(() => new[] { 1, 3, 5 })
     .AndEachOf(() => new[] { 2, 4, 6 })
