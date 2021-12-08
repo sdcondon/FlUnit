@@ -44,12 +44,12 @@ public static class MyTests
     // description for the associated test result. If you do not provide an explicit description, the text
     // of the assertion argument will be used - trimmed down to just its body if it is a lambda. For
     // "ThenReturns", the delegate should accept one parameter for each pre-requisite, and one for the
-    // return value of the When clause (assuming it returns one). For "ThenThrows", see the third example,
+    // return value of the When clause (if it returns one). For "ThenThrows", see the third example,
     // below. Assertion failure should be indicated by a thrown exception.
     .ThenReturns((wi, th, retVal) => retVal.Should().BeTrue())
     .And((wi, th, retVal) => th.IsProcessed.Should().BeTrue())
     .And((wi, th, retVal) => wi.HasProcessed.Should().BeTrue());
-    // NB: No call required to build a test from a builder - builders with at least one declared assertion
+    // NB: No call required to build a Test from a builder - builders with at least one declared assertion
     // are implicitly convertible to Test instances.
 
   // You may find that a single 'given' clause returning an anonymous
