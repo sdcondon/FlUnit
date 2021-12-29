@@ -79,12 +79,17 @@ public static class MyTests
     .And((widget, _) => widget.HasProcessed.Should().BeFalse());
 
   // Parameterised tests are supported without awkward attribute-based
-  // argument retrieval:
+  // argument retrieval. This is my favourite aspect of FlUnit - and I suspect
+  // that anyone whose mind easily goes to test cases and data-driven testing
+  // will enjoy this. Also in this example, note that there is a parameterless
+  // version of ThenReturns, that adds the assertion that just verifies that the
+  // when clause returned successfully. An equivalent ThenThrows overload also exists.
   public static Test SumOfEvenAndOdd => TestThat
     .GivenEachOf(() => new[] { 1, 3, 5 })
     .AndEachOf(() => new[] { 2, 4, 6 })
     .When((x, y) => x + y)
-    .ThenReturns((_, _, sum) => (sum % 2).Should().Be(1))
+    .ThenReturns()
+    .And((_, _, sum) => (sum % 2).Should().Be(1))
     .And((x, _, sum) => sum.Should().BeGreaterThan(x));
 }
 ```
