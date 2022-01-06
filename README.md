@@ -13,7 +13,7 @@ A test framework in which tests are defined using a fluent builder. Includes a v
 Create a .NET 6 class library and add some package references:
 - [`Microsoft.NET.Test.Sdk`](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/) - to identify this as a test project
 - [`FlUnit`](https://www.nuget.org/packages/FlUnit/) - which contains the important stuff - the builder and test classes
-- [`FlUnit.Adapters.VSTest`](https://www.nuget.org/packages/FlUnit.Adapters.VSTest/) - the VSTest adapter package, so that the VSTest platform knows how to find and run FlUnit tests.
+- [`FlUnit.VS.TestAdapter`](https://www.nuget.org/packages/FlUnit.VS.TestAdapter/) - the VSTest adapter package, so that the VSTest platform knows how to find and run FlUnit tests.
 - You'll also need to include an assertion library of your choice - the example code below uses [`FluentAssertions`](https://www.nuget.org/packages/FluentAssertions/), for example.
 - [`coverlet.collector`](https://www.nuget.org/packages/coverlet.collector/) does work with FlUnit tests - so feel free to add that, too.
 
