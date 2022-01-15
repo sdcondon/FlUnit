@@ -21,7 +21,7 @@ namespace FlUnit.Adapters.VSTest
     [ExtensionUri(Constants.ExecutorUriString)]
     public class TestExecutor : ITestExecutor
     {
-        private bool isCancelled = false;
+        private bool isCancelled = false; // TODO: should probably be a cancellationtoken instead - deal with this when looking into parallelisation
 
         /// <inheritdoc />
         public void RunTests(
@@ -29,7 +29,13 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            RunTests(TestDiscoverer.MakeTestCases(sources, runContext, null), runContext, frameworkHandle);
+            var runSettings = RunSettingsReader.ReadXml(runContext.RunSettings?.SettingsXml);
+
+            RunTests(
+                TestDiscoverer.MakeTestCases(sources, runContext, null, runSettings),
+                runContext,
+                frameworkHandle,
+                runSettings);
         }
 
         /// <inheritdoc />
@@ -38,8 +44,25 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
+            var runSettings = RunSettingsReader.ReadXml(runContext.RunSettings?.SettingsXml);
+
+            RunTests(
+                tests,
+                runContext,
+                frameworkHandle,
+                runSettings);
+        }
+
+        private void RunTests(
+            IEnumerable<TestCase> tests,
+            IRunContext runContext,
+            IFrameworkHandle frameworkHandle,
+            RunSettings runSettings)
+        {
             isCancelled = false;
 
+            // NB: We only run tests sequentially for the moment.
+            // Once parallelisation is supported, the actual test run will be encapsulated away from this class.
             foreach (TestCase test in tests)
             {
                 if (isCancelled)
@@ -47,7 +70,7 @@ namespace FlUnit.Adapters.VSTest
                     break;
                 }
 
-                RunTestCase(test, frameworkHandle);
+                RunTestCase(test, runContext, frameworkHandle, runSettings);
             }
         }
 
@@ -57,7 +80,7 @@ namespace FlUnit.Adapters.VSTest
             isCancelled = true;
         }
 
-        private static void RunTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
+        private static void RunTestCase(TestCase testCase, IRunContext runContext, IFrameworkHandle frameworkHandle, RunSettings runSettings)
         {
             var propertyDetails = ((string)testCase.GetPropertyValue(TestProperties.FlUnitTestProp)).Split(':');
             var assembly = Assembly.Load(propertyDetails[0]);
@@ -126,12 +149,12 @@ namespace FlUnit.Adapters.VSTest
             }
         }
 
-        private static bool CheckTestAssertion(TestCase testCase, Test flTest, ITestCase flCase, DateTimeOffset flCaseStart, DateTimeOffset flCaseEnd, ITestAssertion testAssertion, IFrameworkHandle frameworkHandle)
+        private static bool CheckTestAssertion(TestCase vsCase, Test flTest, ITestCase flCase, DateTimeOffset flCaseStart, DateTimeOffset flCaseEnd, ITestAssertion flAssertion, IFrameworkHandle vsFrameworkHandle)
         {
             // NB: We use the start and end time for the test action as the start and end time for each assertion result.
             // The assumption being that assertions themselves will generally be (fast and) less interesting.
             // This is something to consider configurability for at some point.
-            var result = new TestResult(testCase)
+            var vsResult = new TestResult(vsCase)
             {
                 StartTime = flCaseStart,
                 EndTime = flCaseEnd,
@@ -142,34 +165,34 @@ namespace FlUnit.Adapters.VSTest
             // As with duration, there is room for some configuration of naming strategy at some point.
             if (flTest.Cases.Count > 1 && flCase.Assertions.Count > 1)
             {
-                result.DisplayName = string.IsNullOrEmpty(flCase.Description) ? testAssertion.Description : $"{testAssertion.Description} for test case {flCase.Description}"; // TODO-LOCALISATION: localisation needed if this ever takes off
+                vsResult.DisplayName = string.IsNullOrEmpty(flCase.Description) ? flAssertion.Description : $"{flAssertion.Description} for test case {flCase.Description}"; // TODO-LOCALISATION: localisation needed if this ever takes off
             }
             else if (flTest.Cases.Count > 1)
             {
-                result.DisplayName = flCase.Description;
+                vsResult.DisplayName = flCase.Description;
             }
             else if (flCase.Assertions.Count > 1)
             {
-                result.DisplayName = testAssertion.Description;
+                vsResult.DisplayName = flAssertion.Description;
             }
 
             try
             {
-                testAssertion.Invoke();
-                result.Outcome = TestOutcome.Passed;
+                flAssertion.Invoke();
+                vsResult.Outcome = TestOutcome.Passed;
                 return true;
             }
             catch (Exception e)
             {
                 // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
-                result.Outcome = TestOutcome.Failed;
-                result.ErrorMessage = e.Message;
-                result.ErrorStackTrace = e.StackTrace;
+                vsResult.Outcome = TestOutcome.Failed;
+                vsResult.ErrorMessage = e.Message;
+                vsResult.ErrorStackTrace = e.StackTrace;
                 return false;
             }
             finally
             {
-                frameworkHandle.RecordResult(result);
+                vsFrameworkHandle.RecordResult(vsResult);
             }
         }
     }
