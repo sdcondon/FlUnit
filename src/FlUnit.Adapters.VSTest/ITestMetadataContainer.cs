@@ -2,8 +2,8 @@
 namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Interface for containers of test metadata. Test adapters should implement this within their representations of tests to run - 
-    /// the generic type argument of <see cref="TestRun{TTestDescriptor}"/> must implement this interface.
+    /// Interface for containers of test metadata. Test adapters must implement this in their representations
+    /// of tests to run, that they pass to the <see cref="TestRun{TTestDescriptor}"/> for execution.
     /// </summary>
     internal interface ITestMetadataContainer
     {

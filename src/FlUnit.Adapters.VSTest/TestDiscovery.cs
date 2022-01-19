@@ -5,7 +5,7 @@ using System.Reflection;
 namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Runner-agnostic logic for finding FlUnit tests.
+    /// Core logic for finding FlUnit tests.
     /// </summary>
     internal static class TestDiscovery
     {

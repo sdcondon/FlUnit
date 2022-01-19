@@ -5,7 +5,8 @@ using System;
 namespace FlUnit.Adapters.VSTest
 {
     /// <summary>
-    /// Interface that should be implemented by test adapters for communicating the results of a test run to the runner.
+    /// The VSTest adapter's implementation of <see cref="ITestResultHandler"/>.
+    /// Intended for consumption by FlUnit's core execution logic to pass individual test results back to the VSTest platform.
     /// </summary>
     internal class TestResultHandler : ITestResultHandler
     {

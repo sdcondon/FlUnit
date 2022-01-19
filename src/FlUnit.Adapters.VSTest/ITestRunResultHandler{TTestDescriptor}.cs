@@ -1,8 +1,10 @@
 ﻿namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Interface that should be implemented by test adapters for communicating the results of a test run to the runner.
+    /// Interface that should be implemented by test adapters, and an instance thereof passed to <see cref="TestRun{TTestDesriptor}"/> instances, for
+    /// them to use to communicate the results of a test run back to the test runner.
     /// </summary>
+    /// <typeparam name="TTestDescriptor">The type of test descriptor that will be passed to this class.</typeparam>
     internal interface ITestRunResultHandler<TTestDescriptor>
     {
         /// <summary>

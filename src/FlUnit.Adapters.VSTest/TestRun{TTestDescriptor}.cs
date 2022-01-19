@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Encapsulates a FlUnit test run.
+    /// Core test execution logic. Instances of this class encapsulate a FlUnit test run.
     /// </summary>
     /// <typeparam name="TTestDescriptor">
     /// The type of the descriptor for each test in the run.
@@ -133,7 +134,7 @@ namespace FlUnit.Adapters
                 // As with duration, there is room for some configuration of naming strategy at some point.
                 if (test.Cases.Count > 1 && testCase.Assertions.Count > 1)
                 {
-                    displayName = string.IsNullOrEmpty(testCase.Description) 
+                    displayName = string.IsNullOrEmpty(testCase.Description)
                         ? assertion.Description
                         : $"{assertion.Description} for test case {testCase.Description}"; // TODO-LOCALISATION: localisation needed if this ever catches on
                 }

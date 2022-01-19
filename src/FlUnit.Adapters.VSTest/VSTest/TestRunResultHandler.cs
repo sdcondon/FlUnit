@@ -3,7 +3,8 @@
 namespace FlUnit.Adapters.VSTest
 {
     /// <summary>
-    /// Interface that should be implemented by test adapters for communicating the results of a test run to the runner.
+    /// The VSTest adapter's implementation of <see cref="ITestRunResultHandler{TestDescriptor}"/>.
+    /// Intended for consumption by FlUnit's core execution logic to pass test run results back to the VSTest platform.
     /// </summary>
     internal class TestRunResultHandler : ITestRunResultHandler<TestDescriptor>
     {

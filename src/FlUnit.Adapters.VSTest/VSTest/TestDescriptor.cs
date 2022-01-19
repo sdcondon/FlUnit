@@ -3,8 +3,8 @@
 namespace FlUnit.Adapters.VSTest
 {
     /// <summary>
-    /// Container that describes tests for the FlUnit execution logic - contains both VSTest platform
-    /// test case info, and FlUnit test metadata.
+    /// Container for test information - VSTest platform <see cref="Microsoft.VisualStudio.TestPlatform.ObjectModel.TestCase"/> info and FlUnit <see cref="FlUnit.TestMetadata"/>.
+    /// Intended for consumption by FlUnit's core execution logic (i.e. <see cref="TestRun{TTestDescriptor}"/>).
     /// </summary>
     internal class TestDescriptor : ITestMetadataContainer
     {
