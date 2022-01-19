@@ -13,24 +13,20 @@ namespace FlUnit.Adapters
     /// Will be passed back to the handlers when results are reported.
     /// Must implement <see cref="ITestMetadataContainer"/> so that the run can actually execute the test.
     /// </typeparam>
-    internal class TestRun<TTestDescriptor>
-        where TTestDescriptor : ITestMetadataContainer
+    internal class TestRun
     {
-        private readonly IEnumerable<TTestDescriptor> testDescriptors;
+        private readonly IEnumerable<ITestContainer> testContainers;
         private readonly TestRunSettings testRunSettings;
-        private readonly ITestRunResultHandler<TTestDescriptor> testRunResultHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestRun"/> class.
         /// </summary>
-        /// <param name="testDescriptors">An enumerable of <see cref="TTestDescriptor"/> instances, one for each of the tests to be run.</param>
+        /// <param name="testDescriptors">An enumerable of <see cref="ITestContainer"/> instances, one for each of the tests to be run.</param>
         /// <param name="testRunSettings">The settings that apply to this test run.</param>
-        /// <param name="testRunResultHandler">An interface for communicating results back to the test runner.</param>
-        public TestRun(IEnumerable<TTestDescriptor> testDescriptors, TestRunSettings testRunSettings, ITestRunResultHandler<TTestDescriptor> testRunResultHandler)
+        public TestRun(IEnumerable<ITestContainer> testContainers, TestRunSettings testRunSettings)
         {
-            this.testDescriptors = testDescriptors;
+            this.testContainers = testContainers;
             this.testRunSettings = testRunSettings;
-            this.testRunResultHandler = testRunResultHandler;
         }
 
         /// <summary>
@@ -43,21 +39,20 @@ namespace FlUnit.Adapters
             // Once parallelisation is supported, this would likely invoke Parallel.ForEach when parallelisation is in use. 
             // At that point, this method likely to become async - in case test runners are in a position to take advantage of that
             // (and ultimately to perhaps allow for async tests?)
-            foreach (var testDescriptor in testDescriptors)
+            foreach (var testContainer in testContainers)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                RunTest(testDescriptor, testRunSettings.TestSettings);
+                RunTest(testContainer, testRunSettings.TestSettings);
             }
         }
 
-        private void RunTest(TTestDescriptor testDescriptor, TestSettings testSettings)
+        private void RunTest(ITestContainer testContainer, TestSettings testSettings)
         {
-            var test = (Test)testDescriptor.TestMetadata.TestProperty.GetValue(null);
-            var testResultHandler = testRunResultHandler.CreateTestResultHandler(testDescriptor);
+            var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null);
 
-            testResultHandler.RecordStart();
+            testContainer.RecordStart();
 
-            var testArrangementPassed = TryArrangeTestInstance(test, testResultHandler);
+            var testArrangementPassed = TryArrangeTestInstance(test, testContainer);
             var allAssertionsPassed = testArrangementPassed;
             if (testArrangementPassed)
             {
@@ -69,7 +64,7 @@ namespace FlUnit.Adapters
 
                     foreach (var assertion in testCase.Assertions)
                     {
-                        allAssertionsPassed &= CheckTestAssertion(test, testCase, caseStart, caseEnd, assertion, testSettings, testResultHandler);
+                        allAssertionsPassed &= CheckTestAssertion(test, testCase, caseStart, caseEnd, assertion, testSettings, testContainer);
                     }
                 }
             }
@@ -88,10 +83,10 @@ namespace FlUnit.Adapters
                 testOutcome = TestOutcome.Passed;
             }
 
-            testResultHandler.RecordEnd(testOutcome);
+            testContainer.RecordEnd(testOutcome);
         }
 
-        private static bool TryArrangeTestInstance(Test test, ITestResultHandler testResultHandler)
+        private static bool TryArrangeTestInstance(Test test, ITestContainer testContainer)
         {
             var arrangementStartTime = DateTimeOffset.Now;
 
@@ -103,7 +98,7 @@ namespace FlUnit.Adapters
             catch (Exception e)
             {
                 // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
-                testResultHandler.RecordResult(
+                testContainer.RecordResult(
                     startTime: arrangementStartTime,
                     endTime: DateTimeOffset.Now,
                     displayName: null,
@@ -115,7 +110,7 @@ namespace FlUnit.Adapters
             }
         }
 
-        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset caseStart, DateTimeOffset caseEnd, ITestAssertion assertion, TestSettings testSettings, ITestResultHandler testResultHandler)
+        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset caseStart, DateTimeOffset caseEnd, ITestAssertion assertion, TestSettings testSettings, ITestContainer testContainer)
         {
             // NB: We use the start and end time for the test action as the start and end time for each assertion result.
             // The assumption being that assertions themselves will generally be (fast and) less interesting.
@@ -161,7 +156,7 @@ namespace FlUnit.Adapters
             }
             finally
             {
-                testResultHandler.RecordResult(
+                testContainer.RecordResult(
                     startTime,
                     endTime,
                     displayName,

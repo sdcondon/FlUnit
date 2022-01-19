@@ -63,7 +63,7 @@ namespace FlUnit.Adapters.VSTest
 
             cancellationTokenSource = new CancellationTokenSource();
 
-            var testDescriptors = tests.Select(t =>
+            var testContainers = tests.Select(t =>
             {
                 var propertyDetails = ((string)t.GetPropertyValue(TestProperties.FlUnitTestProp)).Split(':');
                 var assembly = Assembly.Load(propertyDetails[0]);
@@ -73,13 +73,10 @@ namespace FlUnit.Adapters.VSTest
                 // TODO-FUNCTIONALITY/MAINTAINABILITY: null traitproviders. Will need to populate these to have traits that affect execution?
                 // Or tidy this up so that traits are only a test discovery thing. Messy at the mo.
                 // If we want them just re-find them, I guess? Serializing would be needlessly complex. But re-finding them is potentially slow of we aren't clever about it..
-                return new TestDescriptor(t, new TestMetadata(propertyInfo, null));
+                return new TestContainer(t, new TestMetadata(propertyInfo, null), runContext, frameworkHandle);
             });
 
-            var testRun = new TestRun<TestDescriptor>(
-                testDescriptors,
-                runSettings,
-                new TestRunResultHandler(runContext, frameworkHandle));
+            var testRun = new TestRun(testContainers, runSettings);
 
             testRun.Execute(cancellationTokenSource.Token);
         }

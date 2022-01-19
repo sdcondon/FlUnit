@@ -5,27 +5,32 @@ using System;
 namespace FlUnit.Adapters.VSTest
 {
     /// <summary>
-    /// The VSTest adapter's implementation of <see cref="ITestResultHandler"/>.
-    /// Intended for consumption by FlUnit's core execution logic to pass individual test results back to the VSTest platform.
+    /// The VSTest adaptaer's implementation of <see cref="ITestContainer"/>.
+    /// Intended for consumption by FlUnit's core execution logic (i.e. <see cref="TestRun{TTestDescriptor}"/>).
     /// </summary>
-    internal class TestResultHandler : ITestResultHandler
+    internal class TestContainer : ITestContainer
     {
         private readonly IRunContext runContext;
         private readonly IFrameworkHandle frameworkHandle;
         private readonly TestCase testCase;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestResultHandler"/> instance.
+        /// Initializes a new instance of the <see cref="TestContainer"/> class.
         /// </summary>
-        /// <param name="runContext"></param>
-        /// <param name="frameworkHandle"></param>
-        /// <param name="testCase"></param>
-        public TestResultHandler(IRunContext runContext, IFrameworkHandle frameworkHandle, TestCase testCase)
+        /// <param name="testCase">The VSTest platform information for the test</param>
+        /// <param name="flUnitMetadata">The FlUnit metadata for the test</param>
+        public TestContainer(TestCase testCase, TestMetadata flUnitMetadata, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
+            this.testCase = testCase;
             this.runContext = runContext;
             this.frameworkHandle = frameworkHandle;
-            this.testCase = testCase;
+            TestMetadata = flUnitMetadata;
         }
+
+        /// <summary>
+        /// Gets the FlUnit metadata for the test.
+        /// </summary>
+        public TestMetadata TestMetadata { get; }
 
         /// <inheritdoc/>
         public void RecordStart()
@@ -61,7 +66,7 @@ namespace FlUnit.Adapters.VSTest
 
         private static Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome MapOutcome(TestOutcome flUnitOutome)
         {
-            switch(flUnitOutome)
+            switch (flUnitOutome)
             {
                 case TestOutcome.Passed:
                     return Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed;
