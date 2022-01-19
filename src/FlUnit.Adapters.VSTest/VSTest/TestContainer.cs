@@ -5,8 +5,8 @@ using System;
 namespace FlUnit.Adapters.VSTest
 {
     /// <summary>
-    /// The VSTest adaptaer's implementation of <see cref="ITestContainer"/>.
-    /// Intended for consumption by FlUnit's core execution logic (i.e. <see cref="TestRun{TTestDescriptor}"/>).
+    /// The VSTest adapter's implementation of <see cref="ITestContainer"/>.
+    /// Intended for consumption by FlUnit's core execution logic (i.e. the <see cref="TestRun"/> class).
     /// </summary>
     internal class TestContainer : ITestContainer
     {

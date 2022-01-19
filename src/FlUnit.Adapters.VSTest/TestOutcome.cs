@@ -1,7 +1,7 @@
 ﻿namespace FlUnit.Adapters
 {
     /// <summary>
-    /// FlUnit's enumeration for test outcomes.
+    /// FlUnit's very own enumeration for test outcomes.
     /// </summary>
     internal enum TestOutcome
     {

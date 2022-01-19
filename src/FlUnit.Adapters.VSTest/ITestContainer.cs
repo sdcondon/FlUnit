@@ -3,14 +3,16 @@
 namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Interface for test containers that include both the <see cref="TestMetadata"/> that enables core execution
-    /// logic (i.e. <see cref="TestRun"/> instances) to run a test, and logic for reporting its results back to the test runner.
+    /// Interface for test containers passed to the core execution logic (i.e. <see cref="TestRun"/> instances) by adapters.
+    /// Includes the <see cref="FlUnit.TestMetadata"/> that enables the test to be run, as well as logic for reporting its results back to the test runner.
     /// </summary>
-
+    /// <remarks>
+    /// NB: This interface worries me a little - the methods look far too influenced by VSTest.
+    /// </remarks>
     internal interface ITestContainer
     {
         /// <summary>
-        /// Gets the FlUnit metadata for this test (which FlUnit execution logic can use to run it).
+        /// Gets the FlUnit metadata for this test.
         /// </summary>
         TestMetadata TestMetadata { get; }
 
@@ -20,7 +22,7 @@ namespace FlUnit.Adapters
         void RecordStart();
 
         /// <remarks>
-        /// I don't like this method. Its far too close to the VSTest platform (inc all of the assumptions made re what test
+        /// TODO: I don't like this method. Its far too close to the VSTest platform (inc all of the assumptions made re what test
         /// result pluralilty means, and how display names are interpreted). Better to talk in FlUnit terms and expect the adapter do
         /// more..
         /// </remarks>

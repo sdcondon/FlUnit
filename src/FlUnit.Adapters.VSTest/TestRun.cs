@@ -8,11 +8,6 @@ namespace FlUnit.Adapters
     /// <summary>
     /// Core test execution logic. Instances of this class encapsulate a FlUnit test run.
     /// </summary>
-    /// <typeparam name="TTestDescriptor">
-    /// The type of the descriptor for each test in the run.
-    /// Will be passed back to the handlers when results are reported.
-    /// Must implement <see cref="ITestMetadataContainer"/> so that the run can actually execute the test.
-    /// </typeparam>
     internal class TestRun
     {
         private readonly IEnumerable<ITestContainer> testContainers;
@@ -21,7 +16,7 @@ namespace FlUnit.Adapters
         /// <summary>
         /// Initializes a new instance of the <see cref="TestRun"/> class.
         /// </summary>
-        /// <param name="testDescriptors">An enumerable of <see cref="ITestContainer"/> instances, one for each of the tests to be run.</param>
+        /// <param name="testContainers">An enumerable of <see cref="ITestContainer"/> instances, one for each of the tests to be run.</param>
         /// <param name="testRunSettings">The settings that apply to this test run.</param>
         public TestRun(IEnumerable<ITestContainer> testContainers, TestRunSettings testRunSettings)
         {
