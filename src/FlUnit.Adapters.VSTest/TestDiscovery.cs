@@ -14,7 +14,7 @@ namespace FlUnit.Adapters
         /// </summary>
         /// <param name="assembly">The assembly to look in.</param>
         /// <param name="runSettings">Unused for the moment. Sue me.</param>
-        /// <returns>An enumerable of test metadata.</returns>
+        /// <returns>An enumerable of <see cref="TestMetadata"/>, one for each discovered test.</returns>
         public static IEnumerable<TestMetadata> FindTests(Assembly assembly, TestRunSettings runSettings)
         {
             (T member, IEnumerable<ITraitProvider> traitProviders) ConcatTraitProviders<T>(T memberInfo, IEnumerable<ITraitProvider> traitProviders)

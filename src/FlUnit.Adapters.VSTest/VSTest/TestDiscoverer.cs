@@ -73,9 +73,11 @@ namespace FlUnit.Adapters.VSTest
 
                     testCase.Traits.AddRange(testMetadatum.TraitProviders.Select(t => new Trait(t.Trait.Name, t.Trait.Value)));
 
+                    // Probably better to use JSON or similar..
+                    // ..and in general need to pay more attention to how the serialization between discovery and execution works..
                     testCase.SetPropertyValue(
                         TestProperties.FlUnitTestProp,
-                        $"{testMetadatum.TestProperty.DeclaringType.Assembly.GetName().Name}:{testMetadatum.TestProperty.DeclaringType.FullName}:{testMetadatum.TestProperty.Name}"); // Probably better to use JSON or similar..
+                        $"{testMetadatum.TestProperty.DeclaringType.Assembly.GetName().Name}:{testMetadatum.TestProperty.DeclaringType.FullName}:{testMetadatum.TestProperty.Name}");
 
                     testCases.Add(testCase);
                     logger?.SendMessage(
