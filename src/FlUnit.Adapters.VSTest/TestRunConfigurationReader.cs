@@ -4,20 +4,20 @@
 namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Reader for <see cref="TestRunSettings"/> instances.
+    /// Reader for <see cref="TestRunConfiguration"/> instances.
     /// </summary>
-    public static class TestRunSettingsReader
+    public static class TestRunConfigurationReader
     {
         /// <summary>
-        /// Reads and returns a <see cref="TestRunSettings"/> instance from an XML string.
+        /// Reads and returns a <see cref="TestRunConfiguration"/> instance from an XML string.
         /// </summary>
         /// <param name="xml">The XML to read.</param>
-        /// <returns>A new <see cref="TestRunSettings"/> instance, or <see cref="TestRunSettings.Default"/> if the argument is null or empty.</returns>
-        public static TestRunSettings ReadXml(string xml)
+        /// <returns>A new <see cref="TestRunConfiguration"/> instance, or <see cref="TestRunConfiguration.Default"/> if the argument is null or empty.</returns>
+        public static TestRunConfiguration ReadXml(string xml)
         {
             if (string.IsNullOrEmpty(xml))
             {
-                return TestRunSettings.Default;
+                return TestRunConfiguration.Default;
             }
 
             ////using (var stringReader = new StringReader(xml))
@@ -26,7 +26,7 @@ namespace FlUnit.Adapters
             ////
             ////    ... blah
             ////}
-            return TestRunSettings.Default;
+            return TestRunConfiguration.Default;
         }
     }
 }

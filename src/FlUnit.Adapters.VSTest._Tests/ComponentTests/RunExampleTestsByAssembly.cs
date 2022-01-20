@@ -19,7 +19,7 @@ namespace FlUnit.Adapters.VSTest._Tests
             var runContext = new Mock<IRunContext>();
             var frameworkHandle = new FakeFrameworkHandle();
 
-            void AssertTestResult(string testName, IEnumerable<Trait> expectedTraits, TestOutcome expectedOutcome, IEnumerable<object> expectedResults)
+            void AssertTestResult(string testName, IEnumerable<Trait> expectedTraits, Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome expectedOutcome, IEnumerable<object> expectedResults)
             {
                 frameworkHandle.TestCases.ContainsKey(testName).Should().BeTrue();
                 frameworkHandle.TestCases[testName].Traits.Should().BeEquivalentTo(expectedTraits);
@@ -41,12 +41,12 @@ namespace FlUnit.Adapters.VSTest._Tests
                     new Trait("ClassLevelTrait", "ExampleTests"),
                     new Trait("PropertyLevelTrait", "ProcessHasSideEffects"),
                 },
-                TestOutcome.Passed,
+                Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = "retVal.Should().BeTrue()", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sut.HasProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "collaborator.HasBeenProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "retVal.Should().BeTrue()", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sut.HasProcessed.Should().BeTrue()", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "collaborator.HasBeenProcessed.Should().BeTrue()", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
                 });
 
             AssertTestResult(
@@ -55,12 +55,12 @@ namespace FlUnit.Adapters.VSTest._Tests
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
                 },
-                TestOutcome.Passed,
+                Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = "retVal.Should().BeTrue()", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "given.sut.HasProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "given.collaborator.HasBeenProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "retVal.Should().BeTrue()", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "given.sut.HasProcessed.Should().BeTrue()", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "given.collaborator.HasBeenProcessed.Should().BeTrue()", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
                 });
             AssertTestResult(
                 "Example.TestProject.ExampleTests.ProcessThrowsOnNullCollaborator",
@@ -68,10 +68,10 @@ namespace FlUnit.Adapters.VSTest._Tests
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
                 },
-                TestOutcome.Passed,
+                Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = (string)null, Outcome = TestOutcome.Passed },
+                    new { DisplayName = (string)null, Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
                 });
 
             AssertTestResult(
@@ -80,10 +80,10 @@ namespace FlUnit.Adapters.VSTest._Tests
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
                 },
-                TestOutcome.Failed,
+                Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Failed,
                 new[]
                 {
-                    new { DisplayName = (string)null, Outcome = TestOutcome.Failed },
+                    new { DisplayName = (string)null, Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Failed },
                 });
 
             AssertTestResult(
@@ -92,10 +92,10 @@ namespace FlUnit.Adapters.VSTest._Tests
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
                 },
-                TestOutcome.Skipped,
+                Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Skipped,
                 new[]
                 {
-                    new { DisplayName = (string)null, Outcome = TestOutcome.Skipped },
+                    new { DisplayName = (string)null, Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Skipped },
                 });
 
             AssertTestResult(
@@ -104,10 +104,10 @@ namespace FlUnit.Adapters.VSTest._Tests
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
                 },
-                TestOutcome.Passed,
+                Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = (string)null, Outcome = TestOutcome.Passed },
+                    new { DisplayName = (string)null, Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
                 });
 
             AssertTestResult(
@@ -116,10 +116,10 @@ namespace FlUnit.Adapters.VSTest._Tests
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
                 },
-                TestOutcome.Passed,
+                Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = (string)null, Outcome = TestOutcome.Passed },
+                    new { DisplayName = (string)null, Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
                 });
 
             AssertTestResult(
@@ -128,12 +128,12 @@ namespace FlUnit.Adapters.VSTest._Tests
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
                 },
-                TestOutcome.Passed,
+                Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = "1", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "3", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "5", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "1", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "3", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "5", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
                 });
 
             AssertTestResult(
@@ -142,27 +142,27 @@ namespace FlUnit.Adapters.VSTest._Tests
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
                 },
-                TestOutcome.Passed,
+                Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 2)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 4)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 6)", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 6)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 2)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 2)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 4)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 4)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 6)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 6)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 2)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 2)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 4)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 4)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 6)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 6)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 2)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 2)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 4)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 4)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 6)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
+                    new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 6)", Outcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed },
                 });
         }
     }

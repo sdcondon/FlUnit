@@ -11,17 +11,17 @@ namespace FlUnit.Adapters
     internal class TestRun
     {
         private readonly IEnumerable<ITestContainer> testContainers;
-        private readonly TestRunSettings testRunSettings;
+        private readonly TestRunConfiguration testRunConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestRun"/> class.
         /// </summary>
         /// <param name="testContainers">An enumerable of <see cref="ITestContainer"/> instances, one for each of the tests to be run.</param>
-        /// <param name="testRunSettings">The settings that apply to this test run.</param>
-        public TestRun(IEnumerable<ITestContainer> testContainers, TestRunSettings testRunSettings)
+        /// <param name="testRunConfiguration">The configuration that applies to this test run.</param>
+        public TestRun(IEnumerable<ITestContainer> testContainers, TestRunConfiguration testRunConfiguration)
         {
             this.testContainers = testContainers;
-            this.testRunSettings = testRunSettings;
+            this.testRunConfiguration = testRunConfiguration;
         }
 
         /// <summary>
@@ -37,17 +37,17 @@ namespace FlUnit.Adapters
             foreach (var testContainer in testContainers)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                RunTest(testContainer, testRunSettings.TestSettings);
+                RunTest(testContainer, testRunConfiguration.TestConfiguration);
             }
         }
 
-        private void RunTest(ITestContainer testContainer, TestSettings testSettings)
+        private void RunTest(ITestContainer testContainer, TestConfiguration testConfiguration)
         {
             var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null);
 
             testContainer.RecordStart();
 
-            var testArrangementPassed = TryArrangeTestInstance(test, testContainer);
+            var testArrangementPassed = TryArrangeTestInstance(test, testContainer, testConfiguration);
             var allAssertionsPassed = testArrangementPassed;
             if (testArrangementPassed)
             {
@@ -59,7 +59,7 @@ namespace FlUnit.Adapters
 
                     foreach (var assertion in testCase.Assertions)
                     {
-                        allAssertionsPassed &= CheckTestAssertion(test, testCase, caseStart, caseEnd, assertion, testSettings, testContainer);
+                        allAssertionsPassed &= CheckTestAssertion(test, testCase, caseStart, caseEnd, assertion, testConfiguration, testContainer);
                     }
                 }
             }
@@ -81,7 +81,7 @@ namespace FlUnit.Adapters
             testContainer.RecordEnd(testOutcome);
         }
 
-        private static bool TryArrangeTestInstance(Test test, ITestContainer testContainer)
+        private static bool TryArrangeTestInstance(Test test, ITestContainer testContainer, TestConfiguration testConfiguration)
         {
             var arrangementStartTime = DateTimeOffset.Now;
 
@@ -97,7 +97,7 @@ namespace FlUnit.Adapters
                     startTime: arrangementStartTime,
                     endTime: DateTimeOffset.Now,
                     displayName: null,
-                    outcome: TestOutcome.Skipped,
+                    outcome: testConfiguration.ArrangementFailureOutcome,
                     errorMessage: $"Test arrangement failed: {e.Message}", // TODO-LOCALISATION: localisation needed if this ever catches on
                     errorStackTrace: e.StackTrace);
 
@@ -105,7 +105,7 @@ namespace FlUnit.Adapters
             }
         }
 
-        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset caseStart, DateTimeOffset caseEnd, ITestAssertion assertion, TestSettings testSettings, ITestContainer testContainer)
+        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset caseStart, DateTimeOffset caseEnd, ITestAssertion assertion, TestConfiguration testConfiguration, ITestContainer testContainer)
         {
             // NB: We use the start and end time for the test action as the start and end time for each assertion result.
             // The assumption being that assertions themselves will generally be (fast and) less interesting.

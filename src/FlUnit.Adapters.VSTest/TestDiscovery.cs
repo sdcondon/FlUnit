@@ -13,9 +13,9 @@ namespace FlUnit.Adapters
         /// Finds all of the properties that represent tests in a given loaded assembly - along with the trait providers that should be applied to each.
         /// </summary>
         /// <param name="assembly">The assembly to look in.</param>
-        /// <param name="runSettings">Unused for the moment. Sue me.</param>
+        /// <param name="runConfiguration">Unused for the moment. Sue me.</param>
         /// <returns>An enumerable of <see cref="TestMetadata"/>, one for each discovered test.</returns>
-        public static IEnumerable<TestMetadata> FindTests(Assembly assembly, TestRunSettings runSettings)
+        public static IEnumerable<TestMetadata> FindTests(Assembly assembly, TestRunConfiguration runConfiguration)
         {
             (T member, IEnumerable<ITraitProvider> traitProviders) ConcatTraitProviders<T>(T memberInfo, IEnumerable<ITraitProvider> traitProviders)
                 where T : MemberInfo

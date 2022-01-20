@@ -24,7 +24,7 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             ITestCaseDiscoverySink discoverySink)
         {
-            var runSettings = TestRunSettingsReader.ReadXml(discoveryContext.RunSettings.SettingsXml);
+            var runSettings = TestRunConfigurationReader.ReadXml(discoveryContext.RunSettings.SettingsXml);
             MakeTestCases(sources, discoveryContext, logger, runSettings).ForEach(tc => discoverySink.SendTestCase(tc));
         }
 
@@ -32,7 +32,7 @@ namespace FlUnit.Adapters.VSTest
             IEnumerable<string> sources,
             IDiscoveryContext discoveryContext,
             IMessageLogger logger,
-            Adapters.TestRunSettings runSettings)
+            Adapters.TestRunConfiguration runSettings)
         {
             return sources.SelectMany(s => MakeTestCases(s, discoveryContext, logger, runSettings)).ToList();
         }
@@ -41,7 +41,7 @@ namespace FlUnit.Adapters.VSTest
             string source,
             IDiscoveryContext discoveryContext,
             IMessageLogger logger,
-            Adapters.TestRunSettings runSettings)
+            Adapters.TestRunConfiguration runSettings)
         {
             var assembly = Assembly.LoadFile(source);
 

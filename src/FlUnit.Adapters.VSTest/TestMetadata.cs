@@ -1,16 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace FlUnit
+namespace FlUnit.Adapters
 {
     /// <summary>
     /// Containers of test metadata - enough for the FlUnit execution logic to run a test.
     /// </summary>
-    /// <remarks>
-    /// Implementations of <see cref="ITraitProvider"/> can use this information when providing traits.
-    /// For example, a trait provider can use the name of the class containing the test.
-    /// </remarks>
-    public sealed class TestMetadata
+    internal class TestMetadata
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TestMetadata"/> class.

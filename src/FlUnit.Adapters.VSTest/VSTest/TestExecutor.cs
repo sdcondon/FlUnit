@@ -5,6 +5,7 @@ using System.Reflection;
 namespace FlUnit.Adapters.VSTest
 {
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using System.Linq;
     using System.Threading;
 
@@ -22,7 +23,7 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            var runSettings = TestRunSettingsReader.ReadXml(runContext.RunSettings?.SettingsXml);
+            var runSettings = TestRunConfigurationReader.ReadXml(runContext.RunSettings?.SettingsXml);
 
             RunTests(
                 TestDiscoverer.MakeTestCases(sources, runContext, null, runSettings),
@@ -37,13 +38,19 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            var runSettings = TestRunSettingsReader.ReadXml(runContext.RunSettings?.SettingsXml);
+            var runSettings = TestRunConfigurationReader.ReadXml(runContext.RunSettings?.SettingsXml);
 
             RunTests(
                 tests,
                 runContext,
                 frameworkHandle,
                 runSettings);
+        }
+
+        /// <inheritdoc />
+        public void Cancel()
+        {
+            cancellationTokenSource.Cancel();
         }
 
         /// <summary>
@@ -57,14 +64,15 @@ namespace FlUnit.Adapters.VSTest
             IEnumerable<TestCase> tests,
             IRunContext runContext,
             IFrameworkHandle frameworkHandle,
-            Adapters.TestRunSettings runSettings)
+            Adapters.TestRunConfiguration runSettings)
         {
             // TODO-ROBUSTNESS: Probably should make sure its not already being run at some point? Throw an invalidoperationexception if so.
-
             cancellationTokenSource = new CancellationTokenSource();
 
             var testContainers = tests.Select(t =>
             {
+                ////DumpTestCase(t, frameworkHandle);
+
                 var propertyDetails = ((string)t.GetPropertyValue(TestProperties.FlUnitTestProp)).Split(':');
                 var assembly = Assembly.Load(propertyDetails[0]);
                 var type = assembly.GetType(propertyDetails[1]);
@@ -73,6 +81,7 @@ namespace FlUnit.Adapters.VSTest
                 // TODO-FUNCTIONALITY/MAINTAINABILITY: null traitproviders. Will need to populate these to have traits that affect execution?
                 // Or tidy this up so that traits are only a test discovery thing. Messy at the mo.
                 // If we want them just re-find them, I guess? Serializing would be needlessly complex. But re-finding them is potentially slow of we aren't clever about it..
+                // ANSWER: Traits exist as a VS TestCase prop - should we change metadata so that it includes traits, not traitproviders? 
                 return new TestContainer(t, new TestMetadata(propertyInfo, null), runContext, frameworkHandle);
             });
 
@@ -81,10 +90,12 @@ namespace FlUnit.Adapters.VSTest
             testRun.Execute(cancellationTokenSource.Token);
         }
 
-        /// <inheritdoc />
-        public void Cancel()
-        {
-            cancellationTokenSource.Cancel();
-        }
+        ////private void DumpTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
+        ////{
+        ////    foreach(var property in testCase.Properties)
+        ////    {
+        ////        frameworkHandle.SendMessage(TestMessageLevel.Informational, $"PROP: {property.Id} - {property.Label} - {property.ValueType}");
+        ////    }
+        ////}
     }
 }
