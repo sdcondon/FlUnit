@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using System;
+using System.Linq;
+using System.Reflection;
 
 namespace FlUnit.Adapters.VSTest
 {
@@ -18,13 +20,21 @@ namespace FlUnit.Adapters.VSTest
         /// Initializes a new instance of the <see cref="TestContainer"/> class.
         /// </summary>
         /// <param name="testCase">The VSTest platform information for the test</param>
-        /// <param name="flUnitMetadata">The FlUnit metadata for the test</param>
-        public TestContainer(TestCase testCase, TestMetadata flUnitMetadata, IRunContext runContext, IFrameworkHandle frameworkHandle)
+        /// <param name="runContext">The VSTest <see cref="IRunContext"/> that the test is being executed in.</param>
+        /// <param name="frameworkHandle">The VSTest <see cref="IFrameworkHandle"/> that the test should use for callbacks.</param>
+        public TestContainer(TestCase testCase, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
+            ////DumpTestCase(testCase, frameworkHandle);
+
+            var propertyDetails = ((string)testCase.GetPropertyValue(TestProperties.FlUnitTestProp)).Split(':');
+            var assembly = Assembly.Load(propertyDetails[0]); // Might already be loaded - not sure of best practices here. Also, expensive call(s) in a ctor is not ideal (though this class is internal..). Fine for now..
+            var type = assembly.GetType(propertyDetails[1]);
+            var propertyInfo = type.GetProperty(propertyDetails[2]);
+
             this.testCase = testCase;
+            TestMetadata = new TestMetadata(propertyInfo, testCase.Traits.Select(t => new Trait(t.Name, t.Value)));
             this.runContext = runContext;
             this.frameworkHandle = frameworkHandle;
-            TestMetadata = flUnitMetadata;
         }
 
         /// <summary>
@@ -78,5 +88,13 @@ namespace FlUnit.Adapters.VSTest
                     throw new ArgumentException();
             };
         }
+
+        ////private static void DumpTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
+        ////{
+        ////    foreach (var property in testCase.Properties)
+        ////    {
+        ////        frameworkHandle.SendMessage(TestMessageLevel.Informational, $"PROP: {property.Id} - {property.Label} - {property.ValueType}");
+        ////    }
+        ////}
     }
 }

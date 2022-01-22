@@ -1,9 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 
 namespace FlUnit.Adapters.VSTest
@@ -53,48 +51,26 @@ namespace FlUnit.Adapters.VSTest
         }
 
         /// <summary>
-        /// Private method for running tests once we have determined which tests we want to run and the run settings to use.
+        /// Private method for running tests once we have determined which tests we want to run and the test run configuration to use.
         /// </summary>
-        /// <param name="tests">The tests to run.</param>
+        /// <param name="testCases">The VSTest test cases to run.</param>
         /// <param name="runContext">The VSTest platform run context.</param>
         /// <param name="frameworkHandle">The VSTest platform framework handle.</param>
-        /// <param name="runSettings">The run settings to use.</param>
+        /// <param name="testRunConfiguration">The FlUnit test run configuration to use.</param>
         private void RunTests(
-            IEnumerable<TestCase> tests,
+            IEnumerable<TestCase> testCases,
             IRunContext runContext,
             IFrameworkHandle frameworkHandle,
-            TestRunConfiguration runSettings)
+            TestRunConfiguration testRunConfiguration)
         {
             // TODO-ROBUSTNESS: Probably should make sure its not already being run at some point? Throw an invalidoperationexception if so.
             cancellationTokenSource = new CancellationTokenSource();
 
-            var testContainers = tests.Select(testCase =>
-            {
-                DumpTestCase(testCase, frameworkHandle);
-
-                var propertyDetails = ((string)testCase.GetPropertyValue(TestProperties.FlUnitTestProp)).Split(':');
-                var assembly = Assembly.Load(propertyDetails[0]);
-                var type = assembly.GetType(propertyDetails[1]);
-                var propertyInfo = type.GetProperty(propertyDetails[2]);
-
-                return new TestContainer(
-                    testCase,
-                    new TestMetadata(propertyInfo, testCase.Traits.Select(t => new Trait(t.Name, t.Value))),
-                    runContext,
-                    frameworkHandle);
-            });
-
-            var testRun = new TestRun(testContainers, runSettings);
+            var testRun = new TestRun(
+                testContainers: testCases.Select(testCase => new TestContainer(testCase, runContext, frameworkHandle)),
+                testRunConfiguration);
 
             testRun.Execute(cancellationTokenSource.Token);
-        }
-
-        private void DumpTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
-        {
-            foreach (var property in testCase.Properties)
-            {
-                frameworkHandle.SendMessage(TestMessageLevel.Informational, $"PROP: {property.Id} - {property.Label} - {property.ValueType}");
-            }
         }
     }
 }

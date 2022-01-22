@@ -4,10 +4,11 @@ namespace FlUnit.Adapters
 {
     /// <summary>
     /// Interface for test containers passed to the core execution logic (i.e. <see cref="TestRun"/> instances) by adapters.
-    /// Includes the <see cref="FlUnit.TestMetadata"/> that enables the test to be run, as well as logic for reporting its results back to the test runner.
+    /// Includes the <see cref="FlUnit.TestMetadata"/> that enables the <see cref="TestRun"/> to run the test, as well as the API for reporting its results back to the test runner.
     /// </summary>
     /// <remarks>
-    /// NB: This interface worries me a little - the methods look far too influenced by VSTest.
+    /// NB: This interface worries me a little - the method signatures are far too influenced by VSTest.
+    /// It will stay internal until such time as a second adapter exists, to limit the impact of said adapter prompting changes..
     /// </remarks>
     internal interface ITestContainer
     {
