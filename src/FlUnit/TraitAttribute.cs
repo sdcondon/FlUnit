@@ -13,18 +13,9 @@ namespace FlUnit
 		/// </summary>
 		/// <param name="name">The trait name.</param>
 		/// <param name="value">The trait value.</param>
-		public TraitAttribute(string name, string value) => Trait = new TraitImpl(name, value);
+		public TraitAttribute(string name, string value) => Trait = new Trait(name, value);
 
 		/// <inheritdoc/>
-        public ITrait Trait { get; }
-
-		private class TraitImpl : ITrait
-		{
-			public TraitImpl(string name, string value) => (Name, Value) = (name, value);
-
-			public string Name { get; }
-
-			public string Value { get; }
-		}
+		public Trait Trait { get; }
 	}
 }

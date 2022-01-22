@@ -41,7 +41,7 @@ namespace FlUnit.Adapters.VSTest
             string source,
             IDiscoveryContext discoveryContext,
             IMessageLogger logger,
-            Adapters.TestRunConfiguration runSettings)
+            TestRunConfiguration runSettings)
         {
             var assembly = Assembly.LoadFile(source);
 
@@ -71,7 +71,7 @@ namespace FlUnit.Adapters.VSTest
                         LineNumber = navigationData?.MinLineNumber ?? 0,
                     };
 
-                    testCase.Traits.AddRange(testMetadatum.TraitProviders.Select(t => new Trait(t.Trait.Name, t.Trait.Value)));
+                    testCase.Traits.AddRange(testMetadatum.Traits.Select(t => new Trait(t.Name, t.Value)));
 
                     // Probably better to use JSON or similar..
                     // ..and in general need to pay more attention to how the serialization between discovery and execution works..

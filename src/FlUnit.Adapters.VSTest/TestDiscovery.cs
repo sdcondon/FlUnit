@@ -31,8 +31,8 @@ namespace FlUnit.Adapters
                 .ExportedTypes.Select(t => ConcatTraitProviders(t, assemblyTraitProviders))
                 .SelectMany(t => t.member.GetProperties().Where(IsTestProperty).Select(p =>
                 {
-                    var tuple = ConcatTraitProviders(p, t.traitProviders);
-                    return new TestMetadata(tuple.member, tuple.traitProviders);
+                    var (member, traitProviders) = ConcatTraitProviders(p, t.traitProviders);
+                    return new TestMetadata(member, traitProviders.Select(tp => tp.Trait));
                 }));
         }
 

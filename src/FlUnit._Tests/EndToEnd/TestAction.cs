@@ -35,7 +35,7 @@ namespace FlUnit._Tests
             // Arrange
             Test test = TestThat
                 .Given(() => new StringBuilder())
-                .When(sb => { sb.Append("A"); })
+                .When(sb => { sb.Append('A'); })
                 .ThenReturns(sb => sb.Length.ShouldBe(1));
 
             // Act & Assert
@@ -177,7 +177,7 @@ namespace FlUnit._Tests
             // Arrange
             Test test = TestThat
                 .Given(() => new StringBuilder())
-                .When(sb => { sb.Append("A"); })
+                .When(sb => { sb.Append('A'); })
                 .ThenReturns(sb => sb.Length.ShouldBe(2));
 
             // Act & Assert

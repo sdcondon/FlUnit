@@ -11,22 +11,22 @@ namespace FlUnit.Adapters
         /// <summary>
         /// Initializes a new instance of the <see cref="TestMetadata"/> class.
         /// </summary>
-        /// <param name="propertyInfo"></param>
-        /// <param name="traitProviders"></param>
-        public TestMetadata(PropertyInfo propertyInfo, IEnumerable<ITraitProvider> traitProviders)
+        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> for the <see cref="Test"/>-valued property that represents the test.</param>
+        /// <param name="traits">An enumerable of the traits that are applicable to this test.</param>
+        public TestMetadata(PropertyInfo propertyInfo, IEnumerable<Trait> traits)
         {
             TestProperty = propertyInfo;
-            TraitProviders = traitProviders;
+            Traits = traits;
         }
 
         /// <summary>
-        /// Gets the <see cref="PropertyInfo"/> the <see cref="Test"/>-valued property that represents the test.
+        /// Gets the <see cref="PropertyInfo"/> for the <see cref="Test"/>-valued property that represents the test.
         /// </summary>
         public PropertyInfo TestProperty { get; }
 
         /// <summary>
-        /// Gets an enumerable of the trait providers that are applicable to this test.
+        /// Gets an enumerable of the traits that are applicable to this test.
         /// </summary>
-        public IEnumerable<ITraitProvider> TraitProviders { get; }
+        public IEnumerable<Trait> Traits { get; }
     }
 }

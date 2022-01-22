@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Core test execution logic. Instances of this class encapsulate a FlUnit test run.
+    /// FlUnit's core test execution logic. Instances of this class encapsulate a FlUnit test run.
     /// </summary>
     internal class TestRun
     {
@@ -67,7 +67,7 @@ namespace FlUnit.Adapters
             TestOutcome testOutcome;
             if (!testArrangementPassed)
             {
-                testOutcome = TestOutcome.Skipped;
+                testOutcome = testConfiguration.ArrangementFailureOutcome;
             }
             else if (!allAssertionsPassed)
             {

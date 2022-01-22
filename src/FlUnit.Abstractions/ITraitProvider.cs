@@ -9,6 +9,6 @@
         /// <summary>
         /// Gets the provided trait.
         /// </summary>
-        ITrait Trait { get; }
+        Trait Trait { get; }
     }
 }
