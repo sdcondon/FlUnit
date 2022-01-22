@@ -6,12 +6,13 @@ using System.Collections.Generic;
 namespace FlUnit.Adapters.VSTest._Tests.TestDoubles
 {
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using System.Collections.Concurrent;
 
     class FakeFrameworkHandle : IFrameworkHandle
     {
-        public Dictionary<string, TestCase> TestCases { get; } = new Dictionary<string, TestCase>();
-        public Dictionary<string, TestOutcome> TestOutcomes { get; } = new Dictionary<string, TestOutcome>();
-        public Dictionary<string, IList<TestResult>> TestResults { get; } = new Dictionary<string, IList<TestResult>>();
+        public ConcurrentDictionary<string, TestCase> TestCases { get; } = new ConcurrentDictionary<string, TestCase>();
+        public ConcurrentDictionary<string, TestOutcome> TestOutcomes { get; } = new ConcurrentDictionary<string, TestOutcome>();
+        public ConcurrentDictionary<string, IList<TestResult>> TestResults { get; } = new ConcurrentDictionary<string, IList<TestResult>>();
 
         public bool EnableShutdownAfterTestRun
         {
@@ -41,8 +42,8 @@ namespace FlUnit.Adapters.VSTest._Tests.TestDoubles
 
         public void RecordStart(TestCase testCase)
         {
-            TestCases.Add(testCase.DisplayName, testCase);
-            TestResults.Add(testCase.DisplayName, new List<TestResult>());
+            TestCases.TryAdd(testCase.DisplayName, testCase);
+            TestResults.TryAdd(testCase.DisplayName, new List<TestResult>());
         }
 
         public void SendMessage(TestMessageLevel testMessageLevel, string message)

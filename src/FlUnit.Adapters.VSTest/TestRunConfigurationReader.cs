@@ -17,7 +17,7 @@ namespace FlUnit.Adapters
         {
             if (string.IsNullOrEmpty(xml))
             {
-                return TestRunConfiguration.Default;
+                return new TestRunConfiguration();
             }
 
             ////using (var stringReader = new StringReader(xml))
@@ -26,7 +26,7 @@ namespace FlUnit.Adapters
             ////
             ////    ... blah
             ////}
-            return TestRunConfiguration.Default;
+            return new TestRunConfiguration();
         }
     }
 }

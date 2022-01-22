@@ -30,14 +30,23 @@ namespace FlUnit.Adapters
         /// <param name="cancellationToken">The cancellation token that, if triggered, should cause the test run to abort.</param>
         public void Execute(CancellationToken cancellationToken)
         {
-            // NB: We only run tests sequentially for the moment.
-            // Once parallelisation is supported, this would likely invoke Parallel.ForEach when parallelisation is in use. 
-            // At that point, this method likely to become async - in case test runners are in a position to take advantage of that
-            // (and ultimately to perhaps allow for async tests?)
-            foreach (var testContainer in testContainers)
+            if (testRunConfiguration.Parallelise)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                RunTest(testContainer, testRunConfiguration.TestConfiguration);
+                Parallel.ForEach(
+                    testContainers,
+                    new ParallelOptions()
+                    {
+                        CancellationToken = cancellationToken
+                    },
+                    tc => RunTest(tc, testRunConfiguration.TestConfiguration));
+            }
+            else
+            {
+                foreach (var testContainer in testContainers)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    RunTest(testContainer, testRunConfiguration.TestConfiguration);
+                }
             }
         }
 

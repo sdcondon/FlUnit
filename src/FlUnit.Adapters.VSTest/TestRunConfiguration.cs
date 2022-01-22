@@ -7,15 +7,20 @@
     public class TestRunConfiguration
     {
         /// <summary>
-        /// Gets the default run settings. These are the setting values used if not otherwise specified.
-        /// </summary>
-        public static TestRunConfiguration Default { get; } = new TestRunConfiguration();
-
-        /// <summary>
         /// Gets the subset of run configuration that is relevant to (and ultimately overridable by) individual tests.
         /// </summary>
-        public TestConfiguration TestConfiguration { get; set; } = TestConfiguration.Default;
+        public TestConfiguration TestConfiguration { get; set; } = new TestConfiguration();
 
-        //// E.g. Parallelisation control settings go in here.
+        /// <summary>
+        /// Gets or set a value indicating whether tests should be run in parallel or not.
+        /// The default value is 'true'.
+        /// </summary>
+        public bool Parallelise { get; set; } = true;
+
+        /////// <summary>
+        /////// Gets or sets the trait name to control partitioning of tests run in parallel.
+        /////// Tests with the same value for the trait with this key will be executed in the same partition, and thus not run in parallel.
+        /////// </summary>
+        ////public bool ParallelPartitionKey { get; set; }
     }
 }

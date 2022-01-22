@@ -9,6 +9,9 @@ namespace FlUnit.Adapters
     /// <remarks>
     /// NB: This interface worries me a little - the method signatures are far too influenced by VSTest.
     /// It will stay internal until such time as a second adapter exists, to limit the impact of said adapter prompting changes..
+    /// <para/>
+    /// The other slight worry here is that its going to be too large and unfocused - especially if I end up adding Log methods to it.
+    /// Originally separated metadata container from TestRunResultHandler and TestResultHandler.. Reserve the right to return to that (before v1..).
     /// </remarks>
     internal interface ITestContainer
     {
