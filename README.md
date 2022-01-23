@@ -124,16 +124,14 @@ FlUnit's notable weaknesses include:
 
 ## Plans
 
-_NB: If anyone cares - got distracted with real-world stuff, and some messing about with my AI projects. Hence the estimate push-back.._
-
 Proper issue tracking would be overkill at this point, so just a bullet list to organise my thoughts:
 
 - General ongoing:
   - Take some cues from the vstest adapter for mstest - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
 - Specific, highest-priority first:
-  - *(Jan)* Add in initial test settings - initial settings likely to include allowing specification of strategy for result naming and duration records (both of which currently make some "sensible" decisions which may not be appropriate in all situations).
-  - *(Jan)* Look into parallelisation. Partition configuration likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Also may provide more powerful trait specification as part of this (e.g. specify single trait at assembly level to give all tests a trait for their class/prop name).
-  - *(Jan)* QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`? Perhaps somehow support IFormatProviders for test cases (thus making it easy to specify with test settings)? Needs careful thought..
+  - *(Jan)* More settings:
+    - for specification of strategy for result naming and duration records (both of which currently make some "sensible" decisions which may not be appropriate in all situations).
+    - for parallel partitioning - likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Also want to allow for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
   - *(Feb)* V1 diligence & release
     - Get some performance benchmarks in place
     - Any required "doing it properly" stuff in the test adapter.
@@ -141,6 +139,7 @@ Proper issue tracking would be overkill at this point, so just a bullet list to 
     - Separate usage docs
     - README in packages
   - *(Mar / Apr / May)* Possible post-v1 additions:
+    - QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`? Perhaps somehow support IFormatProviders for test cases (thus making it easy to specify with test settings)? Needs careful thought..
     - For settings that affect individual tests, perhaps make them overridable (a `UsingSettings(settings => ..)` builder method)
     - Assertions: Simply interpreting exceptions as failure and leaving this to other libraries for the most part, but e.g. equivalents of Assert.Fail and Assert.Inconclusive may be useful?
     - Basic attachment & output support?

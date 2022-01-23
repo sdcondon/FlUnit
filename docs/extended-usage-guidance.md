@@ -2,6 +2,10 @@
 
 No in-depth docs just yet, but there follow some general notes that go beyond the introductory guidance.
 
+## Configuration
+
+If VSTest is being used, FlUnit test configuration can be provided in a "FlUnit" element in the .runsettings file. See the [annotated example](../src/Example.TestProject/.runsettings) in the example test project.
+
 ## Patterns
 
 Here are a few patterns that may prove useful when using FlUnit.
