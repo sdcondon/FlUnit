@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+	<FlUnit>
+		<!--
+		Parallelise specifies whether FlUnit should run tests in parallel.
+		Valid values are "true" and "false".
+		The default is value is "true".
+		-->
+		<Parallelise>true</Parallelise>
+
+		<!--
+		The TestConfiguration section contains settings that affect individual tests,
+		as opposed to the run as a whole.
+		-->
+		<TestConfiguration>
+			
+			<!--
+			ArrangementFailureOutcome specifies the recorded outcome of tests for which one or more "Given" clauses throw.
+			Valid values are "Skipped", "Failed" and "Passed".
+		    The default value is "Skipped".
+			-->
+			<ArrangementFailureOutcome>Failed</ArrangementFailureOutcome>
+			
+		</TestConfiguration>
+		
+	</FlUnit>
+</RunSettings>
