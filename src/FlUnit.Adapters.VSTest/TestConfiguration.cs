@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlUnit.Adapters.Configuration;
+using FlUnit.Configuration;
 
 namespace FlUnit.Adapters
 {
@@ -14,6 +15,9 @@ namespace FlUnit.Adapters
         /// </summary>
         public TestOutcome ArrangementFailureOutcome { get; set; } = TestOutcome.Skipped;
 
-        // E.g. naming strategy settings
+        /// <summary>
+        /// Gets or sets the strategy to use to label individual test results.
+        /// </summary>
+        public IResultNamingStrategy ResultNamingStrategy { get; set; } = new DefaultResultNamingStrategy();
     }
 }

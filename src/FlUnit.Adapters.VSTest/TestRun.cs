@@ -62,13 +62,13 @@ namespace FlUnit.Adapters
             {
                 foreach (var testCase in test.Cases)
                 {
-                    var caseStart = DateTimeOffset.Now;
+                    var actionStart = DateTimeOffset.Now;
                     testCase.Act();
-                    var caseEnd = DateTimeOffset.Now;
+                    var actionEnd = DateTimeOffset.Now;
 
                     foreach (var assertion in testCase.Assertions)
                     {
-                        allAssertionsPassed &= CheckTestAssertion(test, testCase, caseStart, caseEnd, assertion, testConfiguration, testContainer);
+                        allAssertionsPassed &= CheckTestAssertion(test, testCase, actionStart, actionEnd, assertion, testConfiguration, testContainer);
                     }
                 }
             }
@@ -114,13 +114,13 @@ namespace FlUnit.Adapters
             }
         }
 
-        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset caseStart, DateTimeOffset caseEnd, ITestAssertion assertion, TestConfiguration testConfiguration, ITestContainer testContainer)
+        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset actionStart, DateTimeOffset actionEnd, ITestAssertion assertion, TestConfiguration testConfiguration, ITestContainer testContainer)
         {
             // NB: We use the start and end time for the test action as the start and end time for each assertion result.
             // The assumption being that assertions themselves will generally be (fast and) less interesting.
             // This is something to consider configurability for at some point.
-            var startTime = caseStart;
-            var endTime = caseEnd;
+            var startTime = actionStart;
+            var endTime = actionEnd;
             string displayName = null;
             var outcome = TestOutcome.Skipped;
             string errorMessage = null;
@@ -128,23 +128,7 @@ namespace FlUnit.Adapters
 
             try
             {
-                // Use different descriptions depending on multiplicity of cases and assertions.
-                // This makes results in Visual Studio itself look good - but the actual results miss out on some info (so not as good for TRX files).
-                // As with duration, there is room for some configuration of naming strategy at some point.
-                if (test.Cases.Count > 1 && testCase.Assertions.Count > 1)
-                {
-                    displayName = string.IsNullOrEmpty(testCase.Description)
-                        ? assertion.Description
-                        : $"{assertion.Description} for test case {testCase.Description}"; // TODO-LOCALISATION: localisation needed if this ever catches on
-                }
-                else if (test.Cases.Count > 1)
-                {
-                    displayName = testCase.Description;
-                }
-                else if (testCase.Assertions.Count > 1)
-                {
-                    displayName = assertion.Description;
-                }
+                displayName = testConfiguration.ResultNamingStrategy.GetResultLabel(test, testCase, assertion);
 
                 assertion.Invoke();
                 outcome = TestOutcome.Passed;

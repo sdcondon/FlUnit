@@ -76,7 +76,19 @@ namespace FlUnit.Adapters.VSTest._Tests
                 });
 
             AssertTestResult(
-                "Example.TestProject.ExampleTests.ProcessDoesntThrowOnNullCollaborator",
+                "Example.TestProject.ExampleTests.ProcessReturnsTrueOnNullCollaborator",
+                new[]
+                {
+                    new Trait("ClassLevelTrait", "ExampleTests")
+                },
+                TestOutcome.Failed,
+                new[]
+                {
+                    new { DisplayName = (string)null, Outcome = TestOutcome.Failed },
+                });
+
+            AssertTestResult(
+                "Example.TestProject.ExampleTests.ProcessReturnsFalseOnNonNullCollaborator",
                 new[]
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")

@@ -39,11 +39,19 @@ namespace Example.TestProject
             .When(sut => sut.Process(null))
             .ThenThrows((_, exception) => exception.Should().BeOfType(typeof(ArgumentNullException)));
 
-        // Test with failing assertion
-        public static Test ProcessDoesntThrowOnNullCollaborator => TestThat
+        // Test with failing implicit assertion
+        // (we expect it to return a particular value, but it actually throws)
+        public static Test ProcessReturnsTrueOnNullCollaborator => TestThat
             .Given(() => new TestSubject())
             .When(sut => sut.Process(null))
             .ThenReturns((_, retVal) => retVal.Should().BeTrue());
+
+        // Test with failing explicit assertion
+        // (we expect it to return a different value)
+        public static Test ProcessReturnsFalseOnNonNullCollaborator => TestThat
+            .Given(() => new TestSubject())
+            .When(sut => sut.Process(new Collaborator()))
+            .ThenReturns((_, retVal) => retVal.Should().BeFalse());
 
         // Test with failing arrangement
         public static Test ProcessDoesntThrowOnNullCollaborator2 => TestThat

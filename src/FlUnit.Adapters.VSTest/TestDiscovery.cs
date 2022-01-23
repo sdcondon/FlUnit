@@ -26,9 +26,8 @@ namespace FlUnit.Adapters
             var assemblyTraitProviders = assembly.GetCustomAttributes().OfType<ITraitProvider>();
 
             // TODO-PERFORMANCE: parallelisation? plinq?
-            // TODO-MAINTAINABILITY: this is hideous
-            return assembly
-                .ExportedTypes.Select(t => ConcatTraitProviders(t, assemblyTraitProviders))
+            return assembly.ExportedTypes
+                .Select(t => ConcatTraitProviders(t, assemblyTraitProviders))
                 .SelectMany(t => t.member.GetProperties().Where(IsTestProperty).Select(p =>
                 {
                     var (member, traitProviders) = ConcatTraitProviders(p, t.traitProviders);
