@@ -24,30 +24,30 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             ITestCaseDiscoverySink discoverySink)
         {
-            var runSettings = TestRunConfigurationReader.ReadXml(discoveryContext.RunSettings.SettingsXml);
-            MakeTestCases(sources, discoveryContext, logger, runSettings).ForEach(tc => discoverySink.SendTestCase(tc));
+            var testRunConfiguration = TestRunConfigurationReader.ReadXml(discoveryContext.RunSettings.SettingsXml, Constants.FlUnitConfigurationXmlElement);
+            MakeTestCases(sources, discoveryContext, logger, testRunConfiguration).ForEach(tc => discoverySink.SendTestCase(tc));
         }
 
         internal static List<TestCase> MakeTestCases(
             IEnumerable<string> sources,
             IDiscoveryContext discoveryContext,
             IMessageLogger logger,
-            Adapters.TestRunConfiguration runSettings)
+            TestRunConfiguration testRunConfiguration)
         {
-            return sources.SelectMany(s => MakeTestCases(s, discoveryContext, logger, runSettings)).ToList();
+            return sources.SelectMany(s => MakeTestCases(s, discoveryContext, logger, testRunConfiguration)).ToList();
         }
 
         private static List<TestCase> MakeTestCases(
             string source,
             IDiscoveryContext discoveryContext,
             IMessageLogger logger,
-            TestRunConfiguration runSettings)
+            TestRunConfiguration testRunConfiguration)
         {
             var assembly = Assembly.LoadFile(source);
 
             logger?.SendMessage(TestMessageLevel.Informational, $"Test discovery started for {assembly.FullName}");
 
-            var testMetadata = TestDiscovery.FindTests(assembly, runSettings);
+            var testMetadata = TestDiscovery.FindTests(assembly, testRunConfiguration);
 
             var testCases = new List<TestCase>();
             DiaSession diaSession = null;
@@ -80,6 +80,7 @@ namespace FlUnit.Adapters.VSTest
                         $"{testMetadatum.TestProperty.DeclaringType.Assembly.GetName().Name}:{testMetadatum.TestProperty.DeclaringType.FullName}:{testMetadatum.TestProperty.Name}");
 
                     testCases.Add(testCase);
+
                     logger?.SendMessage(
                         TestMessageLevel.Informational,
                         $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");
