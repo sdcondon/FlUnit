@@ -11,14 +11,16 @@ namespace FlUnit.Adapters
         /// <summary>
         /// Attempts to read to the first child element of the current element.
         /// </summary>
-        /// <param name="reader">
-        /// The reader to use. On success, the reader's current node will be the child element. On failure, it will be:
+        /// <param name="reader">The reader to use.</param>
+        /// <returns>
+        /// True if a child element has been navigated to; otherwise false.
+        /// <para/>
+        /// NB: this method has side effects: On success, the reader's current node will have advanced to the child element. On failure, it will be:
         /// <list type="bullet">
         /// <item>The current node if the current node is not an element, or a self-closing element</item>
         /// <item>The end element of the current element, if the current element is not self-closing, but empty.</item>
         /// </list>
-        /// </param>
-        /// <returns>True if a child element has been navigated to; otherwise false.</returns>
+        /// </returns>
         public static bool TryReadToFirstChildElement(this XmlReader reader)
         {
             if (reader.NodeType != XmlNodeType.Element || reader.IsEmptyElement)
