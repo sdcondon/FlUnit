@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <RunSettings>
-	<FlUnit>
-		<!--
-		Parallelise specifies whether FlUnit should run tests in parallel.
-		Valid values are "true" and "false".
-		The default is value is "true".
-		-->
-		<Parallelise>true</Parallelise>
+  <FlUnit>
+        <!--
+        Parallelise specifies whether FlUnit should run tests in parallel.
+        Valid values are "true" and "false". The default is value is "true".
+        -->
+        <Parallelise>true</Parallelise>
 
-		<!--
-		The TestConfiguration section contains settings that affect individual tests,
-		as opposed to the run as a whole. These are the settings that it is possible
-		to override in individual tests.
-		-->
-		<TestConfiguration>
-			
-			<!--
-            ArrangementFailureOutcome specifies whether the outcome for the (singular) test result when test arrangement fails (that is, when one of the "Given" clauses throws)
-            should be "Skipped" (as opposed to "Failed"). Valid values are "true" and "false". The default is value is "true".
-			-->
-			<FailedArrangementOutcomeIsSkipped>Failed</FailedArrangementOutcomeIsSkipped>
-			
-		</TestConfiguration>
-		
-	</FlUnit>
+        <!--
+        The TestConfiguration element contains settings that affect individual tests,
+        as opposed to the run as a whole. These are the settings that it is possible
+        to override in individual tests.
+        -->
+        <TestConfiguration>
+            
+            <!--
+            FailedArrangementOutcomeIsSkipped specifies whether the outcome for the (singular) test result when test arrangement fails
+			(that is, when one of the "Given" clauses throws) should be "Skipped" (as opposed to "Failed").
+			Valid values are "true" and "false". The default is value is "true".
+            -->
+            <FailedArrangementOutcomeIsSkipped>false</FailedArrangementOutcomeIsSkipped>
+            
+        </TestConfiguration>
+        
+    </FlUnit>
 </RunSettings>
