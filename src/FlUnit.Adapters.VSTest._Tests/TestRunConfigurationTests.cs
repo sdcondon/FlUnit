@@ -4,12 +4,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace FlUnit.Adapters.VSTest._Tests
 {
     [TestClass]
-    public class TestRunConfigurationReaderTests
+    public class TestRunConfigurationTests
     {
         [TestMethod]
         public void DefaultSettings()
         {
-            TestRunConfigurationReader.ReadXml(null, "flunit").Should().BeEquivalentTo(new
+            TestRunConfiguration.ReadFromXml(null, "flunit").Should().BeEquivalentTo(new
             {
                 Parallelise = true,
                 TestConfiguration = new
@@ -37,7 +37,7 @@ namespace FlUnit.Adapters.VSTest._Tests
                     <parallelise>im not in the right place</parallelise>
                   </runsettings>";
 
-            TestRunConfigurationReader.ReadXml(xml, "flunit").Should().BeEquivalentTo(new
+            TestRunConfiguration.ReadFromXml(xml, "flunit").Should().BeEquivalentTo(new
             {
                 Parallelise = false,
                 TestConfiguration = new

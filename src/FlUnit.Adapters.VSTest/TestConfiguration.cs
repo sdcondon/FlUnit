@@ -1,4 +1,5 @@
 ﻿using FlUnit.Configuration;
+using System.Xml;
 
 namespace FlUnit.Adapters
 {
@@ -13,5 +14,34 @@ namespace FlUnit.Adapters
 
         /// <inheritdoc />
         public IResultNamingStrategy ResultNamingStrategy { get; set; } = new DefaultResultNamingStrategy();
+
+        /// <summary>
+        /// Reads and returns a <see cref="TestConfiguration"/> instance from an XML reader.
+        /// </summary>
+        /// <param name="reader">A reader positioned at the root element of the test configuration (this class doesn't care what it is called).</param>
+        /// <returns>A new <see cref="TestConfiguration"/> instance.</returns>
+        public static TestConfiguration ReadFromXml(XmlReader reader)
+        {
+            TestConfiguration configuration = new TestConfiguration();
+
+            if (!reader.TryReadToFirstChildElement())
+            {
+                return configuration;
+            }
+
+            while (reader.NodeType != XmlNodeType.EndElement)
+            {
+                if (reader.IsAtElementWithName(nameof(FailedArrangementOutcomeIsSkipped)))
+                {
+                    reader.TryReadBoolean(b => configuration.FailedArrangementOutcomeIsSkipped = b);
+                }
+                else
+                {
+                    reader.Skip();
+                }
+            }
+
+            return configuration;
+        }
     }
 }

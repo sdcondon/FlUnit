@@ -24,7 +24,7 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             ITestCaseDiscoverySink discoverySink)
         {
-            var testRunConfiguration = TestRunConfigurationReader.ReadXml(discoveryContext.RunSettings.SettingsXml, Constants.FlUnitConfigurationXmlElement);
+            var testRunConfiguration = TestRunConfiguration.ReadFromXml(discoveryContext.RunSettings.SettingsXml, Constants.FlUnitConfigurationXmlElement);
             MakeTestCases(sources, discoveryContext, logger, testRunConfiguration).ForEach(tc => discoverySink.SendTestCase(tc));
         }
 

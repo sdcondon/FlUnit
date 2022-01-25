@@ -20,7 +20,7 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            var runSettings = TestRunConfigurationReader.ReadXml(runContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
+            var runSettings = TestRunConfiguration.ReadFromXml(runContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
 
             RunTests(
                 TestDiscoverer.MakeTestCases(sources, runContext, null, runSettings),
@@ -35,7 +35,7 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            var runSettings = TestRunConfigurationReader.ReadXml(runContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
+            var runSettings = TestRunConfiguration.ReadFromXml(runContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
 
             RunTests(
                 tests,
