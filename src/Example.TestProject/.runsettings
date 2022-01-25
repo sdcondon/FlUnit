@@ -10,16 +10,16 @@
 
 		<!--
 		The TestConfiguration section contains settings that affect individual tests,
-		as opposed to the run as a whole.
+		as opposed to the run as a whole. These are the settings that it is possible
+		to override in individual tests.
 		-->
 		<TestConfiguration>
 			
 			<!--
-			ArrangementFailureOutcome specifies the recorded outcome of tests for which one or more "Given" clauses throw.
-			Valid values are "Skipped", "Failed" and "Passed".
-		    The default value is "Skipped".
+            ArrangementFailureOutcome specifies whether the outcome for the (singular) test result when test arrangement fails (that is, when one of the "Given" clauses throws)
+            should be "Skipped" (as opposed to "Failed"). Valid values are "true" and "false". The default is value is "true".
 			-->
-			<ArrangementFailureOutcome>Failed</ArrangementFailureOutcome>
+			<FailedArrangementOutcomeIsSkipped>Failed</FailedArrangementOutcomeIsSkipped>
 			
 		</TestConfiguration>
 		
