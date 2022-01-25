@@ -1,6 +1,6 @@
 ﻿using FlUnit.Configuration;
 
-namespace FlUnit.Adapters.Configuration
+namespace FlUnit.Adapters
 {
     internal class DefaultResultNamingStrategy : IResultNamingStrategy
     {

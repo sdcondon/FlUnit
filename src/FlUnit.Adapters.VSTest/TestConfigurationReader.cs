@@ -23,9 +23,9 @@ namespace FlUnit.Adapters
 
             while (reader.NodeType != XmlNodeType.EndElement)
             {
-                if (reader.IsAtElementWithName(nameof(TestConfiguration.ArrangementFailureOutcome)))
+                if (reader.IsAtElementWithName(nameof(TestConfiguration.FailedArrangementOutcomeIsSkipped)))
                 {
-                    reader.TryReadEnum<TestOutcome>(e => configuration.ArrangementFailureOutcome = e);
+                    reader.TryReadBoolean(b => configuration.FailedArrangementOutcomeIsSkipped = b);
                 }
                 else
                 {

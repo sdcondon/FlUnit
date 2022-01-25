@@ -76,7 +76,7 @@ namespace FlUnit.Adapters
             TestOutcome testOutcome;
             if (!testArrangementPassed)
             {
-                testOutcome = testConfiguration.ArrangementFailureOutcome;
+                testOutcome = testConfiguration.FailedArrangementOutcomeIsSkipped ? TestOutcome.Skipped : TestOutcome.Failed;
             }
             else if (!allAssertionsPassed)
             {
@@ -106,7 +106,7 @@ namespace FlUnit.Adapters
                     startTime: arrangementStartTime,
                     endTime: DateTimeOffset.Now,
                     displayName: null,
-                    outcome: testConfiguration.ArrangementFailureOutcome,
+                    outcome: testConfiguration.FailedArrangementOutcomeIsSkipped ? TestOutcome.Skipped : TestOutcome.Failed,
                     errorMessage: $"Test arrangement failed: {e.Message}", // TODO-LOCALISATION: localisation needed if this ever catches on
                     errorStackTrace: e.StackTrace);
 
