@@ -17,7 +17,7 @@ Create a .NET 6 class library and add some package references:
 - You'll also need to include an assertion library of your choice - the example code below uses [`FluentAssertions`](https://www.nuget.org/packages/FluentAssertions/), for example.
 - [`coverlet.collector`](https://www.nuget.org/packages/coverlet.collector/) does work with FlUnit tests - so feel free to add that, too.
 
-NB: a .NET Standard 2.0 version of the framework does exist, and targeting earlier versions of the framework does work, but there are some caveats. Details can be found [here](docs/user-guide/other-notes.md/extended-usage-guidance.md#caveats-when-targeting-net-5-or-earlier). All the examples and documentation below assumes .NET 6.
+NB: a .NET Standard 2.0 version of the framework does exist, and targeting earlier versions of the framework does work, but there are some caveats. Details can be found [here](docs/user-guide/other-notes.md#caveats-when-targeting-net-5-or-earlier). All the examples and documentation below assumes .NET 6.
 
 As shown below, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them. More examples can be found in the [example test project](./src/Example.TestProject/ExampleTests.cs).
 
