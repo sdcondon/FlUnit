@@ -104,7 +104,7 @@ With the VSTest adapter:
 
 ### Beyond Getting Started
 
-For more guidance, please see the [Extended Usage Guidance document](docs/extended-usage-guidance.md).
+For more guidance, please see the [User Guide](docs/user-guide/README.md).
 
 ### Notable Strengths & Weaknesses
 
