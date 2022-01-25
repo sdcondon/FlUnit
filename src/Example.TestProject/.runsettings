@@ -16,8 +16,8 @@
             
             <!--
             FailedArrangementOutcomeIsSkipped specifies whether the outcome for the (singular) test result when test arrangement fails
-			(that is, when one of the "Given" clauses throws) should be "Skipped" (as opposed to "Failed").
-			Valid values are "true" and "false". The default is value is "true".
+            (that is, when one of the "Given" clauses throws) should be "Skipped" (as opposed to "Failed").
+            Valid values are "true" and "false". The default is value is "true".
             -->
             <FailedArrangementOutcomeIsSkipped>false</FailedArrangementOutcomeIsSkipped>
             
