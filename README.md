@@ -114,10 +114,11 @@ For more guidance, please see the [User Guide](docs/user-guide/README.md).
 Proper issue tracking would be overkill at this point, so just a bullet list to organise my thoughts:
 
 - General ongoing:
-  - Take some cues from the vstest adapter for mstest - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
+  - Take some cues from other frameworks - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
 - Specific, highest-priority first:
-  - *(Jan)* More settings:
-    - for specification of strategy for result naming and duration records (both of which currently make some "sensible" decisions which may not be appropriate in all situations).
+  - *(Jan)* More setting stuff:
+    - For settings that affect individual tests, make them overridable (with a `UsingConfiguration(c => ..)` builder method)
+    - for specification of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations).
     - for parallel partitioning - likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Also want to allow for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
   - *(Feb)* V1 diligence & release
     - Get some performance benchmarks in place
@@ -125,14 +126,13 @@ Proper issue tracking would be overkill at this point, so just a bullet list to 
     - Split into separate repos
     - Separate usage docs
     - README in packages
-  - *(Mar / Apr / May)* Possible post-v1 additions:
+  - *(May / Jun)* Possible post-v1 additions (after a break to work on other projects):
     - QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name.. Perhaps `WithResultLabels`? Perhaps somehow support IFormatProviders for test cases (thus making it easy to specify with test settings)? Needs careful thought..
-    - For settings that affect individual tests, perhaps make them overridable (a `UsingSettings(settings => ..)` builder method)
     - Assertions: Simply interpreting exceptions as failure and leaving this to other libraries for the most part, but e.g. equivalents of Assert.Fail and Assert.Inconclusive may be useful?
     - Basic attachment & output support?
     - Support for async tests?
 - Probably not, at least in the near future:
   - QoL: Perhaps `ThenOfReturnValue(rv => rv.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? Though lambda discards work pretty well (to my eyes at least)..
-  - QoL: dependent assertions - some assertions only make sense if a prior assertion has succeeded (easy for method-based test frameworks, but not for us..). Such assertions should probably give an inconclusive result? Assertions that return a value (assert a value is of a particular type, cast and return it) also a possibility - though thats probably inviting unacceptable complexity. A basic version of this could be useful though - perhaps an `AndAlso` (echoing C# operator name) - which will make all following assertions inconclusive if any prior assertion failed?
+  - QoL: dependent assertions - some assertions only make sense if a prior assertion has succeeded (easy for method-based test frameworks, but not for us..). Such assertions should probably give an inconclusive result? Assertions that return a value (assert a value is of a particular type, cast and return it) also a possibility - though thats probably inviting unacceptable complexity. A basic version of this could be useful though - perhaps an `AndAlso` (echoing C# operator name) - which will make all following assertions inconclusive if any prior assertion failed? This is best left to assertion frameworks (e.g. FluentAssertions `Which`)
 
 

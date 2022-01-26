@@ -128,7 +128,7 @@ namespace FlUnit.Adapters
 
             try
             {
-                displayName = testConfiguration.ResultNamingStrategy.GetResultLabel(test, testCase, assertion);
+                displayName = testConfiguration.ResultNamingStrategy.GetResultName(test, testCase, assertion);
 
                 assertion.Invoke();
                 outcome = TestOutcome.Passed;

@@ -6,6 +6,6 @@
     public interface IResultNamingStrategy
     {
         /// <inheritdoc />
-        string GetResultLabel(Test test, ITestCase testCase, ITestAssertion assertion);
+        string GetResultName(Test test, ITestCase testCase, ITestAssertion assertion);
     }
 }

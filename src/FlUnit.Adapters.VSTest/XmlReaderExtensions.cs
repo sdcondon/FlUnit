@@ -17,8 +17,8 @@ namespace FlUnit.Adapters
         /// <para/>
         /// NB: this method has side effects: On success, the reader's current node will have advanced to the child element. On failure, it will be:
         /// <list type="bullet">
-        /// <item>The current node if the current node is not an element, or a self-closing element</item>
-        /// <item>The end element of the current element, if the current element is not self-closing, but empty.</item>
+        /// <item>Unchanged if the current node is not an element, or is a self-closing element</item>
+        /// <item>The end element of the current element if it is not self-closing, but contains no sub-elements.</item>
         /// </list>
         /// </returns>
         public static bool TryReadToFirstChildElement(this XmlReader reader)
