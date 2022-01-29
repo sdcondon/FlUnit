@@ -108,44 +108,46 @@ With the VSTest adapter:
 
 For more guidance, please see the [User Guide](docs/user-guide/README.md).
 
-
 ## Plans
 
 Proper issue tracking would be overkill at this point, so just a bullet list to organise my thoughts:
 
-- General ongoing:
-  - Take some cues from other frameworks - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
-- Specific, highest-priority first:
-  - *(Done but not yet published):* Implementation of test run configuration:
-    - With the VSTest adapter, test run configuration can be specified with .runsettings
-    - Test settings that affect individual tests can be overridden via the `UsingConfiguration` builder method.
-    - Test settings:
-      - `Parallelise`: Whether or not test execution should be parallelised. Defaults to true. Partitioning not yet suppported.
-      - `FailedArrangementOutcomeIsSkipped`: A value determining what the test result should be if one of the "Given" clauses throws.
-      - `ResultNamingStrategy`: Strategy to use to name individual test results.
-  - *(Jan - v0.14)* More setting stuff:
-    - For specification of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations).
-  - *(Feb - v1.0)* V1 diligence & release
-    - Get some performance benchmarks in place
-    - Any required "doing it properly" stuff in the test adapter.
-    - Split into separate repos
-    - Separate usage docs
-    - README in packages
-  - *(May / Jun - v1.1)* Possible post-v1 additions (after a break to work on other projects):
-    - Control over parallel partitioning - likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Also want to allow for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
-    - QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name. Perhaps `WithResultLabels`? Perhaps somehow support IFormatProviders for test cases (thus making it easy to specify with test settings)? Needs careful thought..
-    - Basic attachment & output support.
-This stuff likely to require injecting some kind of test context object.
-Really want to double-down on the "convention-less"/static nature of FlUnit.
-Plan A right now is to introduce e.g. ITestContext as a pre-requisite if needed.
+General ongoing work:
+- Take some cues from other frameworks - what am I missing regarding debugging, parallelisation, test attachments, instrumentation, filtering etc?
+
+Specific work, highest priority first:
+- *(Done but not yet published - v0.14):* Implementation of test run configuration:
+  - With the VSTest adapter, test run configuration can be specified with .runsettings
+  - Test settings that affect individual tests can be overridden via the `UsingConfiguration` builder method.
+  - Test settings:
+    - `Parallelise`: Whether or not test execution should be parallelised. Defaults to true. Partitioning not yet suppported.
+    - `FailedArrangementOutcomeIsSkipped`: A value determining what the test result should be if one of the "Given" clauses throws.
+    - `ResultNamingStrategy`: Strategy to use to name individual test results.
+- *(Jan - v0.14)* More setting stuff:
+  - For specification of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations).
+- *(Feb - v1.0)* V1 diligence & release
+  - Get some performance benchmarks in place
+  - Review abstractions - for flexibility / stability
+  - Any required "doing it properly" stuff in the test adapter.
+  - Split into separate repos
+  - Separate usage docs
+  - README in packages
+- *(May / Jun - v1.1)* Possible post-v1 additions (after a break to work on other projects):
+  - Allow for control over parallel partitioning - likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Also want to allow for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
+  - QoL: Support custom test case labelling - `ToString()` of the prereqs only helpful when this yields something other than the type name. Perhaps `WithResultLabels`? Perhaps somehow support IFormatProviders for test cases (thus making it easy to specify with test settings)? Needs careful thought..
+  - Basic attachment & output support.
+This is likely to require injecting some kind of test context object.
+I really want to double-down on the "conventionless"/static nature of FlUnit - i.e. no convention-based ctor parameters.
+Plan A right now is to introduce some kind of ITestContext as a pre-requisite if needed.
 That is, `TestThat.GivenTestContext().And()...When((cxt, ) => ...)`.
-This particular approach doesn't allow for test context to be placed inside an anonymous prereq object.
+This particular approach doesn't allow for test context to be placed inside an anonymous prereq object, though.
 Which is perhaps a good thing? But is a mandate for users, rather than a choice.
-As well/instead could allow or cxt to be specified as a parameter of Given delegates.. Hmm, maybe..
-  - *(At some point - v1.2 or later)* Other features:
-    - Support for async tests?
-- Not going to do, at least in the near future:
-  - QoL: Perhaps `ThenOfReturnValue(rv => rv.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? No - Lambda discards work pretty well (to my eyes at least), and `OfGiven1`, `OfGiven2` is better dealt with via complex prereq objects
-  - QoL: dependent assertions - some assertions only make sense if a prior assertion has succeeded (easy for method-based test frameworks, but not for us..). Such assertions should probably give an inconclusive result? Assertions that return a value (assert a value is of a particular type, cast and return it) also a possibility - though thats probably inviting unacceptable complexity. A basic version of this could be useful though - perhaps an `AndAlso` (echoing C# operator name) - which will make all following assertions inconclusive if any prior assertion failed? No - this is best left to assertion frameworks (e.g. FluentAssertions `Which`)
+So, instead (or as well) could allow for cxt to be specified as a parameter of Given delegates (`Given(cxt => ...)`). Hmm, maybe. Still mulling this one over.
+- *(At some point - v1.2 or later)* Other features:
+  - Support for async tests?
+
+Not going to do, at least in the near future:
+- QoL: Perhaps `ThenOfReturnValue(rv => rv.ShouldBe..)` and `ThenOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? No - Lambda discards work pretty well (to my eyes at least), and `OfGiven1`, `OfGiven2` is better dealt with via complex prereq objects
+- QoL: dependent assertions - some assertions only make sense if a prior assertion has succeeded (easy for method-based test frameworks, but not for us..). Such assertions should probably give an inconclusive result? Assertions that return a value (assert a value is of a particular type, cast and return it) also a possibility - though thats probably inviting unacceptable complexity. A basic version of this could be useful though - perhaps an `AndAlso` (echoing C# operator name) - which will make all following assertions inconclusive if any prior assertion failed? No - this is best left to assertion frameworks (e.g. FluentAssertions `Which`)
 
 
