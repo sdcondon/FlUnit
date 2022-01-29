@@ -1,3 +1,4 @@
+using FlUnit.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
@@ -204,6 +205,36 @@ namespace FlUnit._Tests
 
             test.Cases.Single().Act();
             Assert.ThrowsException<InvalidOperationException>(test.Cases.Single().Act);
+        }
+
+        [TestMethod]
+        public void ConfigurationOverrides()
+        {
+            var sharedBuilder = TestThat
+                .UsingConfiguration(c => c.FailedArrangementOutcomeIsSkipped = false);
+
+            Test test1 = sharedBuilder
+                .When(() => { })
+                .ThenReturns();
+
+            Test test2 = sharedBuilder
+                .UsingConfiguration(c => c.FailedArrangementOutcomeIsSkipped = true)
+                .When(() => { })
+                .ThenReturns();
+
+            Configuration test1Config = new();
+            test1.ApplyConfigurationOverrides(test1Config);
+            test1Config.FailedArrangementOutcomeIsSkipped = false;
+
+            Configuration test2Config = new();
+            test2.ApplyConfigurationOverrides(test2Config);
+            test2Config.FailedArrangementOutcomeIsSkipped = true;
+        }
+
+        private class Configuration : ITestConfiguration
+        {
+            public bool FailedArrangementOutcomeIsSkipped { get; set; }
+            public IResultNamingStrategy ResultNamingStrategy { get; set; }
         }
     }
 }

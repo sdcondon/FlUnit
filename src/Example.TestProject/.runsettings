@@ -20,6 +20,10 @@
             Valid values are "true" and "false". The default is value is "true".
             -->
             <FailedArrangementOutcomeIsSkipped>false</FailedArrangementOutcomeIsSkipped>
+
+			<!--
+			NB: A "ResultNamingStrategy" setting also exists, but can only be specified via the UsingConfiguration builder method for the moment.
+			-->
             
         </TestConfiguration>
         

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlUnit.Configuration;
+using System;
 using System.Collections.Generic;
 #if NET6_0
 using System.Runtime.CompilerServices;
@@ -14,11 +15,14 @@ namespace FlUnit
     /// </summary>
     public sealed class TestBuilderWithAction
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Action testAction;
 
         internal TestBuilderWithAction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Action testAction)
         {
+            this.configurationOverrides = configurationOverrides;
             this.testAction = testAction;
         }
 
@@ -43,6 +47,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndAssertions.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
@@ -59,6 +64,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions Then(Expression<Action<TestActionOutcome>> assertion)
         {
             return new TestBuilderWithActionAndAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndAssertions.Assertion(assertion));
         }
@@ -76,6 +82,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions Then(Action<TestActionOutcome> assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
         }
@@ -88,6 +95,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions ThenReturns()
         {
             return new TestBuilderWithActionAndRVAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
         }
@@ -100,6 +108,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions ThenReturns(string description)
         {
             return new TestBuilderWithActionAndRVAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions.Assertion(description));
         }
@@ -121,6 +130,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndRVAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
@@ -133,6 +143,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions ThenReturns(Expression<Action> assertion)
         {
             return new TestBuilderWithActionAndRVAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions.Assertion(assertion));
         }
@@ -146,6 +157,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions ThenReturns(Action assertion, string description)
         {
             return new TestBuilderWithActionAndRVAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions.Assertion(assertion, description));
         }
@@ -158,6 +170,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions ThenThrows()
         {
             return new TestBuilderWithActionAndExAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndExAssertions.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
         }
@@ -170,6 +183,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions ThenThrows(string description)
         {
             return new TestBuilderWithActionAndExAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndExAssertions.Assertion(description));
         }
@@ -191,6 +205,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndExAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndExAssertions.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
@@ -203,6 +218,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions ThenThrows(Expression<Action<Exception>> assertion)
         {
             return new TestBuilderWithActionAndExAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndExAssertions.Assertion(assertion));
         }
@@ -216,6 +232,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions ThenThrows(Action<Exception> assertion, string description)
         {
             return new TestBuilderWithActionAndExAssertions(
+                configurationOverrides,
                 testAction,
                 new TestBuilderWithActionAndExAssertions.Assertion(assertion, description));
         }
@@ -229,13 +246,16 @@ namespace FlUnit
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithAction<T1>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
         private readonly Action<T1> testAction;
 
         internal TestBuilderWithAction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
             Action<T1> testAction)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testAction = testAction;
         }
@@ -261,6 +281,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -278,6 +299,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions<T1> Then(Expression<Action<T1, TestActionOutcome>> assertion)
         {
             return new TestBuilderWithActionAndAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion));
@@ -296,6 +318,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions<T1> Then(Action<T1, TestActionOutcome> assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description));
@@ -309,6 +332,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1> ThenReturns()
         {
             return new TestBuilderWithActionAndRVAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -322,6 +346,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1> ThenReturns(string description)
         {
             return new TestBuilderWithActionAndRVAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1>.Assertion(description));
@@ -344,6 +369,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndRVAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -357,6 +383,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1> ThenReturns(Expression<Action<T1>> assertion)
         {
             return new TestBuilderWithActionAndRVAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion));
@@ -371,6 +398,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1> ThenReturns(Action<T1> assertion, string description)
         {
             return new TestBuilderWithActionAndRVAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion, description));
@@ -384,6 +412,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1> ThenThrows()
         {
             return new TestBuilderWithActionAndExAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -397,6 +426,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1> ThenThrows(string description)
         {
             return new TestBuilderWithActionAndExAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1>.Assertion(description));
@@ -419,6 +449,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndExAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -432,6 +463,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1> ThenThrows(Expression<Action<T1, Exception>> assertion)
         {
             return new TestBuilderWithActionAndExAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion));
@@ -446,6 +478,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1> ThenThrows(Action<T1, Exception> assertion, string description)
         {
             return new TestBuilderWithActionAndExAssertions<T1>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion, description));
@@ -461,13 +494,16 @@ namespace FlUnit
     /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithAction<T1, T2>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Action<T1, T2> testAction;
 
         internal TestBuilderWithAction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Action<T1, T2> testAction)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testAction = testAction;
         }
@@ -493,6 +529,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -510,6 +547,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions<T1, T2> Then(Expression<Action<T1, T2, TestActionOutcome>> assertion)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion));
@@ -528,6 +566,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions<T1, T2> Then(Action<T1, T2, TestActionOutcome> assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description));
@@ -541,6 +580,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1, T2> ThenReturns()
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -554,6 +594,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1, T2> ThenReturns(string description)
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(description));
@@ -576,6 +617,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -589,6 +631,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1, T2> ThenReturns(Expression<Action<T1, T2>> assertion)
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion));
@@ -603,6 +646,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1, T2> ThenReturns(Action<T1, T2> assertion, string description)
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion, description));
@@ -616,6 +660,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1, T2> ThenThrows()
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -629,6 +674,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1, T2> ThenThrows(string description)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(description));
@@ -651,6 +697,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -664,6 +711,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1, T2> ThenThrows(Expression<Action<T1, T2, Exception>> assertion)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion));
@@ -678,6 +726,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1, T2> ThenThrows(Action<T1, T2, Exception> assertion, string description)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion, description));
@@ -694,13 +743,16 @@ namespace FlUnit
     /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithAction<T1, T2, T3>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Action<T1, T2, T3> testAction;
 
         internal TestBuilderWithAction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Action<T1, T2, T3> testAction)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testAction = testAction;
         }
@@ -726,6 +778,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -743,6 +796,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions<T1, T2, T3> Then(Expression<Action<T1, T2, T3, TestActionOutcome>> assertion)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion));
@@ -761,6 +815,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions<T1, T2, T3> Then(Action<T1, T2, T3, TestActionOutcome> assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description));
@@ -774,6 +829,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1, T2, T3> ThenReturns()
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -787,6 +843,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1, T2, T3> ThenReturns(string description)
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(description));
@@ -809,6 +866,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -822,6 +880,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1, T2, T3> ThenReturns(Expression<Action<T1, T2, T3>> assertion)
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion));
@@ -836,6 +895,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<T1, T2, T3> ThenReturns(Action<T1, T2, T3> assertion, string description)
         {
             return new TestBuilderWithActionAndRVAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion, description));
@@ -849,6 +909,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1, T2, T3> ThenThrows()
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -862,6 +923,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1, T2, T3> ThenThrows(string description)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(description));
@@ -884,6 +946,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -897,6 +960,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1, T2, T3> ThenThrows(Expression<Action<T1, T2, T3, Exception>> assertion)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion));
@@ -911,6 +975,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<T1, T2, T3> ThenThrows(Action<T1, T2, T3, Exception> assertion, string description)
         {
             return new TestBuilderWithActionAndExAssertions<T1, T2, T3>(
+                configurationOverrides,
                 arrange,
                 testAction,
                 new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion, description));

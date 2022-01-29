@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlUnit.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +10,7 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction : Test
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Action act;
         private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
@@ -19,9 +21,11 @@ namespace FlUnit
         /// <param name="act"></param>
         /// <param name="makeAssertions"></param>
         internal TestAction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Action act,
             Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
+            this.configurationOverrides = configurationOverrides;
             this.act = act;
             this.makeAssertions = makeAssertions;
         }
@@ -30,6 +34,18 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
+
+        /// <inheritdoc />
+        public override bool HasConfigurationOverrides => configurationOverrides.Any();
+
+        /// <inheritdoc />
+        public override void ApplyConfigurationOverrides(ITestConfiguration testConfiguration)
+        {
+            foreach (var configurationOverride in configurationOverrides)
+            {
+                configurationOverride(testConfiguration);
+            }
+        }
 
         /// <inheritdoc />
         public override void Arrange()
@@ -101,6 +117,7 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction<T1> : Test
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
         private readonly Action<T1> act;
         private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
@@ -113,10 +130,12 @@ namespace FlUnit
         /// <param name="act"></param>
         /// <param name="makeAssertions"></param>
         internal TestAction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
             Action<T1> act,
             Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.act = act;
             this.makeAssertions = makeAssertions;
@@ -126,6 +145,18 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
+
+        /// <inheritdoc />
+        public override bool HasConfigurationOverrides => configurationOverrides.Any();
+
+        /// <inheritdoc />
+        public override void ApplyConfigurationOverrides(ITestConfiguration testConfiguration)
+        {
+            foreach (var configurationOverride in configurationOverrides)
+            {
+                configurationOverride(testConfiguration);
+            }
+        }
 
         /// <inheritdoc />
         public override void Arrange()
@@ -200,6 +231,7 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction<T1, T2> : Test
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Action<T1, T2> act;
         private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
@@ -212,10 +244,12 @@ namespace FlUnit
         /// <param name="act"></param>
         /// <param name="makeAssertions"></param>
         internal TestAction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Action<T1, T2> act,
             Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.act = act;
             this.makeAssertions = makeAssertions;
@@ -225,6 +259,18 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
+
+        /// <inheritdoc />
+        public override bool HasConfigurationOverrides => configurationOverrides.Any();
+
+        /// <inheritdoc />
+        public override void ApplyConfigurationOverrides(ITestConfiguration testConfiguration)
+        {
+            foreach (var configurationOverride in configurationOverrides)
+            {
+                configurationOverride(testConfiguration);
+            }
+        }
 
         /// <inheritdoc />
         public override void Arrange()
@@ -302,6 +348,7 @@ namespace FlUnit
     /// </summary>
     public sealed class TestAction<T1, T2, T3> : Test
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Action<T1, T2, T3> act;
         private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
@@ -314,10 +361,12 @@ namespace FlUnit
         /// <param name="act"></param>
         /// <param name="makeAssertions"></param>
         internal TestAction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Action<T1, T2, T3> act,
             Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.act = act;
             this.makeAssertions = makeAssertions;
@@ -327,6 +376,18 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
+
+        /// <inheritdoc />
+        public override bool HasConfigurationOverrides => configurationOverrides.Any();
+
+        /// <inheritdoc />
+        public override void ApplyConfigurationOverrides(ITestConfiguration testConfiguration)
+        {
+            foreach (var configurationOverride in configurationOverrides)
+            {
+                configurationOverride(testConfiguration);
+            }
+        }
 
         /// <inheritdoc />
         public override void Arrange()

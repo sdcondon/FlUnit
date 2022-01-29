@@ -5,6 +5,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="_Common.t4" #>
+using FlUnit.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace FlUnit
     /// </summary>
     public sealed class TestFunction<<#= TList(i, "", ", ") #>TResult> : Test
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>TResult> act;
         private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
@@ -30,10 +32,12 @@ namespace FlUnit
         /// <param name="act"></param>
         /// <param name="makeAssertions"></param>
         internal TestFunction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>TResult> act,
             Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
         {
+            this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
             this.act = act;
             this.makeAssertions = makeAssertions;
@@ -43,6 +47,18 @@ namespace FlUnit
         /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
         /// </summary>
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
+
+        /// <inheritdoc />
+        public override bool HasConfigurationOverrides => configurationOverrides.Any();
+
+        /// <inheritdoc />
+        public override void ApplyConfigurationOverrides(ITestConfiguration testConfiguration)
+        {
+            foreach (var configurationOverride in configurationOverrides)
+            {
+                configurationOverride(testConfiguration);
+            }
+        }
 
         /// <summary>
         /// Arranges the test.

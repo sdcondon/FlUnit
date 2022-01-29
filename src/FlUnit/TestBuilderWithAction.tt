@@ -4,6 +4,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="_Common.t4" #>
+using FlUnit.Configuration;
 using System;
 using System.Collections.Generic;
 #if NET6_0
@@ -23,13 +24,16 @@ namespace FlUnit
 <# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
     public sealed class TestBuilderWithAction<#= TList(i, "<", ">") #>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Action<#= TList(i, "<", ">") #> testAction;
 
         internal TestBuilderWithAction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Action<#= TList(i, "<", ">") #> testAction)
         {
+            this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
             this.testAction = testAction;
         }
@@ -55,6 +59,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -72,6 +77,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> assertion)
         {
             return new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion));
@@ -90,6 +96,7 @@ namespace FlUnit
         public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> Then(Action<<#= TList(i, "", ", ") #>TestActionOutcome> assertion, string description)
         {
             return new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description));
@@ -103,6 +110,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #> ThenReturns()
         {
             return new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -116,6 +124,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #> ThenReturns(string description)
         {
             return new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(description));
@@ -138,6 +147,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -151,6 +161,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #> ThenReturns(Expression<Action<#= TList(i, "<", ">") #>> assertion)
         {
             return new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(assertion));
@@ -165,6 +176,7 @@ namespace FlUnit
         public TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #> ThenReturns(Action<#= TList(i, "<", ">") #> assertion, string description)
         {
             return new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description));
@@ -178,6 +190,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #> ThenThrows()
         {
             return new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -191,6 +204,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #> ThenThrows(string description)
         {
             return new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(description));
@@ -213,6 +227,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
@@ -226,6 +241,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #> ThenThrows(Expression<Action<<#= TList(i, "", ", ") #>Exception>> assertion)
         {
             return new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(assertion));
@@ -240,6 +256,7 @@ namespace FlUnit
         public TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #> ThenThrows(Action<<#= TList(i, "", ", ") #>Exception> assertion, string description)
         {
             return new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
                 new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description));

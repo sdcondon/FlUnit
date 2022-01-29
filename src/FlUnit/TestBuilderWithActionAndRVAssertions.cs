@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlUnit.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 #if NET6_0
@@ -16,13 +17,16 @@ namespace FlUnit
     /// </summary>
     public sealed class TestBuilderWithActionAndRVAssertions
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Action testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithActionAndRVAssertions(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Action testAction,
             Assertion assertion)
         {
+            this.configurationOverrides = configurationOverrides;
             this.testAction = testAction;
             assertions.Add(assertion);
         }
@@ -34,6 +38,7 @@ namespace FlUnit
         public static implicit operator Test(TestBuilderWithActionAndRVAssertions builder)
         {
             return new TestAction(
+                builder.configurationOverrides,
                 builder.testAction,
                 tc => builder.assertions.Select(a => new TestAction.Case.Assertion(tc, a.Action, a.Description)));
         }
@@ -128,15 +133,18 @@ namespace FlUnit
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndRVAssertions<T1>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
         private readonly Action<T1> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithActionAndRVAssertions(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
             Action<T1> testAction,
             Assertion assertion)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testAction = testAction;
             assertions.Add(assertion);
@@ -149,6 +157,7 @@ namespace FlUnit
         public static implicit operator Test(TestBuilderWithActionAndRVAssertions<T1> builder)
         {
             return new TestAction<T1>(
+                builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
                 tc => builder.assertions.Select(a => new TestAction<T1>.Case.Assertion(tc, a.Action, a.Description)));
@@ -245,15 +254,18 @@ namespace FlUnit
     /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndRVAssertions<T1, T2>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Action<T1, T2> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithActionAndRVAssertions(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Action<T1, T2> testAction,
             Assertion assertion)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testAction = testAction;
             assertions.Add(assertion);
@@ -266,6 +278,7 @@ namespace FlUnit
         public static implicit operator Test(TestBuilderWithActionAndRVAssertions<T1, T2> builder)
         {
             return new TestAction<T1, T2>(
+                builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
                 tc => builder.assertions.Select(a => new TestAction<T1, T2>.Case.Assertion(tc, a.Action, a.Description)));
@@ -363,15 +376,18 @@ namespace FlUnit
     /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
     public sealed class TestBuilderWithActionAndRVAssertions<T1, T2, T3>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Action<T1, T2, T3> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithActionAndRVAssertions(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Action<T1, T2, T3> testAction,
             Assertion assertion)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testAction = testAction;
             assertions.Add(assertion);
@@ -384,6 +400,7 @@ namespace FlUnit
         public static implicit operator Test(TestBuilderWithActionAndRVAssertions<T1, T2, T3> builder)
         {
             return new TestAction<T1, T2, T3>(
+                builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
                 tc => builder.assertions.Select(a => new TestAction<T1, T2, T3>.Case.Assertion(tc, a.Action, a.Description)));

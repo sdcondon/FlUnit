@@ -1,4 +1,5 @@
 ﻿using FlUnit.Configuration;
+using System;
 using System.Xml;
 
 namespace FlUnit.Adapters
@@ -18,7 +19,7 @@ namespace FlUnit.Adapters
         /// <summary>
         /// Reads and returns a <see cref="TestConfiguration"/> instance from an XML reader.
         /// </summary>
-        /// <param name="reader">A reader positioned at the root element of the test configuration (this class doesn't care what it is called).</param>
+        /// <param name="reader">A reader positioned at the root element of the test configuration (this class doesn't care what the element is called).</param>
         /// <returns>A new <see cref="TestConfiguration"/> instance.</returns>
         public static TestConfiguration ReadFromXml(XmlReader reader)
         {
@@ -42,6 +43,19 @@ namespace FlUnit.Adapters
             }
 
             return configuration;
+        }
+
+        /// <summary>
+        /// Clones this test configuration object.
+        /// </summary>
+        /// <returns>A new instance that is a copy of this one.</returns>
+        public TestConfiguration Clone()
+        {
+            return new TestConfiguration()
+            {
+                FailedArrangementOutcomeIsSkipped = FailedArrangementOutcomeIsSkipped,
+                ResultNamingStrategy = ResultNamingStrategy,
+            };
         }
     }
 }

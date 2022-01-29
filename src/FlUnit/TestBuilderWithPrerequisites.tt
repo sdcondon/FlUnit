@@ -4,14 +4,25 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="_Common.t4" #>
-using System;
-using System.Collections.Generic;
+<#
 
-namespace FlUnit
+string PrerequisiteBuilderPrereqArg(int i)
 {
-<# 
+    if (i == 0)
+    {
+        return "";
+    }
+    else if (i == 1)
+    {
+        return ", arrange";
+    }
+    else
+    {
+        return $", ({ List(i, i => $"arrange.Item{i}") })";
+    }
+}
 
-string NextPrereqBuilderArgs(int i, bool isEachOf)
+string NextPrerequisiteBuilderPrereqArg(int i, bool isEachOf)
 {
     var nextPrereq = isEachOf ? $"prereqs{i + 1}" : $"() => new[] {{ prereq{i + 1}() }}";
 
@@ -29,19 +40,46 @@ string NextPrereqBuilderArgs(int i, bool isEachOf)
     }
 }
 
-for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
+#>
+using FlUnit.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FlUnit
+{
+<# for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
 <# WriteLineIf(i > 0); #>
 	/// <summary>
-    /// Builder for providing pre-requisites for a test.
+    /// Test builder for which the "When" clause has not yet been provided - and as such can still be given more pre-requisites
+    /// (and configuration overrides).
     /// </summary>
 <# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } pre-requisite already defined.", 1); #>
 	public sealed class TestBuilderWithPrerequisites<#= TList(i, "<", ">") #>
 	{
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
-<# WriteLineIf(i > 0); #>
-		internal TestBuilderWithPrerequisites(<# WriteIf(i > 0, $"{ArrangeFieldType(i)} arrange"); #>)
+
+		internal TestBuilderWithPrerequisites(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides<#= i == 0 ? ")" : "," #>          
+<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange)", 3); #>
         {
+            this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
+        }
+
+        /// <summary>
+        /// Adds a configuration override for the test.
+        /// </summary>
+        /// <param name="configurationOverride">The configuration override to be added.</param>
+        public TestBuilderWithPrerequisites<#= TList(i, "<", ">") #> UsingConfiguration(Action<ITestConfiguration> configurationOverride)
+        {
+            // NB: We define a new enumerable and builder when overrides are added to facilitate builder re-use.
+            // However, only create the new enumerable if an override is added (as opposed to in the ctor), to cut down on needless GC load.
+            var overrides = new List<Action<ITestConfiguration>>(configurationOverrides);
+            overrides.Add(configurationOverride);
+
+            return new TestBuilderWithPrerequisites<#= TList(i, "<", ">") #>(overrides<#= PrerequisiteBuilderPrereqArg(i) #>);
         }
 <# if (i == 0) { #>
 
@@ -53,7 +91,7 @@ for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> Given<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
         {
-            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(<#= NextPrereqBuilderArgs(i, false) #>);
+            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false) #>);
         }
 
         /// <summary>
@@ -64,7 +102,7 @@ for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> GivenEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
         {
-            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(<#= NextPrereqBuilderArgs(i, true) #>);
+            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true) #>);
         }
 <# } else if (i < MaxPrerequisiteCount) { #>
 
@@ -76,7 +114,7 @@ for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
         {
-            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(<#= NextPrereqBuilderArgs(i, false) #>);
+            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false) #>);
         }
 
         /// <summary>
@@ -87,7 +125,7 @@ for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
         {
-            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(<#= NextPrereqBuilderArgs(i, true) #>);
+            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true) #>);
         }
 <# } #>
 
@@ -98,7 +136,7 @@ for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public TestBuilderWithAction<#= TList(i, "<", ">") #> When(Action<#= TList(i, "<", ">") #> testAction)
         {
-            return new TestBuilderWithAction<#= TList(i, "<", ">") #>(<# WriteIf(i > 0, "arrange, "); #>testAction);
+            return new TestBuilderWithAction<#= TList(i, "<", ">") #>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testAction);
         }
 
         /// <summary>
@@ -108,7 +146,7 @@ for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public TestBuilderWithFunction<<#= TList(i, "", ", ") #>TResult> When<TResult>(Func<<#= TList(i, "", ", ") #>TResult> testFunction)
         {
-            return new TestBuilderWithFunction<<#= TList(i, "", ", ") #>TResult>(<# WriteIf(i > 0, "arrange, "); #>testFunction);
+            return new TestBuilderWithFunction<<#= TList(i, "", ", ") #>TResult>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testFunction);
         }
 	}
 <# } #>}

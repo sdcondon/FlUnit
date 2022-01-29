@@ -5,6 +5,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="_Common.t4" #>
+using FlUnit.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,15 +26,18 @@ namespace FlUnit
 <# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
     public sealed class TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Action<#= TList(i, "<", ">") #> testAction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithActionAndExAssertions(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Action<#= TList(i, "<", ">") #> testAction,
             Assertion assertion)
         {
+            this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, $"this.arrange = arrange;", 3); #>
             this.testAction = testAction;
             assertions.Add(assertion);
@@ -46,6 +50,7 @@ namespace FlUnit
         public static implicit operator Test(TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #> builder)
         {
             return new TestAction<#= TList(i, "<", ">") #>(
+                builder.configurationOverrides,
 <# WriteLineIf(i > 0, $"builder.arrange,", 4); #>
                 builder.testAction,
                 tc => builder.assertions.Select(a => new TestAction<#= TList(i, "<", ">") #>.Case.Assertion(tc, a.Action, a.Description)));

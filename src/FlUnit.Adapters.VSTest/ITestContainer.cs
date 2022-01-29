@@ -28,7 +28,7 @@ namespace FlUnit.Adapters
         /// <remarks>
         /// TODO: I don't like this method. Its far too close to the VSTest platform (inc all of the assumptions made re what test
         /// result pluralilty means, and how display names are interpreted). Better to talk in FlUnit terms and expect the adapter do
-        /// more..
+        /// more (e.g. RecordCase, RecordAssertion, or similar)..
         /// </remarks>
         void RecordResult(
             DateTimeOffset startTime,

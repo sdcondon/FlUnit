@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlUnit.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,6 +55,12 @@ namespace FlUnit.Adapters
         {
             var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null);
 
+            if (test.HasConfigurationOverrides)
+            {
+                testConfiguration = testConfiguration.Clone();
+                test.ApplyConfigurationOverrides(testConfiguration);
+            }
+
             testContainer.RecordStart();
 
             var testArrangementPassed = TryArrangeTestInstance(test, testContainer, testConfiguration);
@@ -90,7 +97,7 @@ namespace FlUnit.Adapters
             testContainer.RecordEnd(testOutcome);
         }
 
-        private static bool TryArrangeTestInstance(Test test, ITestContainer testContainer, TestConfiguration testConfiguration)
+        private static bool TryArrangeTestInstance(Test test, ITestContainer testContainer, ITestConfiguration testConfiguration)
         {
             var arrangementStartTime = DateTimeOffset.Now;
 
@@ -114,7 +121,7 @@ namespace FlUnit.Adapters
             }
         }
 
-        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset actionStart, DateTimeOffset actionEnd, ITestAssertion assertion, TestConfiguration testConfiguration, ITestContainer testContainer)
+        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset actionStart, DateTimeOffset actionEnd, ITestAssertion assertion, ITestConfiguration testConfiguration, ITestContainer testContainer)
         {
             // NB: We use the start and end time for the test action as the start and end time for each assertion result.
             // The assumption being that assertions themselves will generally be (fast and) less interesting.

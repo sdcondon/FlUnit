@@ -4,6 +4,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="_Common.t4" #>
+using FlUnit.Configuration;
 using System;
 using System.Collections.Generic;
 #if NET6_0
@@ -24,13 +25,16 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunction<<#= TList(i, "", ", ") #>TResult>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>TResult> testFunction;
 
         internal TestBuilderWithFunction(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>TResult> testFunction)
         {
+            this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, $"this.arrange = arrange;", 3); #>
             this.testFunction = testFunction;
         }
@@ -56,6 +60,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
             return new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(
@@ -76,6 +81,7 @@ namespace FlUnit
             Expression<Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>>> assertion)
         {
             return new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion));
@@ -96,6 +102,7 @@ namespace FlUnit
             string description)
         {
             return new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion, description));
@@ -109,6 +116,7 @@ namespace FlUnit
         public TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns()
         {
             return new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion("Test function should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -122,6 +130,7 @@ namespace FlUnit
         public TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns(string description)
         {
             return new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(description));
@@ -144,6 +153,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")]string assertionExpression = null)
         {
             return new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(
@@ -160,6 +170,7 @@ namespace FlUnit
             Expression<Action<<#= TList(i, "", ", ") #>TResult>> assertion)
         {
             return new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion));
@@ -176,6 +187,7 @@ namespace FlUnit
             string description)
         {
             return new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion, description));
@@ -189,6 +201,7 @@ namespace FlUnit
         public TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult> ThenThrows()
         {
             return new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion("Test function should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
@@ -202,6 +215,7 @@ namespace FlUnit
         public TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult> ThenThrows(string description)
         {
             return new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(description));
@@ -224,6 +238,7 @@ namespace FlUnit
             [CallerArgumentExpression("assertion")]string assertionExpression = null)
         {
             return new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(
@@ -240,6 +255,7 @@ namespace FlUnit
             Expression<Action<<#= TList(i, "", ", ") #>Exception>> assertion)
         {
             return new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion));
@@ -256,6 +272,7 @@ namespace FlUnit
             string description)
         {
             return new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(assertion, description));

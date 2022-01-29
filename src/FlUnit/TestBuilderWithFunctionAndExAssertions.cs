@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlUnit.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 #if NET6_0
@@ -16,13 +17,16 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndExAssertions<TResult>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithFunctionAndExAssertions(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<TResult> testFunction,
             Assertion assertion)
         {
+            this.configurationOverrides = configurationOverrides;
             this.testFunction = testFunction;
             assertions.Add(assertion);
         }
@@ -34,6 +38,7 @@ namespace FlUnit
         public static implicit operator Test(TestBuilderWithFunctionAndExAssertions<TResult> builder)
         {
             return new TestFunction<TResult>(
+                builder.configurationOverrides,
                 builder.testFunction,
                 tc => builder.assertions.Select(a => new TestFunction<TResult>.Case.Assertion(tc, a.Action, a.Description)));
         }
@@ -129,15 +134,18 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndExAssertions<T1, TResult>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
         private readonly Func<T1, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithFunctionAndExAssertions(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
             Func<T1, TResult> testFunction,
             Assertion assertion)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testFunction = testFunction;
             assertions.Add(assertion);
@@ -150,6 +158,7 @@ namespace FlUnit
         public static implicit operator Test(TestBuilderWithFunctionAndExAssertions<T1, TResult> builder)
         {
             return new TestFunction<T1, TResult>(
+                builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
                 tc => builder.assertions.Select(a => new TestFunction<T1, TResult>.Case.Assertion(tc, a.Action, a.Description)));
@@ -247,15 +256,18 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndExAssertions<T1, T2, TResult>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Func<T1, T2, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithFunctionAndExAssertions(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Func<T1, T2, TResult> testFunction,
             Assertion assertion)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testFunction = testFunction;
             assertions.Add(assertion);
@@ -268,6 +280,7 @@ namespace FlUnit
         public static implicit operator Test(TestBuilderWithFunctionAndExAssertions<T1, T2, TResult> builder)
         {
             return new TestFunction<T1, T2, TResult>(
+                builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
                 tc => builder.assertions.Select(a => new TestFunction<T1, T2, TResult>.Case.Assertion(tc, a.Action, a.Description)));
@@ -366,15 +379,18 @@ namespace FlUnit
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult>
     {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Func<T1, T2, T3, TResult> testFunction;
         private readonly List<Assertion> assertions = new List<Assertion>();
 
         internal TestBuilderWithFunctionAndExAssertions(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Func<T1, T2, T3, TResult> testFunction,
             Assertion assertion)
         {
+            this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testFunction = testFunction;
             assertions.Add(assertion);
@@ -387,6 +403,7 @@ namespace FlUnit
         public static implicit operator Test(TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult> builder)
         {
             return new TestFunction<T1, T2, T3, TResult>(
+                builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
                 tc => builder.assertions.Select(a => new TestFunction<T1, T2, T3, TResult>.Case.Assertion(tc, a.Action, a.Description)));
