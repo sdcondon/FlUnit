@@ -26,7 +26,7 @@ namespace FlUnit.Adapters
         void RecordStart();
 
         /// <remarks>
-        /// TODO: I don't like this method. Its far too close to the VSTest platform (inc all of the assumptions made re what test
+        /// TODO-MAINTAINABILITY: I don't like this method. Its far too close to the VSTest platform (inc all of the assumptions made re what test
         /// result pluralilty means, and how display names are interpreted). Better to talk in FlUnit terms and expect the adapter do
         /// more (e.g. RecordCase, RecordAssertion, or similar)..
         /// </remarks>

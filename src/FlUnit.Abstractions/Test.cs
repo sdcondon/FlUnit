@@ -20,10 +20,10 @@ namespace FlUnit
         /// Gets a value indicating whether this test has any configuration overrides to apply.
         /// </summary>
         /// <remarks>
-        /// NB: While we *could* support configuration overrides with a single method - it'd require either configuration implementation
-        /// in the FlUnit lib (which I'd rather avoid - configuration is still an execution concern) so that it can be cloned,
-        /// or would require configuration as a struct (which I definitely don't want to do). So we have a separate prop instead
-        /// so that the execution logic can determine whether it needs to clone config or not..
+        /// NB: While we *could* support configuration overrides with a single method - it'd require either a configuration implementation
+        /// in the FlUnit library (which isn't ideal - configuration is an execution concern) so that it can be cloned, or would require
+        /// configuration as a struct (which definitely isn't idea). So we have a separate property instead, so that the execution logic
+        /// can determine whether it needs to clone the configuration or not..
         /// </remarks>
         public abstract bool HasConfigurationOverrides { get; }
 

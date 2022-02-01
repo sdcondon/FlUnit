@@ -25,20 +25,18 @@ namespace FlUnit.Adapters
         {
             TestConfiguration configuration = new TestConfiguration();
 
-            if (!reader.TryReadToFirstChildElement())
+            if (reader.TryReadToFirstChildElement())
             {
-                return configuration;
-            }
-
-            while (reader.NodeType != XmlNodeType.EndElement)
-            {
-                if (reader.IsAtElementWithName(nameof(FailedArrangementOutcomeIsSkipped)))
+                while (reader.NodeType != XmlNodeType.EndElement)
                 {
-                    reader.TryReadBoolean(b => configuration.FailedArrangementOutcomeIsSkipped = b);
-                }
-                else
-                {
-                    reader.Skip();
+                    if (reader.IsAtElementWithName(nameof(FailedArrangementOutcomeIsSkipped)))
+                    {
+                        reader.TryReadBoolean(b => configuration.FailedArrangementOutcomeIsSkipped = b);
+                    }
+                    else
+                    {
+                        reader.Skip();
+                    }
                 }
             }
 

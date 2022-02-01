@@ -10,7 +10,7 @@ namespace FlUnit.Adapters
     internal static class TestDiscovery
     {
         /// <summary>
-        /// Finds all of the properties that represent tests in a given loaded assembly - along with the trait providers that should be applied to each.
+        /// Finds all of the properties that represent tests in a given loaded assembly - along with the traits that are associated with each.
         /// </summary>
         /// <param name="assembly">The assembly to look in.</param>
         /// <param name="runConfiguration">Unused for the moment. Sue me.</param>

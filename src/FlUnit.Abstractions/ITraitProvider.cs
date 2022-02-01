@@ -9,6 +9,9 @@
         /// <summary>
         /// Gets the provided trait.
         /// </summary>
+        /// <remarks>
+        /// TODO-EXTENSIBILITY: Decide if this should be GetTrait(PropertyInfo) pre-V1.
+        /// </remarks>
         Trait Trait { get; }
     }
 }

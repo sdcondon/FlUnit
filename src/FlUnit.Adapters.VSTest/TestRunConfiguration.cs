@@ -63,24 +63,22 @@ namespace FlUnit.Adapters
         {
             TestRunConfiguration configuration = new TestRunConfiguration();
 
-            if (!reader.TryReadToFirstChildElement())
+            if (reader.TryReadToFirstChildElement())
             {
-                return configuration;
-            }
-
-            while (reader.NodeType != XmlNodeType.EndElement)
-            {
-                if (reader.IsAtElementWithName(nameof(Parallelise)))
+                while (reader.NodeType != XmlNodeType.EndElement)
                 {
-                    reader.TryReadBoolean(b => configuration.Parallelise = b);
-                }
-                else if (reader.IsAtElementWithName(nameof(TestConfiguration)))
-                {
-                    configuration.TestConfiguration = TestConfiguration.ReadFromXml(reader);
-                }
-                else
-                {
-                    reader.Skip();
+                    if (reader.IsAtElementWithName(nameof(Parallelise)))
+                    {
+                        reader.TryReadBoolean(b => configuration.Parallelise = b);
+                    }
+                    else if (reader.IsAtElementWithName(nameof(TestConfiguration)))
+                    {
+                        configuration.TestConfiguration = TestConfiguration.ReadFromXml(reader);
+                    }
+                    else
+                    {
+                        reader.Skip();
+                    }
                 }
             }
 
