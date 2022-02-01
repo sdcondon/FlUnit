@@ -4,7 +4,7 @@
 
 [![NuGet version (FlUnit)](https://img.shields.io/nuget/v/FlUnit.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit/) [![NuGet downloads (FlUnit)](https://img.shields.io/nuget/dt/FlUnit.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit/)
 
-A test framework in which tests are defined using a fluent builder. Includes a very basic VSTest adapter which records each assertion in a separate result of the test. 
+A test framework in which tests are defined using a fluent builder. Includes a VSTest adapter for running tests in Visual Studio or with `dotnet test`, which records each assertion in a separate result of the test. 
 
 ## Usage Guidance
 
@@ -94,15 +94,18 @@ public static class MyTests
 }
 ```
 
-### Test Results
+### Test Execution & Results
+
+If you've included a reference to the VSTest adapter, the Visual Studio IDE and `dotnet test` should both be able to find and run the tests.
 
 With the VSTest adapter:
 * Tests are named for the name of the property.
-* Tests with multiple cases or multiple assertions give one result per test case per assertion. For now (configurability coming soon, though this is likely to remain the default), the label of each result depends on the multiplicity of cases and assertions:
+* Tests with multiple cases or multiple assertions give one result per test case per assertion. It is possible to override this logic with a configuration setting, but by default the label of each result depends on the multiplicity of cases and assertions, as follows:
   * With a single case and multiple assertions, the result label is the description of the assertion.
   * With multiple cases each with a single assertion, the result label is the ToString of the case (which when there are multiple given clauses, is a value tuple of each)
   * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for test case \{case ToString\}", like this:  
     ![Visual Studio Test Result Example](docs/VSTestResultExample.png)
+* The duration reported for each result is the time taken for the `When` clause (and only the `When` clause) to execute. Configurability of this behaviour is on the list for v1.1.
 
 ### Where Next?
 
