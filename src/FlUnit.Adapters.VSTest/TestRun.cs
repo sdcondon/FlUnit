@@ -109,6 +109,7 @@ namespace FlUnit.Adapters
             catch (Exception e)
             {
                 // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
+                // For v1, perhaps just trim the FlUnit stuff from the bottom of the stack trace.
                 testContainer.RecordResult(
                     startTime: arrangementStartTime,
                     endTime: DateTimeOffset.Now,
@@ -144,6 +145,7 @@ namespace FlUnit.Adapters
             catch (Exception e)
             {
                 // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
+                // For v1, perhaps just trim the FlUnit stuff from the bottom of the stack trace.
                 outcome = TestOutcome.Failed;
                 errorMessage = e.Message;
                 errorStackTrace = e.StackTrace;
