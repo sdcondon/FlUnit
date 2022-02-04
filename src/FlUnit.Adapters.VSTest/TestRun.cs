@@ -114,7 +114,7 @@ namespace FlUnit.Adapters
                     endTime: DateTimeOffset.Now,
                     displayName: null,
                     outcome: testConfiguration.FailedArrangementOutcomeIsSkipped ? TestOutcome.Skipped : TestOutcome.Failed,
-                    errorMessage: $"Test arrangement failed: {e.Message}", // TODO-LOCALISATION: localisation needed if this ever catches on
+                    errorMessage: string.Format(Messages.ArrangementFailureMessageFormat, e.Message),
                     errorStackTrace: e.StackTrace);
 
                 return false;

@@ -103,7 +103,7 @@ namespace FlUnit
             return new TestBuilderWithFunctionAndRVAssertions<TResult>(
                 configurationOverrides,
                 testFunction,
-                new TestBuilderWithFunctionAndRVAssertions<TResult>.Assertion("Test function should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndRVAssertions<TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldReturn));
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace FlUnit
             return new TestBuilderWithFunctionAndExAssertions<TResult>(
                 configurationOverrides,
                 testFunction,
-                new TestBuilderWithFunctionAndExAssertions<TResult>.Assertion("Test function should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndExAssertions<TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldThrow));
         }
 
         /// <summary>
@@ -357,7 +357,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testFunction,
-                new TestBuilderWithFunctionAndRVAssertions<T1, TResult>.Assertion("Test function should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndRVAssertions<T1, TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldReturn));
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testFunction,
-                new TestBuilderWithFunctionAndExAssertions<T1, TResult>.Assertion("Test function should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndExAssertions<T1, TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldThrow));
         }
 
         /// <summary>
@@ -621,7 +621,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testFunction,
-                new TestBuilderWithFunctionAndRVAssertions<T1, T2, TResult>.Assertion("Test function should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndRVAssertions<T1, T2, TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldReturn));
         }
 
         /// <summary>
@@ -706,7 +706,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testFunction,
-                new TestBuilderWithFunctionAndExAssertions<T1, T2, TResult>.Assertion("Test function should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndExAssertions<T1, T2, TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldThrow));
         }
 
         /// <summary>
@@ -886,7 +886,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testFunction,
-                new TestBuilderWithFunctionAndRVAssertions<T1, T2, T3, TResult>.Assertion("Test function should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndRVAssertions<T1, T2, T3, TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldReturn));
         }
 
         /// <summary>
@@ -971,7 +971,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testFunction,
-                new TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult>.Assertion("Test function should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldThrow));
         }
 
         /// <summary>

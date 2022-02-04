@@ -36,8 +36,8 @@ namespace FlUnit
             if (Exception == null)
             {
                 // TODO-MAINTAINABILITY: Ick, new Exception.. Some kind of FlUnit-specific Assert.Fail and exception types would be good..
-                // TODO-LOCALISATION: Localisation needed if this ever catches on
-                throw new Exception("An exception was expected but the When clause didn't throw one");
+                // Need to make it clearer that this is something to be reported back in the test result (hence localisation).
+                throw new Exception(Messages.TestOutcomeExceptionExpectedButNotThrown);
             }
         }
     }

@@ -17,7 +17,7 @@ namespace FlUnit.Adapters
             {
                 return string.IsNullOrEmpty(testCase.Description)
                     ? assertion.Description
-                    : $"{assertion.Description} for test case {testCase.Description}"; // TODO-LOCALISATION: localisation needed if this ever catches on
+                    : string.Format(Messages.DefaultResultNamingStrategyFormat, assertion.Description, testCase.Description);
             }
             else if (test.Cases.Count > 1)
             {

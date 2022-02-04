@@ -113,7 +113,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>

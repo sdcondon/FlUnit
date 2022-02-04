@@ -97,7 +97,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndRVAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndRVAssertions.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndExAssertions.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndExAssertions.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -415,7 +415,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndExAssertions<T1>.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>
@@ -583,7 +583,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -663,7 +663,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>
@@ -832,7 +832,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion("Test action should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -912,7 +912,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion("Test action should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>

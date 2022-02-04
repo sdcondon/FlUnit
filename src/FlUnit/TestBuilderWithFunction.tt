@@ -119,7 +119,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
-                new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion("Test function should return successfully")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndRVAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldReturn));
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
-                new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion("Test function should throw an exception")); // TODO-LOCALISATION: Localisation needed if this ever catches on
+                new TestBuilderWithFunctionAndExAssertions<<#= TList(i, "", ", ") #>TResult>.Assertion(Messages.ImplicitAssertionTestFunctionShouldThrow));
         }
 
         /// <summary>
