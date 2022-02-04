@@ -140,6 +140,7 @@ This particular approach doesn't allow for test context to be placed inside an a
 Which is perhaps a good thing? But is a mandate for users, rather than a choice.
 More concerning is that it doesn't allow context to be used during pre-req creation.
 So, instead (or as well) could allow for cxt to be specified as a parameter of Given delegates (`Given(cxt => ...)`).
+Then `GivenTestContext()` could still exist, simply as a more readable alias of `Given(cxt => cxt)`.
 Hmm, maybe - this is more complex?
 Still mulling this one over.
 - *(At some point - v1.2 or later)* Other features:
