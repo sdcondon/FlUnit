@@ -30,8 +30,8 @@ namespace FlUnit.Adapters
                 .Select(t => ConcatTraitProviders(t, assemblyTraitProviders))
                 .SelectMany(t => t.member.GetProperties().Where(IsTestProperty).Select(p =>
                 {
-                    var (member, traitProviders) = ConcatTraitProviders(p, t.traitProviders);
-                    return new TestMetadata(member, traitProviders.Select(tp => tp.Trait));
+                    var (testProperty, traitProviders) = ConcatTraitProviders(p, t.traitProviders);
+                    return new TestMetadata(testProperty, traitProviders.Select(tp => tp.GetTrait(testProperty)));
                 }));
         }
 

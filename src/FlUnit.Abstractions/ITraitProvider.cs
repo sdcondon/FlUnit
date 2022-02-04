@@ -1,4 +1,6 @@
-﻿namespace FlUnit
+﻿using System.Reflection;
+
+namespace FlUnit
 {
     /// <summary>
     /// Test runners should look for attributes attached to tests, test classes or test assemblies that implement this interface,
@@ -9,9 +11,8 @@
         /// <summary>
         /// Gets the provided trait.
         /// </summary>
-        /// <remarks>
-        /// TODO-EXTENSIBILITY: Decide if this should be GetTrait(PropertyInfo) pre-V1.
-        /// </remarks>
-        Trait Trait { get; }
+        /// <param name="testProperty">Information about the test property to get the trait for.</param>
+        /// <returns>The trait to apply to the test.</returns>
+        Trait GetTrait(PropertyInfo testProperty);
     }
 }
