@@ -28,9 +28,10 @@ namespace FlUnit
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
         /// </summary>
-<# WriteLineIf(i > 0, "/// <param name=\"arrange\"></param>", 2); #>
-        /// <param name="act"></param>
-        /// <param name="makeAssertions"></param>
+        /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
+<# WriteLineIf(i > 0, "/// <param name=\"arrange\">The callback to run the \"Given\" clauses of the test, returning the test cases.</param>", 2); #>
+        /// <param name="act">The callback to run the "When" clause of the test.</param>
+        /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal TestFunction(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>

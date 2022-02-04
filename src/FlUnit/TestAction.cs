@@ -18,8 +18,9 @@ namespace FlUnit
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction"/> class.
         /// </summary>
-        /// <param name="act"></param>
-        /// <param name="makeAssertions"></param>
+        /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
+        /// <param name="act">The callback to run the "When" clause of the test.</param>
+        /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal TestAction(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Action act,
@@ -126,9 +127,10 @@ namespace FlUnit
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1}"/> class.
         /// </summary>
-        /// <param name="arrange"></param>
-        /// <param name="act"></param>
-        /// <param name="makeAssertions"></param>
+        /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
+        /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
+        /// <param name="act">The callback to run the "When" clause of the test.</param>
+        /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal TestAction(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
@@ -240,9 +242,10 @@ namespace FlUnit
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1, T2}"/> class.
         /// </summary>
-        /// <param name="arrange"></param>
-        /// <param name="act"></param>
-        /// <param name="makeAssertions"></param>
+        /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
+        /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
+        /// <param name="act">The callback to run the "When" clause of the test.</param>
+        /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal TestAction(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
@@ -357,9 +360,10 @@ namespace FlUnit
         /// <summary>
         /// Initializes a new instance of the <see cref="TestAction{T1, T2, T3}"/> class.
         /// </summary>
-        /// <param name="arrange"></param>
-        /// <param name="act"></param>
-        /// <param name="makeAssertions"></param>
+        /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
+        /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
+        /// <param name="act">The callback to run the "When" clause of the test.</param>
+        /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal TestAction(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
