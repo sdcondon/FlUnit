@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -47,7 +48,11 @@ namespace FlUnit.Adapters.VSTest
         /// <inheritdoc />
         public void Cancel()
         {
-            cancellationTokenSource.Cancel();
+            // NB: we don't throw if not in progress - idempotence feels like a useful property for cancellation.
+            // The same reasoning doesn't apply to RunTests because the invocation details (test cases etc.) could be different for each invocation..
+            // I'd feel comfortable doing it if we included a check that it was the "same" run and only threw if it was different (otherwise just return),
+            // but that's way too much effort for now and probably ever..
+            cancellationTokenSource?.Cancel();
         }
 
         /// <summary>
@@ -63,14 +68,28 @@ namespace FlUnit.Adapters.VSTest
             IFrameworkHandle frameworkHandle,
             TestRunConfiguration testRunConfiguration)
         {
-            // TODO-ROBUSTNESS: Probably should make sure its not already being run at some point? Throw an invalidoperationexception if so.
-            cancellationTokenSource = new CancellationTokenSource();
+            // NB: no thread (i.e. re-entry) safety here. Other framework adapters don't seem to bother,
+            // so presumably the platform is well-behaved in this regard, making it un-needed.
+            if (cancellationTokenSource != null)
+            {
+                throw new InvalidOperationException("Test run already in progress");
+            }
 
-            var testRun = new TestRun(
-                testContainers: testCases.Select(testCase => new TestContainer(testCase, runContext, frameworkHandle)),
-                testRunConfiguration);
+            try
+            {
+                cancellationTokenSource = new CancellationTokenSource();
 
-            testRun.Execute(cancellationTokenSource.Token);
+                var testRun = new TestRun(
+                    testContainers: testCases.Select(testCase => new TestContainer(testCase, runContext, frameworkHandle)),
+                    testRunConfiguration);
+
+                testRun.Execute(cancellationTokenSource.Token);
+            }
+            finally
+            {
+                cancellationTokenSource?.Dispose();
+                cancellationTokenSource = null;
+            }
         }
     }
 }
