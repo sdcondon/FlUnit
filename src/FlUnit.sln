@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29318.209
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit", "FlUnit\FlUnit.csproj", "{28802BFA-2BE1-43D8-BF2E-F1F87A625958}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit.Adapters.VSTest._Tests", "FlUnit.Adapters.VSTest._Tests\FlUnit.Adapters.VSTest._Tests.csproj", "{AA0FF464-C5AE-4050-A84C-C765DAE6AB4D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit.Abstractions", "FlUnit.Abstractions\FlUnit.Abstractions.csproj", "{C3EE9925-293C-4619-8252-A7232675B013}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlUnit.Benchmarks", "FlUnit.Benchmarks\FlUnit.Benchmarks.csproj", "{C343F364-36E0-4043-9FFB-BE0C8B085D7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{C3EE9925-293C-4619-8252-A7232675B013}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3EE9925-293C-4619-8252-A7232675B013}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3EE9925-293C-4619-8252-A7232675B013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C343F364-36E0-4043-9FFB-BE0C8B085D7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C343F364-36E0-4043-9FFB-BE0C8B085D7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C343F364-36E0-4043-9FFB-BE0C8B085D7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C343F364-36E0-4043-9FFB-BE0C8B085D7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
