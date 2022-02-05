@@ -1,4 +1,4 @@
-![FlUnit Logo](src/FlUnitIcon.png)
+﻿![FlUnit Logo](src/FlUnitIcon.png)
 
 # FlUnit
 
@@ -120,12 +120,17 @@ General ongoing work:
 
 Specific work, highest priority first:
 - *(Feb - v1.0)* V1 diligence & release
-  - Get some performance benchmarks in place
+  - Get some performance benchmarks in place ✓
+  - Resolve most or all TODOs:
+    - Localisation basics ✓
+    - Tweak ITraitProvider interface ✓
+    - A bit more (probably uneeded, but easy and good practice) robustness in TestRun class ✓
+    - Quickly look into parallelisation in test discovery ✓
+    - Improve stack traces in failure results & fix awkward `throw new Exception` occurence in Outcome classes - via adding a TestFailureException class to abstractions package
   - Review abstractions - for flexibility / stability
-  - Any required "doing it properly" stuff in the test adapter.
-  - Resolve most or all TODOs
-  - Split into separate repos
-  - README in packages
+  - Any required "doing it properly" stuff in the test adapter - contrast and compare to vstest adapters for other frameworks for stuff that should be done pre-v1
+  - Split into separate repos for ease of release?
+  - README in packages?
 - *(May / Jun - v1.1)* Possible post-v1 additions (after a break to work on other projects):
   - A little more configurability:
     - For specification of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations).
