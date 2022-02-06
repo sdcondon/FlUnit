@@ -121,15 +121,15 @@ General ongoing work:
 Specific work, highest priority first:
 - *(Feb - v1.0)* V1 diligence & release
   - Get some performance benchmarks in place ✓
-  - Resolve most or all TODOs:
+  - Resolve most TODOs: ✓
     - Localisation basics ✓
     - Tweak ITraitProvider interface ✓
     - A bit more (probably uneeded, but easy and good practice) robustness in TestRun class ✓
     - Quickly look into parallelisation in test discovery ✓
-    - Improve stack traces in failure results & fix awkward `throw new Exception` occurence in Outcome classes - via adding a TestFailureException class to abstractions package
+    - Improve stack traces in failure results & fix awkward `throw new Exception` occurence in Outcome classes ✓ 
   - Review abstractions - for flexibility / stability
-  - Any required "doing it properly" stuff in the test adapter - contrast and compare to vstest adapters for other frameworks for stuff that should be done pre-v1
-  - Split into separate repos for ease of release?
+  - Review of the VSTest platform adapter - contrast and compare to vstest adapters for other frameworks for stuff that should be done pre-v1
+  - Split into separate repos for ease of versioning & release?
   - README in packages?
 - *(May / Jun - v1.1)* Possible post-v1 additions (after a break to work on other projects):
   - A little more configurability:
@@ -148,6 +148,7 @@ So, instead (or as well) could allow for cxt to be specified as a parameter of G
 Then `GivenTestContext()` could still exist, simply as a more readable alias of `Given(cxt => cxt)`.
 Hmm, maybe - this is more complex?
 Still mulling this one over.
+  - Perhaps work on execution logic to further tidy stack traces when tests fail (and perhaps improve debug behaviour a little)
 - *(At some point - v1.2 or later)* Other features:
   - Support for async tests?
 
