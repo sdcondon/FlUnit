@@ -53,7 +53,14 @@ namespace FlUnit
         /// </summary>
         public override void Arrange()
         {
-            cases = new[] { new Case(act, makeAssertions) };
+            try
+            {
+                cases = new[] { new Case(act, makeAssertions) };
+            }
+            catch (Exception e)
+            {
+                throw new TestFailureException(string.Format(Messages.ArrangementFailureMessageFormat, e.Message), e.StackTrace, e);
+            }
         }
 
         internal class Case : ITestCase
@@ -104,7 +111,17 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(testCase.invocationOutcome);
+                public void Invoke()
+                {
+                    try
+                    {
+                        action(testCase.invocationOutcome);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new TestFailureException(e.Message, e.StackTrace, e);
+                    }
+                }
             }
         }
     }
@@ -161,7 +178,14 @@ namespace FlUnit
         /// </summary>
         public override void Arrange()
         {
-            cases = arrange().Select(p => new Case(p, act, makeAssertions)).ToArray();
+            try
+            {
+                cases = arrange().Select(p => new Case(p, act, makeAssertions)).ToArray();
+            }
+            catch (Exception e)
+            {
+                throw new TestFailureException(string.Format(Messages.ArrangementFailureMessageFormat, e.Message), e.StackTrace, e);
+            }
         }
 
         internal class Case : ITestCase
@@ -215,7 +239,17 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(testCase.prereqs, testCase.invocationOutcome);
+                public void Invoke()
+                {
+                    try
+                    {
+                        action(testCase.prereqs, testCase.invocationOutcome);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new TestFailureException(e.Message, e.StackTrace, e);
+                    }
+                }
             }
         }
     }
@@ -272,10 +306,17 @@ namespace FlUnit
         /// </summary>
         public override void Arrange()
         {
-            cases = (
-                from p1 in arrange.Item1()
-                from p2 in arrange.Item2()
-                select new Case((p1, p2), act, makeAssertions)).ToArray();
+            try
+            {
+                cases = (
+                    from p1 in arrange.Item1()
+                    from p2 in arrange.Item2()
+                    select new Case((p1, p2), act, makeAssertions)).ToArray();
+            }
+            catch (Exception e)
+            {
+                throw new TestFailureException(string.Format(Messages.ArrangementFailureMessageFormat, e.Message), e.StackTrace, e);
+            }
         }
 
         internal class Case : ITestCase
@@ -329,7 +370,17 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
+                public void Invoke()
+                {
+                    try
+                    {
+                        action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new TestFailureException(e.Message, e.StackTrace, e);
+                    }
+                }
             }
         }
     }
@@ -386,11 +437,18 @@ namespace FlUnit
         /// </summary>
         public override void Arrange()
         {
-            cases = (
-                from p1 in arrange.Item1()
-                from p2 in arrange.Item2()
-                from p3 in arrange.Item3()
-                select new Case((p1, p2, p3), act, makeAssertions)).ToArray();
+            try
+            {
+                cases = (
+                    from p1 in arrange.Item1()
+                    from p2 in arrange.Item2()
+                    from p3 in arrange.Item3()
+                    select new Case((p1, p2, p3), act, makeAssertions)).ToArray();
+            }
+            catch (Exception e)
+            {
+                throw new TestFailureException(string.Format(Messages.ArrangementFailureMessageFormat, e.Message), e.StackTrace, e);
+            }
         }
 
         internal class Case : ITestCase
@@ -444,7 +502,17 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
+                public void Invoke()
+                {
+                    try
+                    {
+                        action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new TestFailureException(e.Message, e.StackTrace, e);
+                    }
+                }
             }
         }
     }

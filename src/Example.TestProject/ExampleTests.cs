@@ -1,26 +1,23 @@
-﻿using FlUnit;
-using FluentAssertions;
+﻿using FluentAssertions;
+using FlUnit;
 using System;
-using FluentAssertions.Primitives;
 
 namespace Example.TestProject
 {
-    [Trait("ClassLevelTrait", "ExampleTests")]
+    [Trait("ClassLevelTrait", nameof(ExampleTests))]
     public static class ExampleTests
     {
         // Basic example
-        [Trait("PropertyLevelTrait", "ProcessHasSideEffects")]
         public static Test ProcessHasSideEffects => TestThat
             .Given(() => new TestSubject())
             .And(() => new Collaborator())
-
             .When((sut, collaborator) => sut.Process(collaborator))
-
             .ThenReturns((sut, collaborator, retVal) => retVal.Should().BeTrue())
             .And((sut, collaborator, retVal) => sut.HasProcessed.Should().BeTrue())
             .And((sut, collaborator, retVal) => collaborator.HasBeenProcessed.Should().BeTrue());
 
         // Basic example with single anonymous object-valued 'Given' clause,
+        // explicit separate assertion for verifying that the 'When' clause returned rather than throwing,
         // and discard params to make assertion clauses clearer
         public static Test ProcessHasSideEffects2 => TestThat
             .Given(() => new
@@ -29,31 +26,43 @@ namespace Example.TestProject
                 collaborator = new Collaborator()
             })
             .When(given => given.sut.Process(given.collaborator))
-            .ThenReturns((_, retVal) => retVal.Should().BeTrue())
+            .ThenReturns()
+            .And((_, retVal) => retVal.Should().BeTrue())
             .And((given, _) => given.sut.HasProcessed.Should().BeTrue())
             .And((given, _) => given.collaborator.HasBeenProcessed.Should().BeTrue());
 
-        // Negative test
+        // Negative test that passes
         public static Test ProcessThrowsOnNullCollaborator => TestThat
             .Given(() => new TestSubject())
             .When(sut => sut.Process(null))
             .ThenThrows((_, exception) => exception.Should().BeOfType(typeof(ArgumentNullException)));
 
-        // Test with failing implicit assertion
+        // Positive test with failing implicit assertion
         // (we expect it to return a particular value, but it actually throws)
+        [Trait("ExampleOfAFailingTest")]
         public static Test ProcessReturnsTrueOnNullCollaborator => TestThat
             .Given(() => new TestSubject())
             .When(sut => sut.Process(null))
             .ThenReturns((_, retVal) => retVal.Should().BeTrue());
 
+        // Negative test with failing implicit assertion
+        // (we expect it to throw, but it actually returns)
+        [Trait("ExampleOfAFailingTest")]
+        public static Test ProcessThrowsOnNonNullCollaborator => TestThat
+            .Given(() => new TestSubject())
+            .When(sut => sut.Process(new Collaborator()))
+            .ThenThrows((_, ex) => ex.Should().BeOfType(typeof(ArgumentNullException)));
+
         // Test with failing explicit assertion
         // (we expect it to return a different value)
+        [Trait("ExampleOfAFailingTest")]
         public static Test ProcessReturnsFalseOnNonNullCollaborator => TestThat
             .Given(() => new TestSubject())
             .When(sut => sut.Process(new Collaborator()))
             .ThenReturns((_, retVal) => retVal.Should().BeFalse());
 
         // Test with failing arrangement
+        [Trait("ExampleOfAFailingTest")]
         public static Test ProcessDoesntThrowOnNullCollaborator2 => TestThat
             .Given(() => new TestSubject(shouldThrow: true))
             .When(sut => sut.Process(null))
@@ -63,6 +72,11 @@ namespace Example.TestProject
         public static Test CtorDoesntThrow => TestThat
             .When(() => new TestSubject())
             .ThenReturns(retVal => retVal.Should().BeOfType<TestSubject>());
+
+        // Pointless test (that nevertheless serves as an example of the simplest possible valid test)
+        public static Test Nothing => TestThat
+            .When(() => { })
+            .ThenReturns();
 
         // Block bodies
         public static Test BlockBodies => TestThat
@@ -91,7 +105,8 @@ namespace Example.TestProject
             .GivenEachOf(() => new[] { 1, 3, 5 })
             .AndEachOf(() => new[] { 2, 4, 6 })
             .When((x, y) => x + y)
-            .ThenReturns((_, _, sum) => (sum % 2).Should().Be(1))
+            .ThenReturns()
+            .And((_, _, sum) => (sum % 2).Should().Be(1))
             .And((x, _, sum) => sum.Should().BeGreaterThan(x));
 
         private class TestSubject

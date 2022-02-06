@@ -53,7 +53,7 @@ namespace FlUnit
                 builder.configurationOverrides,
 <# WriteLineIf(i > 0, $"builder.arrange,", 4); #>
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<#= TList(i, "<", ">") #>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction<#= TList(i, "<", ">") #>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -104,19 +104,19 @@ namespace FlUnit
         {
             internal Assertion(Action<<#= TList(i, "", ", ") #>TestActionOutcome> action, string description)
             {
-                Action = action;
+                Assert = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> expression)
             {
-                Action = expression.Compile();
+                Assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<<#= TList(i, "", ", ") #>TestActionOutcome> Action { get; }
+            public Action<<#= TList(i, "", ", ") #>TestActionOutcome> Assert { get; }
 
             public string Description { get; }
         }

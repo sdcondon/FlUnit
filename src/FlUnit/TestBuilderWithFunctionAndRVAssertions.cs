@@ -41,7 +41,7 @@ namespace FlUnit
             return new TestFunction<TResult>(
                 builder.configurationOverrides,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<TResult>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestFunction<TResult>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -90,40 +90,36 @@ namespace FlUnit
 
         internal class Assertion
         {
+            private readonly Action<TResult> action;
+
             internal Assertion(Action<TResult> action, string description)
             {
-                Action = (outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    action(outcome.Result);
-                };
+                this.action = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<TResult>> expression)
             {
-                Action = (outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    expression.Compile()(outcome.Result);
-                };
+                action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
             internal Assertion(string description)
             {
-                Action = (outcome) =>
-                {
-                    outcome.ThrowIfException();
-                };
                 Description = description;
             }
 
             public Action<TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
+
+            internal void Assert(TestFunctionOutcome<TResult> outcome)
+            {
+                outcome.ThrowIfException();
+                action?.Invoke(outcome.Result);
+            }
         }
     }
 
@@ -162,7 +158,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<T1, TResult>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestFunction<T1, TResult>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -211,40 +207,36 @@ namespace FlUnit
 
         internal class Assertion
         {
+            private readonly Action<T1, TResult> action;
+
             internal Assertion(Action<T1, TResult> action, string description)
             {
-                Action = (a, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    action(a, outcome.Result);
-                };
+                this.action = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<T1, TResult>> expression)
             {
-                Action = (a, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    expression.Compile()(a, outcome.Result);
-                };
+                action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
             internal Assertion(string description)
             {
-                Action = (a, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                };
                 Description = description;
             }
 
             public Action<T1, TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
+
+            internal void Assert(T1 a1, TestFunctionOutcome<TResult> outcome)
+            {
+                outcome.ThrowIfException();
+                action?.Invoke(a1, outcome.Result);
+            }
         }
     }
 
@@ -284,7 +276,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<T1, T2, TResult>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestFunction<T1, T2, TResult>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -333,40 +325,36 @@ namespace FlUnit
 
         internal class Assertion
         {
+            private readonly Action<T1, T2, TResult> action;
+
             internal Assertion(Action<T1, T2, TResult> action, string description)
             {
-                Action = (a1, a2, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    action(a1, a2, outcome.Result);
-                };
+                this.action = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<T1, T2, TResult>> expression)
             {
-                Action = (a1, a2, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    expression.Compile()(a1, a2, outcome.Result);
-                };
+                action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
             internal Assertion(string description)
             {
-                Action = (a1, a2, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                };
                 Description = description;
             }
 
             public Action<T1, T2, TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
+
+            internal void Assert(T1 a1, T2 a2, TestFunctionOutcome<TResult> outcome)
+            {
+                outcome.ThrowIfException();
+                action?.Invoke(a1, a2, outcome.Result);
+            }
         }
     }
 
@@ -407,7 +395,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<T1, T2, T3, TResult>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestFunction<T1, T2, T3, TResult>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -456,40 +444,36 @@ namespace FlUnit
 
         internal class Assertion
         {
+            private readonly Action<T1, T2, T3, TResult> action;
+
             internal Assertion(Action<T1, T2, T3, TResult> action, string description)
             {
-                Action = (a1, a2, a3, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    action(a1, a2, a3, outcome.Result);
-                };
+                this.action = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<T1, T2, T3, TResult>> expression)
             {
-                Action = (a1, a2, a3, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    expression.Compile()(a1, a2, a3, outcome.Result);
-                };
+                action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
             internal Assertion(string description)
             {
-                Action = (a1, a2, a3, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                };
                 Description = description;
             }
 
             public Action<T1, T2, T3, TestFunctionOutcome<TResult>> Action { get; }
 
             public string Description { get; }
+
+            internal void Assert(T1 a1, T2 a2, T3 a3, TestFunctionOutcome<TResult> outcome)
+            {
+                outcome.ThrowIfException();
+                action?.Invoke(a1, a2, a3, outcome.Result);
+            }
         }
     }
 }

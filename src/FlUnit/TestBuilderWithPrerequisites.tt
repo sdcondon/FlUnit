@@ -24,7 +24,7 @@ string PrerequisiteBuilderPrereqArg(int i)
 
 string NextPrerequisiteBuilderPrereqArg(int i, bool isEachOf)
 {
-    var nextPrereq = isEachOf ? $"prereqs{i + 1}" : $"() => new[] {{ prereq{i + 1}() }}";
+    var nextPrereq = isEachOf ? $"prereqs{i + 1}" : $"new SinglePrerequisiteClosure<T{i + 1}>(prereq{i + 1}).Arrange";
 
     if (i == 0)
     {

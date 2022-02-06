@@ -54,7 +54,7 @@ namespace FlUnit
                 builder.configurationOverrides,
 <# WriteLineIf(i > 0, $"builder.arrange,", 4); #>
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<#= TList(i, "<", ">") #>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction<#= TList(i, "<", ">") #>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -103,40 +103,34 @@ namespace FlUnit
 
         internal class Assertion
         {
+            private readonly Action<#= TList(i, "<", ">") #> action;
+
             internal Assertion(Action<#= TList(i, "<", ">") #> action, string description)
             {
-                Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    action(<#= i == 1 ? "a" : List(i, i => $"a{i}") #>);
-                };
+                this.action = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<#= TList(i, "<", ">") #>> expression)
             {
-                Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    expression.Compile()(<#= i == 1 ? "a" : List(i, i => $"a{i}") #>);
-                };
+                action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
             internal Assertion(string description)
             {
-                Action = (<#= i == 1 ? "a, " : List(i, i => $"a{i}", "", ", ") #>outcome) =>
-                {
-                    outcome.ThrowIfException();
-                };
                 Description = description;
             }
 
-            public Action<<#= TList(i, "", ", ") #>TestActionOutcome> Action { get; }
-
             public string Description { get; }
+
+            internal void Assert(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestActionOutcome outcome)
+            {
+                outcome.ThrowIfException();
+                action?.Invoke(<#= List(i, i => $"a{i}") #>);
+            }
         }
     }
 <# } #>

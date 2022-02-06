@@ -108,15 +108,15 @@ namespace FlUnit.Adapters
             }
             catch (Exception e)
             {
-                // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
-                // For v1, perhaps just trim the FlUnit stuff from the bottom of the stack trace.
+                var (errorMessage, errorStackTrace) = GetErrorDetails(e);
+
                 testContainer.RecordResult(
                     startTime: arrangementStartTime,
                     endTime: DateTimeOffset.Now,
                     displayName: null,
                     outcome: testConfiguration.FailedArrangementOutcomeIsSkipped ? TestOutcome.Skipped : TestOutcome.Failed,
-                    errorMessage: string.Format(Messages.ArrangementFailureMessageFormat, e.Message),
-                    errorStackTrace: e.StackTrace);
+                    errorMessage: errorMessage,
+                    errorStackTrace: errorStackTrace);
 
                 return false;
             }
@@ -144,11 +144,8 @@ namespace FlUnit.Adapters
             }
             catch (Exception e)
             {
-                // TODO: would need to do a bit more work for good failure messages, esp the stack trace..
-                // For v1, perhaps just trim the FlUnit stuff from the bottom of the stack trace.
                 outcome = TestOutcome.Failed;
-                errorMessage = e.Message;
-                errorStackTrace = e.StackTrace;
+                (errorMessage, errorStackTrace) = GetErrorDetails(e);
                 return false;
             }
             finally
@@ -160,6 +157,18 @@ namespace FlUnit.Adapters
                     outcome,
                     errorMessage,
                     errorStackTrace);
+            }
+        }
+
+        private static (string errorMessage, string errorStackTrace) GetErrorDetails(Exception exception)
+        {
+            if (exception is ITestFailureDetails tfd)
+            {
+                return (tfd.TestResultErrorMessage, tfd.TestResultErrorStackTrace);
+            }
+            else
+            {
+                return (exception.Message, exception.StackTrace);
             }
         }
     }

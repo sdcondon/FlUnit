@@ -66,17 +66,24 @@ namespace FlUnit
         /// </summary>
         public override void Arrange()
         {
+            try
+            {
 <# if (i == 0) { #>
-            cases = new[] { new Case(act, makeAssertions) };
+                cases = new[] { new Case(act, makeAssertions) };
 <# } else if (i == 1) { #>
-            cases = arrange().Select(p => new Case(p, act, makeAssertions)).ToArray();
+                cases = arrange().Select(p => new Case(p, act, makeAssertions)).ToArray();
 <# } else if (i > 1) { #>
-            cases = (
+                cases = (
 <# for (int j = 0; j < i; j++) { #>
-                from p<#= j + 1 #> in arrange.Item<#= j + 1 #>()
+                    from p<#= j + 1 #> in arrange.Item<#= j + 1 #>()
 <# } #>
-                select new Case((<#= List(i, i => $"p{i}") #>), act, makeAssertions)).ToArray();
+                    select new Case((<#= List(i, i => $"p{i}") #>), act, makeAssertions)).ToArray();
 <# } #>
+            }
+            catch (Exception e)
+            {
+                throw new TestFailureException(string.Format(Messages.ArrangementFailureMessageFormat, e.Message), e.StackTrace, e);
+            }
         }
 
         internal class Case : ITestCase
@@ -134,7 +141,17 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke() => action(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
+                public void Invoke()
+                {
+                    try
+                    {
+                        action(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new TestFailureException(e.Message, e.StackTrace, e);
+                    }
+                }
             }
         }
     }

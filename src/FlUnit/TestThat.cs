@@ -22,7 +22,7 @@ namespace FlUnit
         /// <typeparam name="T">The type of the pre-requisite.</typeparam>
         /// <param name="prerequisite">A delegate to create the pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or a "When" clause.</returns>
-        public static TestBuilderWithPrerequisites<T> Given<T>(Func<T> prerequisite) => new TestBuilderWithPrerequisites<T>(Array.Empty<Action<ITestConfiguration>>(), () => new[] { prerequisite() });
+        public static TestBuilderWithPrerequisites<T> Given<T>(Func<T> prerequisite) => new TestBuilderWithPrerequisites<T>(Array.Empty<Action<ITestConfiguration>>(), new SinglePrerequisiteClosure<T>(prerequisite).Arrange);
 
         /// <summary>
         /// Starts building a test with multiple cases by providing a "Given" clause.

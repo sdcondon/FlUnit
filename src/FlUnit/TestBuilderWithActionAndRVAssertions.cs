@@ -40,7 +40,7 @@ namespace FlUnit
             return new TestAction(
                 builder.configurationOverrides,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -89,40 +89,34 @@ namespace FlUnit
 
         internal class Assertion
         {
+            private readonly Action action;
+
             internal Assertion(Action action, string description)
             {
-                Action = (outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    action();
-                };
+                this.action = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action> expression)
             {
-                Action = (outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    expression.Compile()();
-                };
+                action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
             internal Assertion(string description)
             {
-                Action = (outcome) =>
-                {
-                    outcome.ThrowIfException();
-                };
                 Description = description;
             }
 
-            public Action<TestActionOutcome> Action { get; }
-
             public string Description { get; }
+
+            internal void Assert(TestActionOutcome outcome)
+            {
+                outcome.ThrowIfException();
+                action?.Invoke();
+            }
         }
     }
 
@@ -160,7 +154,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction<T1>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -209,40 +203,34 @@ namespace FlUnit
 
         internal class Assertion
         {
+            private readonly Action<T1> action;
+
             internal Assertion(Action<T1> action, string description)
             {
-                Action = (a, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    action(a);
-                };
+                this.action = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<T1>> expression)
             {
-                Action = (a, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    expression.Compile()(a);
-                };
+                action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
             internal Assertion(string description)
             {
-                Action = (a, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                };
                 Description = description;
             }
 
-            public Action<T1, TestActionOutcome> Action { get; }
-
             public string Description { get; }
+
+            internal void Assert(T1 a1, TestActionOutcome outcome)
+            {
+                outcome.ThrowIfException();
+                action?.Invoke(a1);
+            }
         }
     }
 
@@ -281,7 +269,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1, T2>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction<T1, T2>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -330,40 +318,34 @@ namespace FlUnit
 
         internal class Assertion
         {
+            private readonly Action<T1, T2> action;
+
             internal Assertion(Action<T1, T2> action, string description)
             {
-                Action = (a1, a2, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    action(a1, a2);
-                };
+                this.action = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<T1, T2>> expression)
             {
-                Action = (a1, a2, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    expression.Compile()(a1, a2);
-                };
+                action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
             internal Assertion(string description)
             {
-                Action = (a1, a2, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                };
                 Description = description;
             }
 
-            public Action<T1, T2, TestActionOutcome> Action { get; }
-
             public string Description { get; }
+
+            internal void Assert(T1 a1, T2 a2, TestActionOutcome outcome)
+            {
+                outcome.ThrowIfException();
+                action?.Invoke(a1, a2);
+            }
         }
     }
 
@@ -403,7 +385,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1, T2, T3>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction<T1, T2, T3>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -452,40 +434,34 @@ namespace FlUnit
 
         internal class Assertion
         {
+            private readonly Action<T1, T2, T3> action;
+
             internal Assertion(Action<T1, T2, T3> action, string description)
             {
-                Action = (a1, a2, a3, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    action(a1, a2, a3);
-                };
+                this.action = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<T1, T2, T3>> expression)
             {
-                Action = (a1, a2, a3, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                    expression.Compile()(a1, a2, a3);
-                };
+                action = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
             internal Assertion(string description)
             {
-                Action = (a1, a2, a3, outcome) =>
-                {
-                    outcome.ThrowIfException();
-                };
                 Description = description;
             }
 
-            public Action<T1, T2, T3, TestActionOutcome> Action { get; }
-
             public string Description { get; }
+
+            internal void Assert(T1 a1, T2 a2, T3 a3, TestActionOutcome outcome)
+            {
+                outcome.ThrowIfException();
+                action?.Invoke(a1, a2, a3);
+            }
         }
     }
 }

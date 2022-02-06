@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.ExceptionServices;
 
 namespace FlUnit
 {
@@ -37,26 +36,24 @@ namespace FlUnit
         public Exception Exception { get; }
 
         /// <summary>
-        /// Throws the exception (preserving stack trace) if it is populated.
+        /// Throws a <see cref="TestFailureException"/> if the Exception property is populated.
         /// </summary>
         public void ThrowIfException()
         {
             if (Exception != null)
             {
-                ExceptionDispatchInfo.Capture(Exception).Throw();
+                throw new TestFailureException(Exception.Message, Exception.StackTrace, Exception);
             }
         }
 
         /// <summary>
-        /// Throws an exception if the outcome indicates that the test action returned successfully.
+        /// Throws a <see cref="TestFailureException"/> if the outcome indicates that the test action returned successfully.
         /// </summary>
         public void ThrowIfNoException()
         {
             if (Exception == null)
             {
-                // TODO-MAINTAINABILITY: Ick, new Exception.. Some kind of FlUnit-specific Assert.Fail and exception types would be good..
-                // Need to make it clearer that this is something to be reported back in the test result (hence localisation).
-                throw new Exception(Messages.TestOutcomeExceptionExpectedButNotThrown);
+                throw new TestFailureException(Messages.TestOutcomeExceptionExpectedButNotThrown);
             }
         }
     }

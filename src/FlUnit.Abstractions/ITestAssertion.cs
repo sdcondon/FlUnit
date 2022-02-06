@@ -13,6 +13,10 @@
         /// <summary>
         /// Invokes the assertion. Failures are indicated by thrown exceptions.
         /// </summary>
+        /// <remarks>
+        /// TODO-MAINTAINABILITY: do you "invoke" an assertion? Or do you "test" it? hmm, don't want to overload the word "test".
+        /// maybe you "assert" it - which would complement the "arrange" method in test and the "act" method in itestcase..
+        /// </remarks>
         void Invoke();
     }
 }

@@ -39,7 +39,7 @@ namespace FlUnit
             return new TestAction(
                 builder.configurationOverrides,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -90,19 +90,19 @@ namespace FlUnit
         {
             internal Assertion(Action<TestActionOutcome> action, string description)
             {
-                Action = action;
+                Assert = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<TestActionOutcome>> expression)
             {
-                Action = expression.Compile();
+                Assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<TestActionOutcome> Action { get; }
+            public Action<TestActionOutcome> Assert { get; }
 
             public string Description { get; }
         }
@@ -142,7 +142,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction<T1>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -193,19 +193,19 @@ namespace FlUnit
         {
             internal Assertion(Action<T1, TestActionOutcome> action, string description)
             {
-                Action = action;
+                Assert = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<T1, TestActionOutcome>> expression)
             {
-                Action = expression.Compile();
+                Assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<T1, TestActionOutcome> Action { get; }
+            public Action<T1, TestActionOutcome> Assert { get; }
 
             public string Description { get; }
         }
@@ -246,7 +246,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1, T2>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction<T1, T2>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -297,19 +297,19 @@ namespace FlUnit
         {
             internal Assertion(Action<T1, T2, TestActionOutcome> action, string description)
             {
-                Action = action;
+                Assert = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<T1, T2, TestActionOutcome>> expression)
             {
-                Action = expression.Compile();
+                Assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<T1, T2, TestActionOutcome> Action { get; }
+            public Action<T1, T2, TestActionOutcome> Assert { get; }
 
             public string Description { get; }
         }
@@ -351,7 +351,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1, T2, T3>.Case.Assertion(tc, a.Action, a.Description)));
+                tc => builder.assertions.Select(a => new TestAction<T1, T2, T3>.Case.Assertion(tc, a.Assert, a.Description)));
         }
 
 #if NET6_0
@@ -402,19 +402,19 @@ namespace FlUnit
         {
             internal Assertion(Action<T1, T2, T3, TestActionOutcome> action, string description)
             {
-                Action = action;
+                Assert = action;
                 Description = description;
             }
 
 #if !NET6_0
             internal Assertion(Expression<Action<T1, T2, T3, TestActionOutcome>> expression)
             {
-                Action = expression.Compile();
+                Assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<T1, T2, T3, TestActionOutcome> Action { get; }
+            public Action<T1, T2, T3, TestActionOutcome> Assert { get; }
 
             public string Description { get; }
         }

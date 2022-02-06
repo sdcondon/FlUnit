@@ -41,7 +41,7 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<T1> Given<T1>(Func<T1> prereq1)
         {
-            return new TestBuilderWithPrerequisites<T1>(configurationOverrides, () => new[] { prereq1() });
+            return new TestBuilderWithPrerequisites<T1>(configurationOverrides, new SinglePrerequisiteClosure<T1>(prereq1).Arrange);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<T1, T2> And<T2>(Func<T2> prereq2)
         {
-            return new TestBuilderWithPrerequisites<T1, T2>(configurationOverrides, (arrange, () => new[] { prereq2() }));
+            return new TestBuilderWithPrerequisites<T1, T2>(configurationOverrides, (arrange, new SinglePrerequisiteClosure<T2>(prereq2).Arrange));
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestBuilderWithPrerequisites<T1, T2, T3> And<T3>(Func<T3> prereq3)
         {
-            return new TestBuilderWithPrerequisites<T1, T2, T3>(configurationOverrides, (arrange.Item1, arrange.Item2, () => new[] { prereq3() }));
+            return new TestBuilderWithPrerequisites<T1, T2, T3>(configurationOverrides, (arrange.Item1, arrange.Item2, new SinglePrerequisiteClosure<T3>(prereq3).Arrange));
         }
 
         /// <summary>

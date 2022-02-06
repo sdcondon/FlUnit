@@ -190,7 +190,7 @@ namespace FlUnit._Tests
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("sb.Length.ShouldBe(2)");
-            ((Action)assertion.Invoke).ShouldThrow(typeof(ShouldAssertException));
+            ((Action)assertion.Invoke).ShouldThrow(typeof(TestFailureException));
         }
 
         [TestMethod]

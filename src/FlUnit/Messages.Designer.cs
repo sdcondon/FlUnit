@@ -61,6 +61,15 @@ namespace FlUnit {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Test arrangement failed: {0}.
+        /// </summary>
+        internal static string ArrangementFailureMessageFormat {
+            get {
+                return ResourceManager.GetString("ArrangementFailureMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Test action should return successfully.
         /// </summary>
         internal static string ImplicitAssertionTestActionShouldReturn {

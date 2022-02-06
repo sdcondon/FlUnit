@@ -191,7 +191,7 @@ namespace FlUnit._Tests
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("sum.ShouldBe(3)");
-            ((Action)assertion.Invoke).ShouldThrow(typeof(ShouldAssertException));
+            ((Action)assertion.Invoke).ShouldThrow(typeof(TestFailureException));
         }
 
         [TestMethod]

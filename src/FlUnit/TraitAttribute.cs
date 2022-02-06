@@ -15,6 +15,12 @@ namespace FlUnit
 		/// Creates a new instance of the <see cref="TraitAttribute"/> class.
 		/// </summary>
 		/// <param name="name">The trait name.</param>
+		public TraitAttribute(string name) => trait = new Trait(name);
+
+		/// <summary>
+		/// Creates a new instance of the <see cref="TraitAttribute"/> class.
+		/// </summary>
+		/// <param name="name">The trait name.</param>
 		/// <param name="value">The trait value.</param>
 		public TraitAttribute(string name, string value) => trait = new Trait(name, value);
 

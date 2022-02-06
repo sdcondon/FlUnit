@@ -39,8 +39,7 @@ namespace FlUnit.Adapters.VSTest._Tests
                 "Example.TestProject.ExampleTests.ProcessHasSideEffects",
                 new[]
                 {
-                    new Trait("ClassLevelTrait", "ExampleTests"),
-                    new Trait("PropertyLevelTrait", "ProcessHasSideEffects"),
+                    new Trait("ClassLevelTrait", "ExampleTests")
                 },
                 TestOutcome.Passed,
                 new[]
@@ -59,10 +58,12 @@ namespace FlUnit.Adapters.VSTest._Tests
                 TestOutcome.Passed,
                 new[]
                 {
+                    new { DisplayName = "Test function should return successfully", Outcome = TestOutcome.Passed },
                     new { DisplayName = "retVal.Should().BeTrue()", Outcome = TestOutcome.Passed },
                     new { DisplayName = "given.sut.HasProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
                     new { DisplayName = "given.collaborator.HasBeenProcessed.Should().BeTrue()", Outcome = TestOutcome.Passed },
                 });
+
             AssertTestResult(
                 "Example.TestProject.ExampleTests.ProcessThrowsOnNullCollaborator",
                 new[]
@@ -79,7 +80,8 @@ namespace FlUnit.Adapters.VSTest._Tests
                 "Example.TestProject.ExampleTests.ProcessReturnsTrueOnNullCollaborator",
                 new[]
                 {
-                    new Trait("ClassLevelTrait", "ExampleTests")
+                    new Trait("ClassLevelTrait", "ExampleTests"),
+                    new Trait("ExampleOfAFailingTest", null)
                 },
                 TestOutcome.Failed,
                 new[]
@@ -88,10 +90,25 @@ namespace FlUnit.Adapters.VSTest._Tests
                 });
 
             AssertTestResult(
+                "Example.TestProject.ExampleTests.ProcessThrowsOnNonNullCollaborator",
+                new[]
+                {
+                    new Trait("ClassLevelTrait", "ExampleTests"),
+                    new Trait("ExampleOfAFailingTest", null)
+                },
+                TestOutcome.Failed,
+                new[]
+                {
+                    new { DisplayName = (string)null, Outcome = TestOutcome.Failed },
+                });
+
+
+            AssertTestResult(
                 "Example.TestProject.ExampleTests.ProcessReturnsFalseOnNonNullCollaborator",
                 new[]
                 {
-                    new Trait("ClassLevelTrait", "ExampleTests")
+                    new Trait("ClassLevelTrait", "ExampleTests"),
+                    new Trait("ExampleOfAFailingTest", null)
                 },
                 TestOutcome.Failed,
                 new[]
@@ -103,7 +120,8 @@ namespace FlUnit.Adapters.VSTest._Tests
                 "Example.TestProject.ExampleTests.ProcessDoesntThrowOnNullCollaborator2",
                 new[]
                 {
-                    new Trait("ClassLevelTrait", "ExampleTests")
+                    new Trait("ClassLevelTrait", "ExampleTests"),
+                    new Trait("ExampleOfAFailingTest", null)
                 },
                 TestOutcome.Skipped,
                 new[]
@@ -113,6 +131,18 @@ namespace FlUnit.Adapters.VSTest._Tests
 
             AssertTestResult(
                 "Example.TestProject.ExampleTests.CtorDoesntThrow",
+                new[]
+                {
+                    new Trait("ClassLevelTrait", "ExampleTests")
+                },
+                TestOutcome.Passed,
+                new[]
+                {
+                    new { DisplayName = (string)null, Outcome = TestOutcome.Passed },
+                });
+
+            AssertTestResult(
+                "Example.TestProject.ExampleTests.Nothing",
                 new[]
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
@@ -158,22 +188,31 @@ namespace FlUnit.Adapters.VSTest._Tests
                 TestOutcome.Passed,
                 new[]
                 {
+                    new { DisplayName = "Test function should return successfully for test case (1, 2)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 2)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 2)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "Test function should return successfully for test case (1, 4)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 4)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 4)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "Test function should return successfully for test case (1, 6)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "(sum % 2).Should().Be(1) for test case (1, 6)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (1, 6)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "Test function should return successfully for test case (3, 2)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 2)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 2)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "Test function should return successfully for test case (3, 4)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 4)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 4)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "Test function should return successfully for test case (3, 6)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "(sum % 2).Should().Be(1) for test case (3, 6)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (3, 6)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "Test function should return successfully for test case (5, 2)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 2)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 2)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "Test function should return successfully for test case (5, 4)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 4)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 4)", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "Test function should return successfully for test case (5, 6)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "(sum % 2).Should().Be(1) for test case (5, 6)", Outcome = TestOutcome.Passed },
                     new { DisplayName = "sum.Should().BeGreaterThan(x) for test case (5, 6)", Outcome = TestOutcome.Passed },
                 });
