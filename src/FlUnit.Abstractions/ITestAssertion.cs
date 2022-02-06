@@ -11,12 +11,14 @@
         string Description { get; }
 
         /// <summary>
-        /// Invokes the assertion. Failures are indicated by thrown exceptions.
+        /// Tests the assertion. Failures should be indicated by thrown exceptions (ideally those implementing <see cref="ITestFailureDetails"/>).
         /// </summary>
         /// <remarks>
-        /// TODO-MAINTAINABILITY: do you "invoke" an assertion? Or do you "test" it? hmm, don't want to overload the word "test".
-        /// maybe you "assert" it - which would complement the "arrange" method in test and the "act" method in itestcase..
+        /// While the verb used in the summary here is "test", we don't want to overload the term "test"
+        /// when talking about FlUnit tests, and using "Assert" follows the pattern of <see cref="Test"/>s
+        /// having <see cref="Test.Arrange"/>, and <see cref="ITestCase"/>s having <see cref="ITestCase.Act"/>.
+        /// Which is nice.
         /// </remarks>
-        void Invoke();
+        void Assert();
     }
 }

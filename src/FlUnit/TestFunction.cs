@@ -111,7 +111,7 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke()
+                public void Assert()
                 {
                     try
                     {
@@ -239,7 +239,7 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke()
+                public void Assert()
                 {
                     try
                     {
@@ -370,7 +370,7 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke()
+                public void Assert()
                 {
                     try
                     {
@@ -502,7 +502,7 @@ namespace FlUnit
 
                 public string Description { get; }
 
-                public void Invoke()
+                public void Assert()
                 {
                     try
                     {

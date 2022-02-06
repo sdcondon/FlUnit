@@ -26,7 +26,7 @@ namespace FlUnit._Tests
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("Test function should return successfully");
-            ((Action)assertion.Invoke).ShouldNotThrow();
+            ((Action)assertion.Assert).ShouldNotThrow();
         }
 
         [TestMethod]
@@ -47,7 +47,7 @@ namespace FlUnit._Tests
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("sum.ShouldBe(2)");
-            ((Action)assertion.Invoke).ShouldNotThrow();
+            ((Action)assertion.Assert).ShouldNotThrow();
         }
 
         [TestMethod]
@@ -70,11 +70,11 @@ namespace FlUnit._Tests
 
             var assertion1 = test.Cases.Single().Assertions.First();
             assertion1.Description.ShouldBe("Sum should be greater than x");
-            ((Action)assertion1.Invoke).ShouldNotThrow();
+            ((Action)assertion1.Assert).ShouldNotThrow();
 
             var assertion2 = test.Cases.Single().Assertions.Skip(1).First();
             assertion2.Description.ShouldBe("Sum should be greater than y");
-            ((Action)assertion2.Invoke).ShouldNotThrow();
+            ((Action)assertion2.Assert).ShouldNotThrow();
         }
 
         [TestMethod]
@@ -110,21 +110,21 @@ namespace FlUnit._Tests
             ((Action)case1.Act).ShouldNotThrow();
             case1.Assertions.Count.ShouldBe(1);
             case1.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
-            ((Action)case1.Assertions.Single().Invoke).ShouldNotThrow();
+            ((Action)case1.Assertions.Single().Assert).ShouldNotThrow();
 
             var case2 = test.Cases.Skip(1).First();
             case2.Description.ShouldBe("1");
             ((Action)case2.Act).ShouldNotThrow();
             case2.Assertions.Count.ShouldBe(1);
             case2.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
-            ((Action)case2.Assertions.Single().Invoke).ShouldNotThrow();
+            ((Action)case2.Assertions.Single().Assert).ShouldNotThrow();
 
             var case3 = test.Cases.Skip(2).First();
             case3.Description.ShouldBe("0");
             ((Action)case3.Act).ShouldNotThrow();
             case3.Assertions.Count.ShouldBe(1);
             case3.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
-            ((Action)case3.Assertions.Single().Invoke).ShouldNotThrow();
+            ((Action)case3.Assertions.Single().Assert).ShouldNotThrow();
         }
 
         [TestMethod]
@@ -149,7 +149,7 @@ namespace FlUnit._Tests
 #else // Example of LINQ not being a great solution - round trip..
             assertion.Description.ShouldBe("exception.ShouldBeOfType()");
 #endif
-            ((Action)assertion.Invoke).ShouldNotThrow();
+            ((Action)assertion.Assert).ShouldNotThrow();
         }
 
         [TestMethod]
@@ -170,7 +170,7 @@ namespace FlUnit._Tests
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("Test function should throw an exception");
-            ((Action)assertion.Invoke).ShouldNotThrow();
+            ((Action)assertion.Assert).ShouldNotThrow();
         }
 
         [TestMethod]
@@ -191,7 +191,7 @@ namespace FlUnit._Tests
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.Description.ShouldBe("sum.ShouldBe(3)");
-            ((Action)assertion.Invoke).ShouldThrow(typeof(TestFailureException));
+            ((Action)assertion.Assert).ShouldThrow(typeof(TestFailureException));
         }
 
         [TestMethod]

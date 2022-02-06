@@ -138,7 +138,7 @@ namespace FlUnit.Adapters
             {
                 displayName = testConfiguration.ResultNamingStrategy.GetResultName(test, testCase, assertion);
 
-                assertion.Invoke();
+                assertion.Assert();
                 outcome = TestOutcome.Passed;
                 return true;
             }

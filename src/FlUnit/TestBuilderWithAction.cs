@@ -49,7 +49,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndAssertions.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndAssertions.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -66,7 +66,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndAssertions.Assertion(assertion));
+                new TestBuilderWithActionAndAssertions.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndAssertions.Assertion(assertion, description));
+                new TestBuilderWithActionAndAssertions.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -97,7 +97,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndRVAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
+                new TestBuilderWithActionAndRVAssertions.AssertionImpl(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndRVAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions.Assertion(description));
+                new TestBuilderWithActionAndRVAssertions.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -132,7 +132,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndRVAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndRVAssertions.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -145,7 +145,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndRVAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions.Assertion(assertion));
+                new TestBuilderWithActionAndRVAssertions.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndRVAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions.Assertion(assertion, description));
+                new TestBuilderWithActionAndRVAssertions.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -172,7 +172,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndExAssertions.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
+                new TestBuilderWithActionAndExAssertions.AssertionImpl(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndExAssertions.Assertion(description));
+                new TestBuilderWithActionAndExAssertions.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -207,7 +207,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndExAssertions.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndExAssertions.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -220,7 +220,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndExAssertions.Assertion(assertion));
+                new TestBuilderWithActionAndExAssertions.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace FlUnit
             return new TestBuilderWithActionAndExAssertions(
                 configurationOverrides,
                 testAction,
-                new TestBuilderWithActionAndExAssertions.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions.AssertionImpl(assertion, description));
         }
 #endif
     }
@@ -284,7 +284,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndAssertions<T1>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -302,7 +302,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion));
+                new TestBuilderWithActionAndAssertions<T1>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1>.Assertion(assertion, description));
+                new TestBuilderWithActionAndAssertions<T1>.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -335,7 +335,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
+                new TestBuilderWithActionAndRVAssertions<T1>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(description));
+                new TestBuilderWithActionAndRVAssertions<T1>.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -372,7 +372,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndRVAssertions<T1>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -386,7 +386,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion));
+                new TestBuilderWithActionAndRVAssertions<T1>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1>.Assertion(assertion, description));
+                new TestBuilderWithActionAndRVAssertions<T1>.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -415,7 +415,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1>.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
+                new TestBuilderWithActionAndExAssertions<T1>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>
@@ -429,7 +429,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1>.Assertion(description));
+                new TestBuilderWithActionAndExAssertions<T1>.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -452,7 +452,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndExAssertions<T1>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -466,7 +466,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion));
+                new TestBuilderWithActionAndExAssertions<T1>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -481,7 +481,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1>.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions<T1>.AssertionImpl(assertion, description));
         }
 #endif
     }
@@ -532,7 +532,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndAssertions<T1, T2>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -550,7 +550,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion));
+                new TestBuilderWithActionAndAssertions<T1, T2>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -569,7 +569,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2>.Assertion(assertion, description));
+                new TestBuilderWithActionAndAssertions<T1, T2>.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -583,7 +583,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -597,7 +597,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(description));
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -620,7 +620,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -634,7 +634,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion));
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -649,7 +649,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2>.Assertion(assertion, description));
+                new TestBuilderWithActionAndRVAssertions<T1, T2>.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -663,7 +663,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
+                new TestBuilderWithActionAndExAssertions<T1, T2>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>
@@ -677,7 +677,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(description));
+                new TestBuilderWithActionAndExAssertions<T1, T2>.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -700,7 +700,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndExAssertions<T1, T2>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -714,7 +714,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion));
+                new TestBuilderWithActionAndExAssertions<T1, T2>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -729,7 +729,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2>.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions<T1, T2>.AssertionImpl(assertion, description));
         }
 #endif
     }
@@ -781,7 +781,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndAssertions<T1, T2, T3>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -799,7 +799,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion));
+                new TestBuilderWithActionAndAssertions<T1, T2, T3>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -818,7 +818,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndAssertions<T1, T2, T3>.Assertion(assertion, description));
+                new TestBuilderWithActionAndAssertions<T1, T2, T3>.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -832,7 +832,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -846,7 +846,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(description));
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -869,7 +869,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -883,7 +883,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion));
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -898,7 +898,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.Assertion(assertion, description));
+                new TestBuilderWithActionAndRVAssertions<T1, T2, T3>.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -912,7 +912,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>
@@ -926,7 +926,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(description));
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -949,7 +949,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -963,7 +963,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion));
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -978,7 +978,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions<T1, T2, T3>.AssertionImpl(assertion, description));
         }
 #endif
     }

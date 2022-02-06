@@ -62,7 +62,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -80,7 +80,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion));
+                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description));
+                new TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -113,7 +113,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(Messages.ImplicitAssertionTestActionShouldReturn));
+                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldReturn));
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(description));
+                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -150,7 +150,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -164,7 +164,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(assertion));
+                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description));
+                new TestBuilderWithActionAndRVAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion, description));
         }
 #endif
 
@@ -193,7 +193,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(Messages.ImplicitAssertionTestActionShouldThrow));
+                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldThrow));
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(description));
+                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.AssertionImpl(description));
         }
 
 #if NET6_0
@@ -230,7 +230,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -244,7 +244,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(assertion));
+                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion));
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testAction,
-                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.Assertion(assertion, description));
+                new TestBuilderWithActionAndExAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion, description));
         }
 #endif
     }

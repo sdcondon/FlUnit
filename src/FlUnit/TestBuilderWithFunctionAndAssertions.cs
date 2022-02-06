@@ -19,12 +19,12 @@ namespace FlUnit
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<TResult> testFunction;
-        private readonly List<Assertion> assertions = new List<Assertion>();
+        private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal TestBuilderWithFunctionAndAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<TResult> testFunction,
-            Assertion assertion)
+            AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
             this.testFunction = testFunction;
@@ -40,7 +40,7 @@ namespace FlUnit
             return new TestFunction<TResult>(
                 builder.configurationOverrides,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<TResult>.Case.Assertion(tc, a.Assert, a.Description)));
+                tc => builder.assertions.Select(a => new TestFunction<TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -59,7 +59,7 @@ namespace FlUnit
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
-            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            assertions.Add(new AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
 #else
@@ -71,7 +71,7 @@ namespace FlUnit
         public TestBuilderWithFunctionAndAssertions<TResult> And(
             Expression<Action<TestFunctionOutcome<TResult>>> assertion)
         {
-            assertions.Add(new Assertion(assertion));
+            assertions.Add(new AssertionImpl(assertion));
             return this;
         }
 
@@ -85,28 +85,30 @@ namespace FlUnit
             Action<TestFunctionOutcome<TResult>> assertion,
             string description)
         {
-            assertions.Add(new Assertion(assertion, description));
+            assertions.Add(new AssertionImpl(assertion, description));
             return this;
         }
 #endif
 
-        internal class Assertion
+        internal class AssertionImpl
         {
-            internal Assertion(Action<TestFunctionOutcome<TResult>> action, string description)
+            private readonly Action<TestFunctionOutcome<TResult>> assert;
+
+            internal AssertionImpl(Action<TestFunctionOutcome<TResult>> assert, string description)
             {
-                Assert = action;
+                this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal Assertion(Expression<Action<TestFunctionOutcome<TResult>>> expression)
+            internal AssertionImpl(Expression<Action<TestFunctionOutcome<TResult>>> expression)
             {
-                Assert = expression.Compile();
+                assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<TestFunctionOutcome<TResult>> Assert { get; }
+            internal void Invoke(TestFunctionOutcome<TResult> outcome) => assert(outcome);
 
             public string Description { get; }
         }
@@ -123,13 +125,13 @@ namespace FlUnit
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
         private readonly Func<T1, TResult> testFunction;
-        private readonly List<Assertion> assertions = new List<Assertion>();
+        private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal TestBuilderWithFunctionAndAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
             Func<T1, TResult> testFunction,
-            Assertion assertion)
+            AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -147,7 +149,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<T1, TResult>.Case.Assertion(tc, a.Assert, a.Description)));
+                tc => builder.assertions.Select(a => new TestFunction<T1, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -166,7 +168,7 @@ namespace FlUnit
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
-            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            assertions.Add(new AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
 #else
@@ -178,7 +180,7 @@ namespace FlUnit
         public TestBuilderWithFunctionAndAssertions<T1, TResult> And(
             Expression<Action<T1, TestFunctionOutcome<TResult>>> assertion)
         {
-            assertions.Add(new Assertion(assertion));
+            assertions.Add(new AssertionImpl(assertion));
             return this;
         }
 
@@ -192,28 +194,30 @@ namespace FlUnit
             Action<T1, TestFunctionOutcome<TResult>> assertion,
             string description)
         {
-            assertions.Add(new Assertion(assertion, description));
+            assertions.Add(new AssertionImpl(assertion, description));
             return this;
         }
 #endif
 
-        internal class Assertion
+        internal class AssertionImpl
         {
-            internal Assertion(Action<T1, TestFunctionOutcome<TResult>> action, string description)
+            private readonly Action<T1, TestFunctionOutcome<TResult>> assert;
+
+            internal AssertionImpl(Action<T1, TestFunctionOutcome<TResult>> assert, string description)
             {
-                Assert = action;
+                this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal Assertion(Expression<Action<T1, TestFunctionOutcome<TResult>>> expression)
+            internal AssertionImpl(Expression<Action<T1, TestFunctionOutcome<TResult>>> expression)
             {
-                Assert = expression.Compile();
+                assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<T1, TestFunctionOutcome<TResult>> Assert { get; }
+            internal void Invoke(T1 a1, TestFunctionOutcome<TResult> outcome) => assert(a1, outcome);
 
             public string Description { get; }
         }
@@ -231,13 +235,13 @@ namespace FlUnit
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Func<T1, T2, TResult> testFunction;
-        private readonly List<Assertion> assertions = new List<Assertion>();
+        private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal TestBuilderWithFunctionAndAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Func<T1, T2, TResult> testFunction,
-            Assertion assertion)
+            AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -255,7 +259,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<T1, T2, TResult>.Case.Assertion(tc, a.Assert, a.Description)));
+                tc => builder.assertions.Select(a => new TestFunction<T1, T2, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -274,7 +278,7 @@ namespace FlUnit
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
-            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            assertions.Add(new AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
 #else
@@ -286,7 +290,7 @@ namespace FlUnit
         public TestBuilderWithFunctionAndAssertions<T1, T2, TResult> And(
             Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> assertion)
         {
-            assertions.Add(new Assertion(assertion));
+            assertions.Add(new AssertionImpl(assertion));
             return this;
         }
 
@@ -300,28 +304,30 @@ namespace FlUnit
             Action<T1, T2, TestFunctionOutcome<TResult>> assertion,
             string description)
         {
-            assertions.Add(new Assertion(assertion, description));
+            assertions.Add(new AssertionImpl(assertion, description));
             return this;
         }
 #endif
 
-        internal class Assertion
+        internal class AssertionImpl
         {
-            internal Assertion(Action<T1, T2, TestFunctionOutcome<TResult>> action, string description)
+            private readonly Action<T1, T2, TestFunctionOutcome<TResult>> assert;
+
+            internal AssertionImpl(Action<T1, T2, TestFunctionOutcome<TResult>> assert, string description)
             {
-                Assert = action;
+                this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal Assertion(Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> expression)
+            internal AssertionImpl(Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> expression)
             {
-                Assert = expression.Compile();
+                assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<T1, T2, TestFunctionOutcome<TResult>> Assert { get; }
+            internal void Invoke(T1 a1, T2 a2, TestFunctionOutcome<TResult> outcome) => assert(a1, a2, outcome);
 
             public string Description { get; }
         }
@@ -340,13 +346,13 @@ namespace FlUnit
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Func<T1, T2, T3, TResult> testFunction;
-        private readonly List<Assertion> assertions = new List<Assertion>();
+        private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal TestBuilderWithFunctionAndAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Func<T1, T2, T3, TResult> testFunction,
-            Assertion assertion)
+            AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -364,7 +370,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<T1, T2, T3, TResult>.Case.Assertion(tc, a.Assert, a.Description)));
+                tc => builder.assertions.Select(a => new TestFunction<T1, T2, T3, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -383,7 +389,7 @@ namespace FlUnit
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
-            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            assertions.Add(new AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
 #else
@@ -395,7 +401,7 @@ namespace FlUnit
         public TestBuilderWithFunctionAndAssertions<T1, T2, T3, TResult> And(
             Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> assertion)
         {
-            assertions.Add(new Assertion(assertion));
+            assertions.Add(new AssertionImpl(assertion));
             return this;
         }
 
@@ -409,28 +415,30 @@ namespace FlUnit
             Action<T1, T2, T3, TestFunctionOutcome<TResult>> assertion,
             string description)
         {
-            assertions.Add(new Assertion(assertion, description));
+            assertions.Add(new AssertionImpl(assertion, description));
             return this;
         }
 #endif
 
-        internal class Assertion
+        internal class AssertionImpl
         {
-            internal Assertion(Action<T1, T2, T3, TestFunctionOutcome<TResult>> action, string description)
+            private readonly Action<T1, T2, T3, TestFunctionOutcome<TResult>> assert;
+
+            internal AssertionImpl(Action<T1, T2, T3, TestFunctionOutcome<TResult>> assert, string description)
             {
-                Assert = action;
+                this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal Assertion(Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> expression)
+            internal AssertionImpl(Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> expression)
             {
-                Assert = expression.Compile();
+                assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<T1, T2, T3, TestFunctionOutcome<TResult>> Assert { get; }
+            internal void Invoke(T1 a1, T2 a2, T3 a3, TestFunctionOutcome<TResult> outcome) => assert(a1, a2, a3, outcome);
 
             public string Description { get; }
         }

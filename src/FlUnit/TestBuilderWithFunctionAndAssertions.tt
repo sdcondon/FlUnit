@@ -30,13 +30,13 @@ namespace FlUnit
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>TResult> testFunction;
-        private readonly List<Assertion> assertions = new List<Assertion>();
+        private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal TestBuilderWithFunctionAndAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>TResult> testFunction,
-            Assertion assertion)
+            AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
@@ -54,7 +54,7 @@ namespace FlUnit
                 builder.configurationOverrides,
 <# WriteLineIf(i > 0, "builder.arrange,", 4); #>
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<<#= TList(i, "", ", ") #>TResult>.Case.Assertion(tc, a.Assert, a.Description)));
+                tc => builder.assertions.Select(a => new TestFunction<<#= TList(i, "", ", ") #>TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -73,7 +73,7 @@ namespace FlUnit
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
-            assertions.Add(new Assertion(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            assertions.Add(new AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
 #else
@@ -85,7 +85,7 @@ namespace FlUnit
         public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> And(
             Expression<Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>>> assertion)
         {
-            assertions.Add(new Assertion(assertion));
+            assertions.Add(new AssertionImpl(assertion));
             return this;
         }
 
@@ -99,28 +99,30 @@ namespace FlUnit
             Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assertion,
             string description)
         {
-            assertions.Add(new Assertion(assertion, description));
+            assertions.Add(new AssertionImpl(assertion, description));
             return this;
         }
 #endif
 
-        internal class Assertion
+        internal class AssertionImpl
         {
-            internal Assertion(Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> action, string description)
+            private readonly Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert;
+
+            internal AssertionImpl(Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert, string description)
             {
-                Assert = action;
+                this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal Assertion(Expression<Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>>> expression)
+            internal AssertionImpl(Expression<Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>>> expression)
             {
-                Assert = expression.Compile();
+                assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            public Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> Assert { get; }
+            internal void Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestFunctionOutcome<TResult> outcome) => assert(<#= List(i, i => $"a{i}", "", ", ") #>outcome);
 
             public string Description { get; }
         }
