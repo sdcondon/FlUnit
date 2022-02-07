@@ -17,7 +17,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with <#= i #> "Given" clause<#= Plural(i) #> and a "When" clause that does not return a value.
     /// </summary>
-    public sealed class TestAction<#= TList(i, "<", ">") #> : Test
+    public sealed class ActionTest<#= TList(i, "<", ">") #> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
@@ -26,13 +26,13 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestAction<#= TList(i, "{", "}") #>"/> class.
+        /// Initializes a new instance of the <see cref="ActionTest<#= TList(i, "{", "}") #>"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
 <# WriteLineIf(i > 0, "/// <param name=\"arrange\">The callback to run the \"Given\" clauses of the test, returning the test cases.</param>", 2); #>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
-        internal TestAction(
+        internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Action<#= TList(i, "<", ">") #> act,
@@ -131,25 +131,25 @@ namespace FlUnit
             internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<<#= TList(i, "", ", ") #>TestActionOutcome> action;
+                private readonly Action<<#= TList(i, "", ", ") #>TestActionOutcome> assert;
 
                 public Assertion(
                     Case testCase,
-                    Action<<#= TList(i, "", ", ") #>TestActionOutcome> action,
+                    Action<<#= TList(i, "", ", ") #>TestActionOutcome> assert,
                     string description)
                 {
                     this.testCase = testCase;
-                    this.action = action;
+                    this.assert = assert;
                     this.Description = description;
                 }
 
                 public string Description { get; }
 
-                public void Invoke()
+                public void Assert()
                 {
                     try
                     {
-                        action(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
+                        assert(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
                     }
                     catch (Exception e)
                     {

@@ -3,18 +3,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace FlUnit._Tests
 {
     [TestClass]
-    public class TestFunction
+    public class ActionTest
     {
         [TestMethod]
         public void MinimalTest()
         {
             // Arrange
             Test test = TestThat
-                .When(() => 1)
+                .When(() => { })
                 .ThenReturns();
 
             // Act & Assert
@@ -25,7 +26,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("Test function should return successfully");
+            assertion.Description.ShouldBe("Test action should return successfully");
             ((Action)assertion.Assert).ShouldNotThrow();
         }
 
@@ -34,9 +35,9 @@ namespace FlUnit._Tests
         {
             // Arrange
             Test test = TestThat
-                .Given(() => new { x = 1, y = 1 })
-                .When(given => given.x + given.y)
-                .ThenReturns((_, sum) => sum.ShouldBe(2));
+                .Given(() => new StringBuilder())
+                .When(sb => { sb.Append('A'); })
+                .ThenReturns(sb => sb.Length.ShouldBe(1));
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -46,7 +47,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("sum.ShouldBe(2)");
+            assertion.Description.ShouldBe("sb.Length.ShouldBe(1)");
             ((Action)assertion.Assert).ShouldNotThrow();
         }
 
@@ -55,11 +56,11 @@ namespace FlUnit._Tests
         {
             // Arrange: multiple prerequisites and assertions; also explicit assertion labels
             Test test = TestThat
-                .Given(() => 1)
-                .And(() => 1)
-                .When((x, y) => x + y)
-                .ThenReturns((x, _, sum) => sum.ShouldBeGreaterThan(x), "Sum should be greater than x")
-                .And((_, y, sum) => sum.ShouldBeGreaterThan(y), "Sum should be greater than y");
+                .Given(() => new StringBuilder())
+                .And(() => "A")
+                .When((sb, str) => { sb.Append(str); })
+                .ThenReturns((sb, str) => sb.Length.ShouldBe(str.Length), "Length should be correct")
+                .And((sb, str) => sb.Capacity.ShouldBeGreaterThanOrEqualTo(sb.Length), "Capacity should be consistent");
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -69,11 +70,11 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(2);
 
             var assertion1 = test.Cases.Single().Assertions.First();
-            assertion1.Description.ShouldBe("Sum should be greater than x");
+            assertion1.Description.ShouldBe("Length should be correct");
             ((Action)assertion1.Assert).ShouldNotThrow();
 
             var assertion2 = test.Cases.Single().Assertions.Skip(1).First();
-            assertion2.Description.ShouldBe("Sum should be greater than y");
+            assertion2.Description.ShouldBe("Capacity should be consistent");
             ((Action)assertion2.Assert).ShouldNotThrow();
         }
 
@@ -83,21 +84,22 @@ namespace FlUnit._Tests
             // Arrange
             // This is a horrible test - and I suspect that all tests where 
             // some cases are expected to throw and others aren't would look terible to me.
-            // Hence feeling very conflicted about adding Then(..) back in.
+            // In truth, I'm feeling very conflicted about adding Then(..) back in.
             // With a TestCase class containing some logic it might be better though, and libraries
             // should empower people, not constrain them..
             Test test = TestThat
-                .GivenEachOf(() => new[] { 2, 1, 0 })
-                .When(x => 2 / x)
-                .Then((x, outcome) =>
+                .Given(() => new StringBuilder(capacity: 0, maxCapacity: 1))
+                .AndEachOf(() => new[] { "", "A", "AB" })
+                .When((sb, str) => { sb.Append(str); })
+                .Then((sb, str, outcome) =>
                 {
-                    if (x > 0)
+                    if (str.Length <= 1)
                     {
-                        outcome.Result.ShouldBeGreaterThan(0);
+                        outcome.Exception.ShouldBeNull();
                     }
                     else
                     {
-                        outcome.Exception.ShouldBeOfType<DivideByZeroException>();
+                        outcome.Exception.ShouldBeOfType(typeof(ArgumentOutOfRangeException));
                     }
                 }, "Outcome should be as expected");
 
@@ -106,21 +108,18 @@ namespace FlUnit._Tests
             test.Cases.Count.ShouldBe(3);
 
             var case1 = test.Cases.First();
-            case1.Description.ShouldBe("2");
             ((Action)case1.Act).ShouldNotThrow();
             case1.Assertions.Count.ShouldBe(1);
             case1.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
             ((Action)case1.Assertions.Single().Assert).ShouldNotThrow();
 
             var case2 = test.Cases.Skip(1).First();
-            case2.Description.ShouldBe("1");
             ((Action)case2.Act).ShouldNotThrow();
             case2.Assertions.Count.ShouldBe(1);
             case2.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
             ((Action)case2.Assertions.Single().Assert).ShouldNotThrow();
 
             var case3 = test.Cases.Skip(2).First();
-            case3.Description.ShouldBe("0");
             ((Action)case3.Act).ShouldNotThrow();
             case3.Assertions.Count.ShouldBe(1);
             case3.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
@@ -132,9 +131,9 @@ namespace FlUnit._Tests
         {
             // Arrange
             Test test = TestThat
-                .Given(() => new { x = 1, y = 0 })
-                .When(given => given.x / given.y)
-                .ThenThrows((_, exception) => exception.ShouldBeOfType<DivideByZeroException>());
+                .Given(() => new StringBuilder(capacity: 0, maxCapacity: 1))
+                .When(sb => { sb.Append("AB"); })
+                .ThenThrows((_, exception) => exception.ShouldBeOfType<ArgumentOutOfRangeException>());
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -145,7 +144,7 @@ namespace FlUnit._Tests
 
             var assertion = test.Cases.Single().Assertions.Single();
 #if NET6_0
-            assertion.Description.ShouldBe("exception.ShouldBeOfType<DivideByZeroException>()");
+            assertion.Description.ShouldBe("exception.ShouldBeOfType<ArgumentOutOfRangeException>()");
 #else // Example of LINQ not being a great solution - round trip..
             assertion.Description.ShouldBe("exception.ShouldBeOfType()");
 #endif
@@ -157,8 +156,8 @@ namespace FlUnit._Tests
         {
             // Arrange
             Test test = TestThat
-                .Given(() => new { x = 1, y = 0 })
-                .When(given => given.x / given.y)
+                .Given(() => new StringBuilder(capacity: 0, maxCapacity: 1))
+                .When(sb => { sb.Append("AB"); })
                 .ThenThrows();
 
             // Act & Assert
@@ -169,7 +168,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("Test function should throw an exception");
+            assertion.Description.ShouldBe("Test action should throw an exception");
             ((Action)assertion.Assert).ShouldNotThrow();
         }
 
@@ -178,9 +177,9 @@ namespace FlUnit._Tests
         {
             // Arrange
             Test test = TestThat
-                .Given(() => new { x = 1, y = 1 })
-                .When(given => given.x + given.y)
-                .ThenReturns((_, sum) => sum.ShouldBe(3));
+                .Given(() => new StringBuilder())
+                .When(sb => { sb.Append('A'); })
+                .ThenReturns(sb => sb.Length.ShouldBe(2));
 
             // Act & Assert
             ((Action)test.Arrange).ShouldNotThrow();
@@ -190,7 +189,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("sum.ShouldBe(3)");
+            assertion.Description.ShouldBe("sb.Length.ShouldBe(2)");
             ((Action)assertion.Assert).ShouldThrow(typeof(TestFailureException));
         }
 
@@ -198,8 +197,8 @@ namespace FlUnit._Tests
         public void MultipleInvocations()
         {
             Test test = TestThat
-                .When(() => 1)
-                .ThenReturns(retVal => { }, "Empty assertion");
+                .When(() => { })
+                .ThenReturns(() => { }, "Empty assertion");
 
             ((Action)test.Arrange).ShouldNotThrow();
             test.Cases.Count.ShouldBe(1);

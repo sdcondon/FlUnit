@@ -92,7 +92,7 @@ namespace Example.TestProject
             .ThenReturns((_, retVal) =>
             {
                 retVal.Should().BeTrue();
-            }, "Return value should be true");
+            });
 
         // Multiple test cases
         public static Test SumOfOddAndSixIsOdd => TestThat

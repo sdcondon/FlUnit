@@ -37,10 +37,10 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithFunctionAndExAssertions<TResult> builder)
         {
-            return new TestFunction<TResult>(
+            return new FunctionTest<TResult>(
                 builder.configurationOverrides,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -151,11 +151,11 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithFunctionAndExAssertions<T1, TResult> builder)
         {
-            return new TestFunction<T1, TResult>(
+            return new FunctionTest<T1, TResult>(
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<T1, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<T1, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -267,11 +267,11 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithFunctionAndExAssertions<T1, T2, TResult> builder)
         {
-            return new TestFunction<T1, T2, TResult>(
+            return new FunctionTest<T1, T2, TResult>(
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<T1, T2, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<T1, T2, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -384,11 +384,11 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithFunctionAndExAssertions<T1, T2, T3, TResult> builder)
         {
-            return new TestFunction<T1, T2, T3, TResult>(
+            return new FunctionTest<T1, T2, T3, TResult>(
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<T1, T2, T3, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<T1, T2, T3, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0

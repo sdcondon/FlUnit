@@ -21,10 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="TestAction.cs">
+    <None Include="ActionTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestAction.tt</DependentUpon>
+      <DependentUpon>ActionTest.tt</DependentUpon>
     </None>
     <None Include="TestBuilderWithActionAndAssertions.cs">
       <DependentUpon>TestBuilderWithActionAndAssertions.tt</DependentUpon>
@@ -64,9 +64,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestAction.tt">
+    <None Update="ActionTest.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestAction.cs</LastGenOutput>
+      <LastGenOutput>ActionTest.cs</LastGenOutput>
     </None>
     <None Update="TestBuilderWithAction.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -104,17 +104,17 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestBuilderWithPrerequisites.cs</LastGenOutput>
     </None>
-    <None Update="TestFunction.tt">
+    <None Update="FunctionTest.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestFunction.cs</LastGenOutput>
+      <LastGenOutput>FunctionTest.cs</LastGenOutput>
     </None>
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="TestAction.cs">
+    <Compile Update="ActionTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestAction.tt</DependentUpon>
+      <DependentUpon>ActionTest.tt</DependentUpon>
     </Compile>
     <Compile Update="TestBuilderWithAction.cs">
       <DesignTime>True</DesignTime>
@@ -141,11 +141,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithFunction.tt</DependentUpon>
     </Compile>
-	  <Compile Update="TestBuilderWithFunctionAndAssertions.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
-	  </Compile>
+	<Compile Update="TestBuilderWithFunctionAndAssertions.cs">
+	  <DesignTime>True</DesignTime>
+	  <AutoGen>True</AutoGen>
+	  <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+	</Compile>
     <Compile Update="TestBuilderWithFunctionAndExAssertions.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -161,10 +161,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithPrerequisites.tt</DependentUpon>
     </Compile>
-    <Compile Update="TestFunction.cs">
+    <Compile Update="FunctionTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestFunction.tt</DependentUpon>
+      <DependentUpon>FunctionTest.tt</DependentUpon>
     </Compile>
     <Compile Update="Messages.Designer.cs">
       <DesignTime>True</DesignTime>

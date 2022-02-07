@@ -50,11 +50,11 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> builder)
         {
-            return new TestFunction<<#= TList(i, "", ", ") #>TResult>(
+            return new FunctionTest<<#= TList(i, "", ", ") #>TResult>(
                 builder.configurationOverrides,
 <# WriteLineIf(i > 0, "builder.arrange,", 4); #>
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new TestFunction<<#= TList(i, "", ", ") #>TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<<#= TList(i, "", ", ") #>TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0

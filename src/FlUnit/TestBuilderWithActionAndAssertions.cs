@@ -36,10 +36,10 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithActionAndAssertions builder)
         {
-            return new TestAction(
+            return new ActionTest(
                 builder.configurationOverrides,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new ActionTest.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -140,11 +140,11 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithActionAndAssertions<T1> builder)
         {
-            return new TestAction<T1>(
+            return new ActionTest<T1>(
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new ActionTest<T1>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -246,11 +246,11 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithActionAndAssertions<T1, T2> builder)
         {
-            return new TestAction<T1, T2>(
+            return new ActionTest<T1, T2>(
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1, T2>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new ActionTest<T1, T2>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -353,11 +353,11 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithActionAndAssertions<T1, T2, T3> builder)
         {
-            return new TestAction<T1, T2, T3>(
+            return new ActionTest<T1, T2, T3>(
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<T1, T2, T3>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new ActionTest<T1, T2, T3>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0

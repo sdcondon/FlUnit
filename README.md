@@ -55,7 +55,9 @@ public static class MyTests
   // You may find that a single 'given' clause returning an anonymous
   // object makes for more readable tests (separate given clauses is more useful when
   // when you have multiple test cases - see below). Also note how C# 9's lambda discard
-  // parameters can make assertion clauses clearer:
+  // parameters can make assertion clauses clearer. Finally, note that there is a parameterless
+  // version of ThenReturns, that adds the assertion that just verifies that the
+  // when clause returned successfully. An equivalent ThenThrows overload also exists:
   public static Test WidgetCanProcessAThingy => TestThat
     .Given(() => new
     {
@@ -63,7 +65,8 @@ public static class MyTests
       thingy = new Thingy("thingy1")
     })
     .When(given => given.widget.TryProcess(given.thingy))
-    .ThenReturns((_, retVal) => retVal.Should().BeTrue())
+    .ThenReturns()
+    .And((_, retVal) => retVal.Should().BeTrue())
     .And((given, _) => given.thingy.IsProcessed.Should().BeTrue())
     .And((given, _) => given.widget.HasProcessed.Should().BeTrue());
 
@@ -80,10 +83,8 @@ public static class MyTests
 
   // Parameterised tests are supported without awkward attribute-based
   // argument retrieval. This is my favourite aspect of FlUnit - and I suspect
-  // that anyone whose mind easily goes to test cases and data-driven testing
-  // will enjoy this. Also in this example, note that there is a parameterless
-  // version of ThenReturns, that adds the assertion that just verifies that the
-  // when clause returned successfully. An equivalent ThenThrows overload also exists.
+  // that anyone who tend toward test cases and parameterised tests
+  // will enjoy this.
   public static Test SumOfEvenAndOdd => TestThat
     .GivenEachOf(() => new[] { 1, 3, 5 })
     .AndEachOf(() => new[] { 2, 4, 6 })

@@ -8,7 +8,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 0 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
-    public sealed class TestFunction<TResult> : Test
+    public sealed class FunctionTest<TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<TResult> act;
@@ -16,12 +16,12 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Test"/> class.
+        /// Initializes a new instance of the <see cref="FunctionTest"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
-        internal TestFunction(
+        internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<TResult> act,
             Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
@@ -100,12 +100,12 @@ namespace FlUnit
             internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<TestFunctionOutcome<TResult>> action;
+                private readonly Action<TestFunctionOutcome<TResult>> assert;
 
-                public Assertion(Case testCase, Action<TestFunctionOutcome<TResult>> action, string description)
+                public Assertion(Case testCase, Action<TestFunctionOutcome<TResult>> assert, string description)
                 {
                     this.testCase = testCase;
-                    this.action = action;
+                    this.assert = assert;
                     this.Description = description;
                 }
 
@@ -115,7 +115,7 @@ namespace FlUnit
                 {
                     try
                     {
-                        action(testCase.invocationOutcome);
+                        assert(testCase.invocationOutcome);
                     }
                     catch (Exception e)
                     {
@@ -129,7 +129,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 1 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
-    public sealed class TestFunction<T1, TResult> : Test
+    public sealed class FunctionTest<T1, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
@@ -138,13 +138,13 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Test"/> class.
+        /// Initializes a new instance of the <see cref="FunctionTest"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
-        internal TestFunction(
+        internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
             Func<T1, TResult> act,
@@ -228,12 +228,12 @@ namespace FlUnit
             internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<T1, TestFunctionOutcome<TResult>> action;
+                private readonly Action<T1, TestFunctionOutcome<TResult>> assert;
 
-                public Assertion(Case testCase, Action<T1, TestFunctionOutcome<TResult>> action, string description)
+                public Assertion(Case testCase, Action<T1, TestFunctionOutcome<TResult>> assert, string description)
                 {
                     this.testCase = testCase;
-                    this.action = action;
+                    this.assert = assert;
                     this.Description = description;
                 }
 
@@ -243,7 +243,7 @@ namespace FlUnit
                 {
                     try
                     {
-                        action(testCase.prereqs, testCase.invocationOutcome);
+                        assert(testCase.prereqs, testCase.invocationOutcome);
                     }
                     catch (Exception e)
                     {
@@ -257,7 +257,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 2 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
-    public sealed class TestFunction<T1, T2, TResult> : Test
+    public sealed class FunctionTest<T1, T2, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
@@ -266,13 +266,13 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Test"/> class.
+        /// Initializes a new instance of the <see cref="FunctionTest"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
-        internal TestFunction(
+        internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Func<T1, T2, TResult> act,
@@ -359,12 +359,12 @@ namespace FlUnit
             internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<T1, T2, TestFunctionOutcome<TResult>> action;
+                private readonly Action<T1, T2, TestFunctionOutcome<TResult>> assert;
 
-                public Assertion(Case testCase, Action<T1, T2, TestFunctionOutcome<TResult>> action, string description)
+                public Assertion(Case testCase, Action<T1, T2, TestFunctionOutcome<TResult>> assert, string description)
                 {
                     this.testCase = testCase;
-                    this.action = action;
+                    this.assert = assert;
                     this.Description = description;
                 }
 
@@ -374,7 +374,7 @@ namespace FlUnit
                 {
                     try
                     {
-                        action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
+                        assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
                     }
                     catch (Exception e)
                     {
@@ -388,7 +388,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 3 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
-    public sealed class TestFunction<T1, T2, T3, TResult> : Test
+    public sealed class FunctionTest<T1, T2, T3, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
@@ -397,13 +397,13 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Test"/> class.
+        /// Initializes a new instance of the <see cref="FunctionTest"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
-        internal TestFunction(
+        internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Func<T1, T2, T3, TResult> act,
@@ -491,12 +491,12 @@ namespace FlUnit
             internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<T1, T2, T3, TestFunctionOutcome<TResult>> action;
+                private readonly Action<T1, T2, T3, TestFunctionOutcome<TResult>> assert;
 
-                public Assertion(Case testCase, Action<T1, T2, T3, TestFunctionOutcome<TResult>> action, string description)
+                public Assertion(Case testCase, Action<T1, T2, T3, TestFunctionOutcome<TResult>> assert, string description)
                 {
                     this.testCase = testCase;
-                    this.action = action;
+                    this.assert = assert;
                     this.Description = description;
                 }
 
@@ -506,7 +506,7 @@ namespace FlUnit
                 {
                     try
                     {
-                        action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
+                        assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
                     }
                     catch (Exception e)
                     {

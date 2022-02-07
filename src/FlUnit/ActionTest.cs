@@ -8,7 +8,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 0 "Given" clauses and a "When" clause that does not return a value.
     /// </summary>
-    public sealed class TestAction : Test
+    public sealed class ActionTest : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Action act;
@@ -16,12 +16,12 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestAction"/> class.
+        /// Initializes a new instance of the <see cref="ActionTest"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
-        internal TestAction(
+        internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Action act,
             Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
@@ -101,15 +101,15 @@ namespace FlUnit
             internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<TestActionOutcome> action;
+                private readonly Action<TestActionOutcome> assert;
 
                 public Assertion(
                     Case testCase,
-                    Action<TestActionOutcome> action,
+                    Action<TestActionOutcome> assert,
                     string description)
                 {
                     this.testCase = testCase;
-                    this.action = action;
+                    this.assert = assert;
                     this.Description = description;
                 }
 
@@ -119,7 +119,7 @@ namespace FlUnit
                 {
                     try
                     {
-                        action(testCase.invocationOutcome);
+                        assert(testCase.invocationOutcome);
                     }
                     catch (Exception e)
                     {
@@ -133,7 +133,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 1 "Given" clause and a "When" clause that does not return a value.
     /// </summary>
-    public sealed class TestAction<T1> : Test
+    public sealed class ActionTest<T1> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
@@ -142,13 +142,13 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestAction{T1}"/> class.
+        /// Initializes a new instance of the <see cref="ActionTest{T1}"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
-        internal TestAction(
+        internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
             Action<T1> act,
@@ -233,15 +233,15 @@ namespace FlUnit
             internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<T1, TestActionOutcome> action;
+                private readonly Action<T1, TestActionOutcome> assert;
 
                 public Assertion(
                     Case testCase,
-                    Action<T1, TestActionOutcome> action,
+                    Action<T1, TestActionOutcome> assert,
                     string description)
                 {
                     this.testCase = testCase;
-                    this.action = action;
+                    this.assert = assert;
                     this.Description = description;
                 }
 
@@ -251,7 +251,7 @@ namespace FlUnit
                 {
                     try
                     {
-                        action(testCase.prereqs, testCase.invocationOutcome);
+                        assert(testCase.prereqs, testCase.invocationOutcome);
                     }
                     catch (Exception e)
                     {
@@ -265,7 +265,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 2 "Given" clauses and a "When" clause that does not return a value.
     /// </summary>
-    public sealed class TestAction<T1, T2> : Test
+    public sealed class ActionTest<T1, T2> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
@@ -274,13 +274,13 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestAction{T1, T2}"/> class.
+        /// Initializes a new instance of the <see cref="ActionTest{T1, T2}"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
-        internal TestAction(
+        internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Action<T1, T2> act,
@@ -368,15 +368,15 @@ namespace FlUnit
             internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<T1, T2, TestActionOutcome> action;
+                private readonly Action<T1, T2, TestActionOutcome> assert;
 
                 public Assertion(
                     Case testCase,
-                    Action<T1, T2, TestActionOutcome> action,
+                    Action<T1, T2, TestActionOutcome> assert,
                     string description)
                 {
                     this.testCase = testCase;
-                    this.action = action;
+                    this.assert = assert;
                     this.Description = description;
                 }
 
@@ -386,7 +386,7 @@ namespace FlUnit
                 {
                     try
                     {
-                        action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
+                        assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
                     }
                     catch (Exception e)
                     {
@@ -400,7 +400,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 3 "Given" clauses and a "When" clause that does not return a value.
     /// </summary>
-    public sealed class TestAction<T1, T2, T3> : Test
+    public sealed class ActionTest<T1, T2, T3> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
@@ -409,13 +409,13 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestAction{T1, T2, T3}"/> class.
+        /// Initializes a new instance of the <see cref="ActionTest{T1, T2, T3}"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
-        internal TestAction(
+        internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Action<T1, T2, T3> act,
@@ -504,15 +504,15 @@ namespace FlUnit
             internal class Assertion : ITestAssertion
             {
                 private readonly Case testCase;
-                private readonly Action<T1, T2, T3, TestActionOutcome> action;
+                private readonly Action<T1, T2, T3, TestActionOutcome> assert;
 
                 public Assertion(
                     Case testCase,
-                    Action<T1, T2, T3, TestActionOutcome> action,
+                    Action<T1, T2, T3, TestActionOutcome> assert,
                     string description)
                 {
                     this.testCase = testCase;
-                    this.action = action;
+                    this.assert = assert;
                     this.Description = description;
                 }
 
@@ -522,7 +522,7 @@ namespace FlUnit
                 {
                     try
                     {
-                        action(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
+                        assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
                     }
                     catch (Exception e)
                     {

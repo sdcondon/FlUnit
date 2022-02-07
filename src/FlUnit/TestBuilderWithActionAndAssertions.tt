@@ -49,11 +49,11 @@ namespace FlUnit
         /// <param name="builder">The builder to convert.</param>
         public static implicit operator Test(TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> builder)
         {
-            return new TestAction<#= TList(i, "<", ">") #>(
+            return new ActionTest<#= TList(i, "<", ">") #>(
                 builder.configurationOverrides,
 <# WriteLineIf(i > 0, $"builder.arrange,", 4); #>
                 builder.testAction,
-                tc => builder.assertions.Select(a => new TestAction<#= TList(i, "<", ">") #>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new ActionTest<#= TList(i, "<", ">") #>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
