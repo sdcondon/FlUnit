@@ -133,7 +133,7 @@ namespace FlUnit
                 private readonly Case testCase;
                 private readonly Action<<#= TList(i, "", ", ") #>TestActionOutcome> assert;
 
-                public Assertion(
+                internal Assertion(
                     Case testCase,
                     Action<<#= TList(i, "", ", ") #>TestActionOutcome> assert,
                     string description)
@@ -151,7 +151,7 @@ namespace FlUnit
                     {
                         assert(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!(e is ITestFailureDetails))
                     {
                         throw new TestFailureException(e.Message, e.StackTrace, e);
                     }

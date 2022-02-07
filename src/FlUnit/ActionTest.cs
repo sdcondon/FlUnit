@@ -103,7 +103,7 @@ namespace FlUnit
                 private readonly Case testCase;
                 private readonly Action<TestActionOutcome> assert;
 
-                public Assertion(
+                internal Assertion(
                     Case testCase,
                     Action<TestActionOutcome> assert,
                     string description)
@@ -121,7 +121,7 @@ namespace FlUnit
                     {
                         assert(testCase.invocationOutcome);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!(e is ITestFailureDetails))
                     {
                         throw new TestFailureException(e.Message, e.StackTrace, e);
                     }
@@ -235,7 +235,7 @@ namespace FlUnit
                 private readonly Case testCase;
                 private readonly Action<T1, TestActionOutcome> assert;
 
-                public Assertion(
+                internal Assertion(
                     Case testCase,
                     Action<T1, TestActionOutcome> assert,
                     string description)
@@ -253,7 +253,7 @@ namespace FlUnit
                     {
                         assert(testCase.prereqs, testCase.invocationOutcome);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!(e is ITestFailureDetails))
                     {
                         throw new TestFailureException(e.Message, e.StackTrace, e);
                     }
@@ -370,7 +370,7 @@ namespace FlUnit
                 private readonly Case testCase;
                 private readonly Action<T1, T2, TestActionOutcome> assert;
 
-                public Assertion(
+                internal Assertion(
                     Case testCase,
                     Action<T1, T2, TestActionOutcome> assert,
                     string description)
@@ -388,7 +388,7 @@ namespace FlUnit
                     {
                         assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!(e is ITestFailureDetails))
                     {
                         throw new TestFailureException(e.Message, e.StackTrace, e);
                     }
@@ -506,7 +506,7 @@ namespace FlUnit
                 private readonly Case testCase;
                 private readonly Action<T1, T2, T3, TestActionOutcome> assert;
 
-                public Assertion(
+                internal Assertion(
                     Case testCase,
                     Action<T1, T2, T3, TestActionOutcome> assert,
                     string description)
@@ -524,7 +524,7 @@ namespace FlUnit
                     {
                         assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!(e is ITestFailureDetails))
                     {
                         throw new TestFailureException(e.Message, e.StackTrace, e);
                     }

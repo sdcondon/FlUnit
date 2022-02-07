@@ -117,7 +117,7 @@ namespace FlUnit
                     {
                         assert(testCase.invocationOutcome);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!(e is ITestFailureDetails))
                     {
                         throw new TestFailureException(e.Message, e.StackTrace, e);
                     }
@@ -245,7 +245,7 @@ namespace FlUnit
                     {
                         assert(testCase.prereqs, testCase.invocationOutcome);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!(e is ITestFailureDetails))
                     {
                         throw new TestFailureException(e.Message, e.StackTrace, e);
                     }
@@ -376,7 +376,7 @@ namespace FlUnit
                     {
                         assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!(e is ITestFailureDetails))
                     {
                         throw new TestFailureException(e.Message, e.StackTrace, e);
                     }
@@ -508,7 +508,7 @@ namespace FlUnit
                     {
                         assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!(e is ITestFailureDetails))
                     {
                         throw new TestFailureException(e.Message, e.StackTrace, e);
                     }
