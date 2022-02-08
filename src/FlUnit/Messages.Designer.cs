@@ -106,11 +106,20 @@ namespace FlUnit {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An exception was expected but the When clause didn&apos;t throw one.
+        ///   Looks up a localized string similar to An exception was expected but the &apos;When&apos; clause didn&apos;t throw one.
         /// </summary>
         internal static string TestOutcomeExceptionExpectedButNotThrown {
             get {
                 return ResourceManager.GetString("TestOutcomeExceptionExpectedButNotThrown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;When&apos; clause was expected to return successfully but threw an exception: {0}.
+        /// </summary>
+        internal static string TestOutcomeExceptionNotExpectedButThrownFormat {
+            get {
+                return ResourceManager.GetString("TestOutcomeExceptionNotExpectedButThrownFormat", resourceCulture);
             }
         }
     }

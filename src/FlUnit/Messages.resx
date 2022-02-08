@@ -134,6 +134,10 @@
     <value>Test function should throw an exception</value>
   </data>
   <data name="TestOutcomeExceptionExpectedButNotThrown" xml:space="preserve">
-    <value>An exception was expected but the When clause didn't throw one</value>
+    <value>An exception was expected but the 'When' clause didn't throw one</value>
+  </data>
+  <data name="TestOutcomeExceptionNotExpectedButThrownFormat" xml:space="preserve">
+    <value>The 'When' clause was expected to return successfully but threw an exception: {0}</value>
+    <comment>0: exception message</comment>
   </data>
 </root>

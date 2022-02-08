@@ -42,7 +42,7 @@ namespace FlUnit
         {
             if (Exception != null)
             {
-                throw new TestFailureException(Exception.Message, Exception.StackTrace, Exception);
+                throw new TestFailureException(string.Format(Messages.TestOutcomeExceptionNotExpectedButThrownFormat, Exception.Message), Exception.StackTrace, Exception);
             }
         }
 
