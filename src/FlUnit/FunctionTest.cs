@@ -13,7 +13,7 @@ namespace FlUnit
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<TResult> act;
-        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
+        private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace FlUnit
         internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<TResult> act,
-            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
+            Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
             this.act = act;
@@ -64,10 +64,13 @@ namespace FlUnit
             }
         }
 
-        internal class Case : ITestCase
+        /// <summary>
+        /// Implementation of <see cref="ITestCase"/> used by <see cref="FunctionTest{TResult}"/>s.
+        /// </summary>
+        public class Case : ITestCase
         {
             private readonly Func<TResult> act;
-            private TestFunctionOutcome<TResult> invocationOutcome;
+            internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
                 Func<TResult> act,
@@ -77,10 +80,13 @@ namespace FlUnit
                 this.Assertions = makeAssertions(this).ToArray();
             }
 
+            /// <inheritdoc />
             public string Description => string.Empty;
 
+            /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
+            /// <inheritdoc />
             public void Act()
             {
                 if (invocationOutcome != null)
@@ -97,36 +103,41 @@ namespace FlUnit
                     invocationOutcome = new TestFunctionOutcome<TResult>(e);
                 }
             }
+        }
 
-            internal class Assertion : ITestAssertion
+        /// <summary>
+        /// Implementation of <see cref="ITestAssertion"/> used by <see cref="FunctionTest{TResult}"/>s.
+        /// </summary>
+        public class Assertion : ITestAssertion
+        {
+            private readonly Case testCase;
+            private readonly Action<TestFunctionOutcome<TResult>> assert;
+
+            internal Assertion(Case testCase, Action<TestFunctionOutcome<TResult>> assert, string description)
             {
-                private readonly Case testCase;
-                private readonly Action<TestFunctionOutcome<TResult>> assert;
+                this.testCase = testCase;
+                this.assert = assert;
+                this.Description = description;
+            }
 
-                public Assertion(Case testCase, Action<TestFunctionOutcome<TResult>> assert, string description)
+            /// <inheritdoc />
+            public string Description { get; }
+
+            /// <inheritdoc />
+            public void Assert()
+            {
+                if (testCase.invocationOutcome == null)
                 {
-                    this.testCase = testCase;
-                    this.assert = assert;
-                    this.Description = description;
+                    throw new InvalidOperationException("Test action has not yet been invoked");
                 }
 
-                public string Description { get; }
-
-                public void Assert()
+                try
                 {
-                    if (testCase.invocationOutcome == null)
-                    {
-                        throw new InvalidOperationException("Test action not yet invoked");
-                    }
-
-                    try
-                    {
-                        assert(testCase.invocationOutcome);
-                    }
-                    catch (Exception e) when (!(e is ITestFailureDetails))
-                    {
-                        throw new TestFailureException(e.Message, e.StackTrace, e);
-                    }
+                    assert(testCase.invocationOutcome);
+                }
+                catch (Exception e) when (!(e is ITestFailureDetails))
+                {
+                    throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
             }
         }
@@ -142,7 +153,7 @@ namespace FlUnit
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
         private readonly Func<T1, TResult> act;
-        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
+        private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
@@ -156,7 +167,7 @@ namespace FlUnit
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
             Func<T1, TResult> act,
-            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
+            Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -196,11 +207,14 @@ namespace FlUnit
             }
         }
 
-        internal class Case : ITestCase
+        /// <summary>
+        /// Implementation of <see cref="ITestCase"/> used by <see cref="FunctionTest{T1, TResult}"/>s.
+        /// </summary>
+        public class Case : ITestCase
         {
             private readonly Func<T1, TResult> act;
-            private readonly T1 prereqs;
-            private TestFunctionOutcome<TResult> invocationOutcome;
+            internal readonly T1 prereqs;
+            internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
                 T1 prereqs,
@@ -212,10 +226,13 @@ namespace FlUnit
                 this.Assertions = makeAssertions(this).ToArray();
             }
 
+            /// <inheritdoc />
             public string Description => prereqs.ToString();
 
+            /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
+            /// <inheritdoc />
             public void Act()
             {
                 if (invocationOutcome != null)
@@ -232,36 +249,41 @@ namespace FlUnit
                     invocationOutcome = new TestFunctionOutcome<TResult>(e);
                 }
             }
+        }
 
-            internal class Assertion : ITestAssertion
+        /// <summary>
+        /// Implementation of <see cref="ITestAssertion"/> used by <see cref="FunctionTest{T1, TResult}"/>s.
+        /// </summary>
+        public class Assertion : ITestAssertion
+        {
+            private readonly Case testCase;
+            private readonly Action<T1, TestFunctionOutcome<TResult>> assert;
+
+            internal Assertion(Case testCase, Action<T1, TestFunctionOutcome<TResult>> assert, string description)
             {
-                private readonly Case testCase;
-                private readonly Action<T1, TestFunctionOutcome<TResult>> assert;
+                this.testCase = testCase;
+                this.assert = assert;
+                this.Description = description;
+            }
 
-                public Assertion(Case testCase, Action<T1, TestFunctionOutcome<TResult>> assert, string description)
+            /// <inheritdoc />
+            public string Description { get; }
+
+            /// <inheritdoc />
+            public void Assert()
+            {
+                if (testCase.invocationOutcome == null)
                 {
-                    this.testCase = testCase;
-                    this.assert = assert;
-                    this.Description = description;
+                    throw new InvalidOperationException("Test action has not yet been invoked");
                 }
 
-                public string Description { get; }
-
-                public void Assert()
+                try
                 {
-                    if (testCase.invocationOutcome == null)
-                    {
-                        throw new InvalidOperationException("Test action not yet invoked");
-                    }
-
-                    try
-                    {
-                        assert(testCase.prereqs, testCase.invocationOutcome);
-                    }
-                    catch (Exception e) when (!(e is ITestFailureDetails))
-                    {
-                        throw new TestFailureException(e.Message, e.StackTrace, e);
-                    }
+                    assert(testCase.prereqs, testCase.invocationOutcome);
+                }
+                catch (Exception e) when (!(e is ITestFailureDetails))
+                {
+                    throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
             }
         }
@@ -278,7 +300,7 @@ namespace FlUnit
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Func<T1, T2, TResult> act;
-        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
+        private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
@@ -292,7 +314,7 @@ namespace FlUnit
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Func<T1, T2, TResult> act,
-            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
+            Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -335,11 +357,14 @@ namespace FlUnit
             }
         }
 
-        internal class Case : ITestCase
+        /// <summary>
+        /// Implementation of <see cref="ITestCase"/> used by <see cref="FunctionTest{T1, T2, TResult}"/>s.
+        /// </summary>
+        public class Case : ITestCase
         {
             private readonly Func<T1, T2, TResult> act;
-            private readonly (T1, T2) prereqs;
-            private TestFunctionOutcome<TResult> invocationOutcome;
+            internal readonly (T1, T2) prereqs;
+            internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
                 (T1, T2) prereqs,
@@ -351,10 +376,13 @@ namespace FlUnit
                 this.Assertions = makeAssertions(this).ToArray();
             }
 
+            /// <inheritdoc />
             public string Description => prereqs.ToString();
 
+            /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
+            /// <inheritdoc />
             public void Act()
             {
                 if (invocationOutcome != null)
@@ -371,36 +399,41 @@ namespace FlUnit
                     invocationOutcome = new TestFunctionOutcome<TResult>(e);
                 }
             }
+        }
 
-            internal class Assertion : ITestAssertion
+        /// <summary>
+        /// Implementation of <see cref="ITestAssertion"/> used by <see cref="FunctionTest{T1, T2, TResult}"/>s.
+        /// </summary>
+        public class Assertion : ITestAssertion
+        {
+            private readonly Case testCase;
+            private readonly Action<T1, T2, TestFunctionOutcome<TResult>> assert;
+
+            internal Assertion(Case testCase, Action<T1, T2, TestFunctionOutcome<TResult>> assert, string description)
             {
-                private readonly Case testCase;
-                private readonly Action<T1, T2, TestFunctionOutcome<TResult>> assert;
+                this.testCase = testCase;
+                this.assert = assert;
+                this.Description = description;
+            }
 
-                public Assertion(Case testCase, Action<T1, T2, TestFunctionOutcome<TResult>> assert, string description)
+            /// <inheritdoc />
+            public string Description { get; }
+
+            /// <inheritdoc />
+            public void Assert()
+            {
+                if (testCase.invocationOutcome == null)
                 {
-                    this.testCase = testCase;
-                    this.assert = assert;
-                    this.Description = description;
+                    throw new InvalidOperationException("Test action has not yet been invoked");
                 }
 
-                public string Description { get; }
-
-                public void Assert()
+                try
                 {
-                    if (testCase.invocationOutcome == null)
-                    {
-                        throw new InvalidOperationException("Test action not yet invoked");
-                    }
-
-                    try
-                    {
-                        assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
-                    }
-                    catch (Exception e) when (!(e is ITestFailureDetails))
-                    {
-                        throw new TestFailureException(e.Message, e.StackTrace, e);
-                    }
+                    assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
+                }
+                catch (Exception e) when (!(e is ITestFailureDetails))
+                {
+                    throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
             }
         }
@@ -418,7 +451,7 @@ namespace FlUnit
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Func<T1, T2, T3, TResult> act;
-        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
+        private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
@@ -432,7 +465,7 @@ namespace FlUnit
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Func<T1, T2, T3, TResult> act,
-            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
+            Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -476,11 +509,14 @@ namespace FlUnit
             }
         }
 
-        internal class Case : ITestCase
+        /// <summary>
+        /// Implementation of <see cref="ITestCase"/> used by <see cref="FunctionTest{T1, T2, T3, TResult}"/>s.
+        /// </summary>
+        public class Case : ITestCase
         {
             private readonly Func<T1, T2, T3, TResult> act;
-            private readonly (T1, T2, T3) prereqs;
-            private TestFunctionOutcome<TResult> invocationOutcome;
+            internal readonly (T1, T2, T3) prereqs;
+            internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
                 (T1, T2, T3) prereqs,
@@ -492,10 +528,13 @@ namespace FlUnit
                 this.Assertions = makeAssertions(this).ToArray();
             }
 
+            /// <inheritdoc />
             public string Description => prereqs.ToString();
 
+            /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
+            /// <inheritdoc />
             public void Act()
             {
                 if (invocationOutcome != null)
@@ -512,36 +551,41 @@ namespace FlUnit
                     invocationOutcome = new TestFunctionOutcome<TResult>(e);
                 }
             }
+        }
 
-            internal class Assertion : ITestAssertion
+        /// <summary>
+        /// Implementation of <see cref="ITestAssertion"/> used by <see cref="FunctionTest{T1, T2, T3, TResult}"/>s.
+        /// </summary>
+        public class Assertion : ITestAssertion
+        {
+            private readonly Case testCase;
+            private readonly Action<T1, T2, T3, TestFunctionOutcome<TResult>> assert;
+
+            internal Assertion(Case testCase, Action<T1, T2, T3, TestFunctionOutcome<TResult>> assert, string description)
             {
-                private readonly Case testCase;
-                private readonly Action<T1, T2, T3, TestFunctionOutcome<TResult>> assert;
+                this.testCase = testCase;
+                this.assert = assert;
+                this.Description = description;
+            }
 
-                public Assertion(Case testCase, Action<T1, T2, T3, TestFunctionOutcome<TResult>> assert, string description)
+            /// <inheritdoc />
+            public string Description { get; }
+
+            /// <inheritdoc />
+            public void Assert()
+            {
+                if (testCase.invocationOutcome == null)
                 {
-                    this.testCase = testCase;
-                    this.assert = assert;
-                    this.Description = description;
+                    throw new InvalidOperationException("Test action has not yet been invoked");
                 }
 
-                public string Description { get; }
-
-                public void Assert()
+                try
                 {
-                    if (testCase.invocationOutcome == null)
-                    {
-                        throw new InvalidOperationException("Test action not yet invoked");
-                    }
-
-                    try
-                    {
-                        assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
-                    }
-                    catch (Exception e) when (!(e is ITestFailureDetails))
-                    {
-                        throw new TestFailureException(e.Message, e.StackTrace, e);
-                    }
+                    assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
+                }
+                catch (Exception e) when (!(e is ITestFailureDetails))
+                {
+                    throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
             }
         }

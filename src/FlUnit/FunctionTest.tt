@@ -24,7 +24,7 @@ namespace FlUnit
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>TResult> act;
-        private readonly Func<Case, IEnumerable<Case.Assertion>> makeAssertions;
+        private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace FlUnit
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>TResult> act,
-            Func<Case, IEnumerable<Case.Assertion>> makeAssertions)
+            Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
@@ -88,11 +88,14 @@ namespace FlUnit
             }
         }
 
-        internal class Case : ITestCase
+        /// <summary>
+        /// Implementation of <see cref="ITestCase"/> used by <see cref="FunctionTest{<#= TList(i, "", ", ") #>TResult}"/>s.
+        /// </summary>
+        public class Case : ITestCase
         {
             private readonly Func<<#= TList(i, "", ", ") #>TResult> act;
-<# WriteLineIf(i > 0, $"private readonly {PrereqsFieldType(i)} prereqs;", 3); #>
-            private TestFunctionOutcome<TResult> invocationOutcome;
+<# WriteLineIf(i > 0, $"internal readonly {PrereqsFieldType(i)} prereqs;", 3); #>
+            internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
 <# WriteLineIf(i > 0, $"{PrereqsFieldType(i)} prereqs,", 4); #>
@@ -104,14 +107,17 @@ namespace FlUnit
                 this.Assertions = makeAssertions(this).ToArray();
             }
 
+            /// <inheritdoc />
 <# if (i == 0) { #>
             public string Description => string.Empty;
 <# } else { #>
             public string Description => prereqs.ToString();
 <# } #>
 
+            /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
+            /// <inheritdoc />
             public void Act()
             {
                 if (invocationOutcome != null)
@@ -128,36 +134,41 @@ namespace FlUnit
                     invocationOutcome = new TestFunctionOutcome<TResult>(e);
                 }
             }
+        }
 
-            internal class Assertion : ITestAssertion
+        /// <summary>
+        /// Implementation of <see cref="ITestAssertion"/> used by <see cref="FunctionTest{<#= TList(i, "", ", ") #>TResult}"/>s.
+        /// </summary>
+        public class Assertion : ITestAssertion
+        {
+            private readonly Case testCase;
+            private readonly Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert;
+
+            internal Assertion(Case testCase, Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert, string description)
             {
-                private readonly Case testCase;
-                private readonly Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert;
+                this.testCase = testCase;
+                this.assert = assert;
+                this.Description = description;
+            }
 
-                public Assertion(Case testCase, Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert, string description)
+            /// <inheritdoc />
+            public string Description { get; }
+
+            /// <inheritdoc />
+            public void Assert()
+            {
+                if (testCase.invocationOutcome == null)
                 {
-                    this.testCase = testCase;
-                    this.assert = assert;
-                    this.Description = description;
+                    throw new InvalidOperationException("Test action has not yet been invoked");
                 }
 
-                public string Description { get; }
-
-                public void Assert()
+                try
                 {
-                    if (testCase.invocationOutcome == null)
-                    {
-                        throw new InvalidOperationException("Test action not yet invoked");
-                    }
-
-                    try
-                    {
-                        assert(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
-                    }
-                    catch (Exception e) when (!(e is ITestFailureDetails))
-                    {
-                        throw new TestFailureException(e.Message, e.StackTrace, e);
-                    }
+                    assert(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
+                }
+                catch (Exception e) when (!(e is ITestFailureDetails))
+                {
+                    throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
             }
         }

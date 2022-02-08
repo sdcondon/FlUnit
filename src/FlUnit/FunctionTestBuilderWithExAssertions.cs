@@ -40,7 +40,7 @@ namespace FlUnit
             return new FunctionTest<TResult>(
                 builder.configurationOverrides,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new FunctionTest<TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<TResult>.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -155,7 +155,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new FunctionTest<T1, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<T1, TResult>.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -271,7 +271,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new FunctionTest<T1, T2, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<T1, T2, TResult>.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -388,7 +388,7 @@ namespace FlUnit
                 builder.configurationOverrides,
                 builder.arrange,
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new FunctionTest<T1, T2, T3, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<T1, T2, T3, TResult>.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0

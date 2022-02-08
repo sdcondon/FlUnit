@@ -55,7 +55,7 @@ namespace FlUnit
                 builder.configurationOverrides,
 <# WriteLineIf(i > 0, "builder.arrange,", 4); #>
                 builder.testFunction,
-                tc => builder.assertions.Select(a => new FunctionTest<<#= TList(i, "", ", ") #>TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                tc => builder.assertions.Select(a => new FunctionTest<<#= TList(i, "", ", ") #>TResult>.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
