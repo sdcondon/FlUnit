@@ -14,24 +14,25 @@ using System.Runtime.CompilerServices;
 #else
 using System.Linq.Expressions;
 #endif
+using System.Runtime.ExceptionServices;
 
 namespace FlUnit
 {
 <# for(int i = 0; i <= MaxPrerequisiteCount; i++) { #>
 <# WriteLineIf(i > 0); #>
     /// <summary>
-    /// Builder for providing additional assertions for a test with a <#= i #> "Given" clause<#= Plural(i) #>
-    /// and for which the "When" clause does not return a value.
+    /// Builder for providing additional assertions for a test with <#= i #> "Given" clause<#= Plural(i) #>,
+    /// for which the "When" clause does not return a value but is expected to successfully return.
     /// </summary>
 <# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
-    public sealed class TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #>
+    public sealed class ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Action<#= TList(i, "<", ">") #> testAction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithActionAndAssertions(
+        internal ActionTestBuilderWithRVAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Action<#= TList(i, "<", ">") #> testAction,
@@ -44,10 +45,10 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithActionAndAssertions<#= TList(i, "{", "}") #>"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="ActionTestBuilderWithRVAssertions<#= TList(i, "{", "}") #>"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> builder)
+        public static implicit operator Test(ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #> builder)
         {
             return new ActionTest<#= TList(i, "<", ">") #>(
                 builder.configurationOverrides,
@@ -67,8 +68,8 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> And(
-            Action<<#= TList(i, "", ", ") #>TestActionOutcome> assertion,
+        public ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #> And(
+            Action<#= TList(i, "<", ">") #> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
@@ -81,7 +82,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> And(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> assertion)
+        public ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #> And(Expression<Action<#= TList(i, "<", ">") #>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -93,7 +94,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<#= TList(i, "<", ">") #> And(Action<<#= TList(i, "", ", ") #>TestActionOutcome> assertion, string description)
+        public ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #> And(Action<#= TList(i, "<", ">") #> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;
@@ -102,25 +103,34 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<<#= TList(i, "", ", ") #>TestActionOutcome> assert;
+            private readonly Action<#= TList(i, "<", ">") #> assert;
 
-            internal AssertionImpl(Action<<#= TList(i, "", ", ") #>TestActionOutcome> assert, string description)
+            internal AssertionImpl(Action<#= TList(i, "<", ">") #> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal AssertionImpl(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> expression)
+            internal AssertionImpl(Expression<Action<#= TList(i, "<", ">") #>> expression)
             {
                 assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            internal void Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestActionOutcome outcome) => assert(<#= List(i, i => $"a{i}", "", ", ") #>outcome);
+            internal AssertionImpl(string description)
+            {
+                Description = description;
+            }
 
             public string Description { get; }
+
+            internal void Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestActionOutcome outcome)
+            {
+                outcome.ThrowIfException();
+                assert?.Invoke(<#= List(i, i => $"a{i}") #>);
+            }
         }
     }
 <# } #>

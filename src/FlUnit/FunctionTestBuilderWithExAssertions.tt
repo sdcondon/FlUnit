@@ -21,18 +21,18 @@ namespace FlUnit
 <# WriteLineIf(i > 0); #>
     /// <summary>
     /// Builder for providing the additional assertions for a test with <#= i #> "Given" clause<#= Plural(i) #>
-    /// and for which the "When" clause returns a value.
+    /// and for which the "When" clause returns a value - but is expected to throw an exception.
     /// </summary>
 <# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
     /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public sealed class TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult>
+    public sealed class FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>TResult> testFunction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithFunctionAndAssertions(
+        internal FunctionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>TResult> testFunction,
@@ -45,10 +45,10 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndAssertions{<#= TList(i, "", ", ") #>TResult}"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="FunctionTestBuilderWithExAssertions{<#= TList(i, "", ", ") #>TResult}"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> builder)
+        public static implicit operator Test(FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult> builder)
         {
             return new FunctionTest<<#= TList(i, "", ", ") #>TResult>(
                 builder.configurationOverrides,
@@ -68,8 +68,8 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> And(
-            Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assertion,
+        public FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult> And(
+            Action<<#= TList(i, "", ", ") #>Exception> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
@@ -82,8 +82,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> And(
-            Expression<Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>>> assertion)
+        public FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult> And(Expression<Action<<#= TList(i, "", ", ") #>Exception>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -95,9 +94,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndAssertions<<#= TList(i, "", ", ") #>TResult> And(
-            Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assertion,
-            string description)
+        public FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult> And(Action<<#= TList(i, "", ", ") #>Exception> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;
@@ -106,25 +103,34 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert;
+            private readonly Action<<#= TList(i, "", ", ") #>Exception> assert;
 
-            internal AssertionImpl(Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert, string description)
+            internal AssertionImpl(Action<<#= TList(i, "", ", ") #>Exception> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal AssertionImpl(Expression<Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>>> expression)
+            internal AssertionImpl(Expression<Action<<#= TList(i, "", ", ") #>Exception>> expression)
             {
                 assert = expression.Compile();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            internal void Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestFunctionOutcome<TResult> outcome) => assert(<#= List(i, i => $"a{i}", "", ", ") #>outcome);
+            internal AssertionImpl(string description)
+            {
+                Description = description;
+            }
 
             public string Description { get; }
+
+            internal void Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestFunctionOutcome<TResult> outcome)
+            {
+                outcome.ThrowIfNoException();
+                assert?.Invoke(<#= List(i, i => $"a{i}", "", ", ") #>outcome.Exception);
+            }
         }
     }
 <# } #>

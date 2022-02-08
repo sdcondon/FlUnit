@@ -60,9 +60,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testAction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithAction When(Action testAction)
+        public ActionTestBuilder When(Action testAction)
         {
-            return new TestBuilderWithAction(configurationOverrides, testAction);
+            return new ActionTestBuilder(configurationOverrides, testAction);
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testFunction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithFunction<TResult> When<TResult>(Func<TResult> testFunction)
+        public FunctionTestBuilder<TResult> When<TResult>(Func<TResult> testFunction)
         {
-            return new TestBuilderWithFunction<TResult>(configurationOverrides, testFunction);
+            return new FunctionTestBuilder<TResult>(configurationOverrides, testFunction);
         }
 	}
 
@@ -135,9 +135,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testAction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithAction<T1> When(Action<T1> testAction)
+        public ActionTestBuilder<T1> When(Action<T1> testAction)
         {
-            return new TestBuilderWithAction<T1>(configurationOverrides, arrange, testAction);
+            return new ActionTestBuilder<T1>(configurationOverrides, arrange, testAction);
         }
 
         /// <summary>
@@ -145,9 +145,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testFunction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithFunction<T1, TResult> When<TResult>(Func<T1, TResult> testFunction)
+        public FunctionTestBuilder<T1, TResult> When<TResult>(Func<T1, TResult> testFunction)
         {
-            return new TestBuilderWithFunction<T1, TResult>(configurationOverrides, arrange, testFunction);
+            return new FunctionTestBuilder<T1, TResult>(configurationOverrides, arrange, testFunction);
         }
 	}
 
@@ -211,9 +211,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testAction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithAction<T1, T2> When(Action<T1, T2> testAction)
+        public ActionTestBuilder<T1, T2> When(Action<T1, T2> testAction)
         {
-            return new TestBuilderWithAction<T1, T2>(configurationOverrides, arrange, testAction);
+            return new ActionTestBuilder<T1, T2>(configurationOverrides, arrange, testAction);
         }
 
         /// <summary>
@@ -221,9 +221,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testFunction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithFunction<T1, T2, TResult> When<TResult>(Func<T1, T2, TResult> testFunction)
+        public FunctionTestBuilder<T1, T2, TResult> When<TResult>(Func<T1, T2, TResult> testFunction)
         {
-            return new TestBuilderWithFunction<T1, T2, TResult>(configurationOverrides, arrange, testFunction);
+            return new FunctionTestBuilder<T1, T2, TResult>(configurationOverrides, arrange, testFunction);
         }
 	}
 
@@ -266,9 +266,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testAction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithAction<T1, T2, T3> When(Action<T1, T2, T3> testAction)
+        public ActionTestBuilder<T1, T2, T3> When(Action<T1, T2, T3> testAction)
         {
-            return new TestBuilderWithAction<T1, T2, T3>(configurationOverrides, arrange, testAction);
+            return new ActionTestBuilder<T1, T2, T3>(configurationOverrides, arrange, testAction);
         }
 
         /// <summary>
@@ -276,9 +276,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testFunction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithFunction<T1, T2, T3, TResult> When<TResult>(Func<T1, T2, T3, TResult> testFunction)
+        public FunctionTestBuilder<T1, T2, T3, TResult> When<TResult>(Func<T1, T2, T3, TResult> testFunction)
         {
-            return new TestBuilderWithFunction<T1, T2, T3, TResult>(configurationOverrides, arrange, testFunction);
+            return new FunctionTestBuilder<T1, T2, T3, TResult>(configurationOverrides, arrange, testFunction);
         }
 	}
 }

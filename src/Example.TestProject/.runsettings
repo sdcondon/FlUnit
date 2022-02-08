@@ -13,7 +13,7 @@
         to override in individual tests.
         -->
         <TestConfiguration>
-            
+
             <!--
             FailedArrangementOutcomeIsSkipped specifies whether the outcome for the (singular) test result when test arrangement fails
             (that is, when one of the "Given" clauses throws) should be "Skipped" (as opposed to "Failed").
@@ -21,10 +21,10 @@
             -->
             <FailedArrangementOutcomeIsSkipped>false</FailedArrangementOutcomeIsSkipped>
 
-			<!--
-			NB: A "ResultNamingStrategy" setting also exists, but can only be specified via the UsingConfiguration builder method for the moment.
-			-->
-            
+            <!--
+            NB: A "ResultNamingStrategy" setting also exists, but can only be specified via the UsingConfiguration builder method for the moment.
+            -->
+
         </TestConfiguration>
         
     </FlUnit>

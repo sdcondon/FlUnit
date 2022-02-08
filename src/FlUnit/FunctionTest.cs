@@ -8,6 +8,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 0 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class FunctionTest<TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
@@ -16,7 +17,7 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionTest"/> class.
+        /// Initializes a new instance of the <see cref="FunctionTest{TResult}"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="act">The callback to run the "When" clause of the test.</param>
@@ -113,6 +114,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(testCase.invocationOutcome);
@@ -129,6 +135,8 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 1 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class FunctionTest<T1, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
@@ -138,7 +146,7 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionTest"/> class.
+        /// Initializes a new instance of the <see cref="FunctionTest{T1, TResult}"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
@@ -241,6 +249,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(testCase.prereqs, testCase.invocationOutcome);
@@ -257,6 +270,9 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 2 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class FunctionTest<T1, T2, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
@@ -266,7 +282,7 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionTest"/> class.
+        /// Initializes a new instance of the <see cref="FunctionTest{T1, T2, TResult}"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
@@ -372,6 +388,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
@@ -388,6 +409,10 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 3 "Given" clauses and a "When" clause that returns a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
+    /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class FunctionTest<T1, T2, T3, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
@@ -397,7 +422,7 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionTest"/> class.
+        /// Initializes a new instance of the <see cref="FunctionTest{T1, T2, T3, TResult}"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
         /// <param name="arrange">The callback to run the "Given" clauses of the test, returning the test cases.</param>
@@ -504,6 +529,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);

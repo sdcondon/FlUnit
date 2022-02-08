@@ -3,7 +3,8 @@
 namespace FlUnit
 {
     /// <summary>
-    /// Interface for <see cref="Exception"/> classes thrown by <see cref="Test"/> instances to implement to communicate error details to the test runner.
+    /// Interface for <see cref="Exception"/> classes thrown by <see cref="Test"/> instances to
+    /// implement to communicate error details to the test runner.
     /// </summary>
     /// <remarks>
     /// Platform adapters should handle any thrown exception by recording a test failure result,

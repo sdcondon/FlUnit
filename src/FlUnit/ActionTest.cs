@@ -71,7 +71,7 @@ namespace FlUnit
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.act = act;
-                this.Assertions = makeAssertions(this).ToArray(); // assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray();
             }
 
             public string Description => string.Empty;
@@ -117,6 +117,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(testCase.invocationOutcome);
@@ -133,6 +138,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 1 "Given" clause and a "When" clause that does not return a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     public sealed class ActionTest<T1> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
@@ -203,7 +209,7 @@ namespace FlUnit
             {
                 this.prereqs = prereqs;
                 this.act = act;
-                this.Assertions = makeAssertions(this).ToArray(); // assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray();
             }
 
             public string Description => prereqs.ToString();
@@ -249,6 +255,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(testCase.prereqs, testCase.invocationOutcome);
@@ -265,6 +276,8 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 2 "Given" clauses and a "When" clause that does not return a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
     public sealed class ActionTest<T1, T2> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
@@ -338,7 +351,7 @@ namespace FlUnit
             {
                 this.prereqs = prereqs;
                 this.act = act;
-                this.Assertions = makeAssertions(this).ToArray(); // assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray();
             }
 
             public string Description => prereqs.ToString();
@@ -384,6 +397,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
@@ -400,6 +418,9 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with 3 "Given" clauses and a "When" clause that does not return a value.
     /// </summary>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
+    /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
     public sealed class ActionTest<T1, T2, T3> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
@@ -474,7 +495,7 @@ namespace FlUnit
             {
                 this.prereqs = prereqs;
                 this.act = act;
-                this.Assertions = makeAssertions(this).ToArray(); // assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray();
             }
 
             public string Description => prereqs.ToString();
@@ -520,6 +541,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);

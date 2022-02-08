@@ -78,12 +78,15 @@ namespace Example.TestProject
             .When(() => { })
             .ThenReturns();
 
-        // Block bodies
+        // Block bodies are fine (as would be using delegates pointing at non-anonymous methods).
         public static Test BlockBodies => TestThat
-            .Given(() => new
+            .Given(() =>
             {
-                sut = new TestSubject(),
-                collaborator = new Collaborator()
+                return new
+                {
+                    sut = new TestSubject(),
+                    collaborator = new Collaborator()
+                };
             })
             .When(given =>
             {

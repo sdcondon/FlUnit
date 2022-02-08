@@ -9,7 +9,7 @@ namespace FlUnit
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true)]
 	public sealed class TraitAttribute : Attribute, ITraitProvider
 	{
-		private readonly Trait trait;
+		private readonly ITrait trait;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="TraitAttribute"/> class.
@@ -25,6 +25,6 @@ namespace FlUnit
 		public TraitAttribute(string name, string value) => trait = new Trait(name, value);
 
 		/// <inheritdoc/>
-		public Trait GetTrait(PropertyInfo testProperty) => trait;
+		public ITrait GetTrait(PropertyInfo testProperty) => trait;
 	}
 }

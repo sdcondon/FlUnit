@@ -14,13 +14,13 @@ namespace FlUnit
     /// Builder for providing additional assertions for a test with a 0 "Given" clauses
     /// and for which the "When" clause does not return a value.
     /// </summary>
-    public sealed class TestBuilderWithActionAndAssertions
+    public sealed class ActionTestBuilderWithAssertions
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Action testAction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithActionAndAssertions(
+        internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Action testAction,
             AssertionImpl assertion)
@@ -31,10 +31,10 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithActionAndAssertions"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="ActionTestBuilderWithAssertions"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithActionAndAssertions builder)
+        public static implicit operator Test(ActionTestBuilderWithAssertions builder)
         {
             return new ActionTest(
                 builder.configurationOverrides,
@@ -53,7 +53,7 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions And(
+        public ActionTestBuilderWithAssertions And(
             Action<TestActionOutcome> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
@@ -67,7 +67,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions And(Expression<Action<TestActionOutcome>> assertion)
+        public ActionTestBuilderWithAssertions And(Expression<Action<TestActionOutcome>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -79,7 +79,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions And(Action<TestActionOutcome> assertion, string description)
+        public ActionTestBuilderWithAssertions And(Action<TestActionOutcome> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;
@@ -115,14 +115,14 @@ namespace FlUnit
     /// and for which the "When" clause does not return a value.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
-    public sealed class TestBuilderWithActionAndAssertions<T1>
+    public sealed class ActionTestBuilderWithAssertions<T1>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
         private readonly Action<T1> testAction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithActionAndAssertions(
+        internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
             Action<T1> testAction,
@@ -135,10 +135,10 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithActionAndAssertions{T1}"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="ActionTestBuilderWithAssertions{T1}"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithActionAndAssertions<T1> builder)
+        public static implicit operator Test(ActionTestBuilderWithAssertions<T1> builder)
         {
             return new ActionTest<T1>(
                 builder.configurationOverrides,
@@ -158,7 +158,7 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> And(
+        public ActionTestBuilderWithAssertions<T1> And(
             Action<T1, TestActionOutcome> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
@@ -172,7 +172,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> And(Expression<Action<T1, TestActionOutcome>> assertion)
+        public ActionTestBuilderWithAssertions<T1> And(Expression<Action<T1, TestActionOutcome>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -184,7 +184,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1> And(Action<T1, TestActionOutcome> assertion, string description)
+        public ActionTestBuilderWithAssertions<T1> And(Action<T1, TestActionOutcome> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;
@@ -221,14 +221,14 @@ namespace FlUnit
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
-    public sealed class TestBuilderWithActionAndAssertions<T1, T2>
+    public sealed class ActionTestBuilderWithAssertions<T1, T2>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
         private readonly Action<T1, T2> testAction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithActionAndAssertions(
+        internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
             Action<T1, T2> testAction,
@@ -241,10 +241,10 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithActionAndAssertions{T1, T2}"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="ActionTestBuilderWithAssertions{T1, T2}"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithActionAndAssertions<T1, T2> builder)
+        public static implicit operator Test(ActionTestBuilderWithAssertions<T1, T2> builder)
         {
             return new ActionTest<T1, T2>(
                 builder.configurationOverrides,
@@ -264,7 +264,7 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> And(
+        public ActionTestBuilderWithAssertions<T1, T2> And(
             Action<T1, T2, TestActionOutcome> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
@@ -278,7 +278,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> And(Expression<Action<T1, T2, TestActionOutcome>> assertion)
+        public ActionTestBuilderWithAssertions<T1, T2> And(Expression<Action<T1, T2, TestActionOutcome>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -290,7 +290,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2> And(Action<T1, T2, TestActionOutcome> assertion, string description)
+        public ActionTestBuilderWithAssertions<T1, T2> And(Action<T1, T2, TestActionOutcome> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;
@@ -328,14 +328,14 @@ namespace FlUnit
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
     /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
-    public sealed class TestBuilderWithActionAndAssertions<T1, T2, T3>
+    public sealed class ActionTestBuilderWithAssertions<T1, T2, T3>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
         private readonly Action<T1, T2, T3> testAction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithActionAndAssertions(
+        internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
             Action<T1, T2, T3> testAction,
@@ -348,10 +348,10 @@ namespace FlUnit
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithActionAndAssertions{T1, T2, T3}"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="ActionTestBuilderWithAssertions{T1, T2, T3}"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithActionAndAssertions<T1, T2, T3> builder)
+        public static implicit operator Test(ActionTestBuilderWithAssertions<T1, T2, T3> builder)
         {
             return new ActionTest<T1, T2, T3>(
                 builder.configurationOverrides,
@@ -371,7 +371,7 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> And(
+        public ActionTestBuilderWithAssertions<T1, T2, T3> And(
             Action<T1, T2, T3, TestActionOutcome> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
@@ -385,7 +385,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3, TestActionOutcome>> assertion)
+        public ActionTestBuilderWithAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3, TestActionOutcome>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -397,7 +397,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithActionAndAssertions<T1, T2, T3> And(Action<T1, T2, T3, TestActionOutcome> assertion, string description)
+        public ActionTestBuilderWithAssertions<T1, T2, T3> And(Action<T1, T2, T3, TestActionOutcome> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;

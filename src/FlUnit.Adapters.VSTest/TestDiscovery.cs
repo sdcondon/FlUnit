@@ -27,7 +27,7 @@ namespace FlUnit.Adapters
 
             // NB: Possible performance concerns here. Benchmarks proj shows that an AsParallel
             // here slows example test proj run down, though. That may just be due to its small
-            // size, but then  most test projects could probably be expected to be small?
+            // size, but then most test projects could probably be expected to be small?
             // More testing needed before doing anything differently here.
             return assembly.ExportedTypes
                 .Select(t => ConcatTraitProviders(t, assemblyTraitProviders))

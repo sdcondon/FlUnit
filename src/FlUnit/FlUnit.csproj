@@ -26,38 +26,38 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ActionTest.tt</DependentUpon>
     </None>
-    <None Include="TestBuilderWithActionAndAssertions.cs">
-      <DependentUpon>TestBuilderWithActionAndAssertions.tt</DependentUpon>
+    <None Include="ActionTestBuilderWithAssertions.cs">
+      <DependentUpon>ActionTestBuilderWithAssertions.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </None>
-    <None Include="TestBuilderWithActionAndRVAssertions.cs">
+    <None Include="ActionTestBuilderWithRVAssertions.cs">
+	  <DependentUpon>ActionTestBuilderWithRVAssertions.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestBuilderWithActionAndRVAssertions.tt</DependentUpon>
     </None>
-	<None Include="TestBuilderWithActionAndExAssertions.cs">
-      <DependentUpon>TestBuilderWithActionAndExAssertions.tt</DependentUpon>
+	<None Include="ActionTestBuilderWithExAssertions.cs">
+      <DependentUpon>ActionTestBuilderWithExAssertions.tt</DependentUpon>
 	  <DesignTime>True</DesignTime>
 	  <AutoGen>True</AutoGen>
 	</None>
-    <None Include="TestBuilderWithFunction.cs">
+    <None Include="FunctionTestBuilder.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestBuilderWithFunction.tt</DependentUpon>
+      <DependentUpon>FunctionTestBuilder.tt</DependentUpon>
     </None>
-    <None Include="TestBuilderWithFunctionAndAssertions.cs">
-      <DependentUpon>TestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+    <None Include="FunctionTestBuilderWithAssertions.cs">
+      <DependentUpon>FunctionTestBuilderWithAssertions.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </None>
-	<None Include="TestBuilderWithFunctionAndRVAssertions.cs">
+	<None Include="FunctionTestBuilderWithRVAssertions.cs">
 	  <DesignTime>True</DesignTime>
 	  <AutoGen>True</AutoGen>
-	  <DependentUpon>TestBuilderWithFunctionAndRVAssertions.tt</DependentUpon>
+	  <DependentUpon>FunctionTestBuilderWithRVAssertions.tt</DependentUpon>
 	</None>
-	<None Include="TestBuilderWithFunctionAndExAssertions.cs">
-      <DependentUpon>TestBuilderWithFunctionAndExAssertions.tt</DependentUpon>
+	<None Include="FunctionTestBuilderWithExAssertions.cs">
+      <DependentUpon>FunctionTestBuilderWithExAssertions.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
 	</None>
@@ -68,37 +68,37 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ActionTest.cs</LastGenOutput>
     </None>
-    <None Update="TestBuilderWithAction.tt">
+    <None Update="ActionTestBuilder.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestBuilderWithAction.cs</LastGenOutput>
+      <LastGenOutput>ActionTestBuilder.cs</LastGenOutput>
     </None>
-    <None Update="TestBuilderWithActionAndAssertions.tt">
-      <LastGenOutput>TestBuilderWithActionAndAssertions.cs</LastGenOutput>
+    <None Update="ActionTestBuilderWithAssertions.tt">
+      <LastGenOutput>ActionTestBuilderWithAssertions.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="TestBuilderWithActionAndRVAssertions.tt">
+    <None Update="ActionTestBuilderWithRVAssertions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestBuilderWithActionAndRVAssertions.cs</LastGenOutput>
+      <LastGenOutput>ActionTestBuilderWithRVAssertions.cs</LastGenOutput>
     </None>
-	<None Update="TestBuilderWithActionAndExAssertions.tt">
-      <LastGenOutput>TestBuilderWithActionAndExAssertions.cs</LastGenOutput>
+	<None Update="ActionTestBuilderWithExAssertions.tt">
+      <LastGenOutput>ActionTestBuilderWithExAssertions.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
 	</None>
-    <None Update="TestBuilderWithFunction.tt">
+    <None Update="FunctionTestBuilder.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestBuilderWithFunction.cs</LastGenOutput>
+      <LastGenOutput>FunctionTestBuilder.cs</LastGenOutput>
     </None>
-    <None Update="TestBuilderWithFunctionAndExAssertions.tt">
-      <LastGenOutput>TestBuilderWithFunctionAndExAssertions.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="TestBuilderWithFunctionAndAssertions.tt">
-      <LastGenOutput>TestBuilderWithFunctionAndAssertions.cs</LastGenOutput>
+    <None Update="FunctionTestBuilderWithExAssertions.tt">
+      <LastGenOutput>FunctionTestBuilderWithExAssertions.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="TestBuilderWithFunctionAndRVAssertions.tt">
+    <None Update="FunctionTestBuilderWithAssertions.tt">
+      <LastGenOutput>FunctionTestBuilderWithAssertions.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestBuilderWithFunctionAndRVAssertions.cs</LastGenOutput>
+    </None>
+    <None Update="FunctionTestBuilderWithRVAssertions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FunctionTestBuilderWithRVAssertions.cs</LastGenOutput>
     </None>
     <None Update="TestBuilderWithPrerequisites.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -116,10 +116,50 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ActionTest.tt</DependentUpon>
     </Compile>
-    <Compile Update="TestBuilderWithAction.cs">
+    <Compile Update="ActionTestBuilder.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestBuilderWithAction.tt</DependentUpon>
+      <DependentUpon>ActionTestBuilder.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ActionTestBuilderWithAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ActionTestBuilderWithAssertions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ActionTestBuilderWithExAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ActionTestBuilderWithExAssertions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ActionTestBuilderWithRVAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ActionTestBuilderWithRVAssertions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FunctionTestBuilder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTestBuilder.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FunctionTestBuilderWithAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTestBuilderWithAssertions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FunctionTestBuilderWithExAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTestBuilderWithExAssertions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FunctionTestBuilderWithFunctionAndAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTestBuilderWithFunctionAndAssertions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FunctionTestBuilderWithRVAssertions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTestBuilderWithRVAssertions.tt</DependentUpon>
     </Compile>
     <Compile Update="TestBuilderWithActionAndAssertions.cs">
       <DesignTime>True</DesignTime>

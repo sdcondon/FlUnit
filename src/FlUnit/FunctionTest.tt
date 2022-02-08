@@ -17,6 +17,8 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with <#= i #> "Given" clauses and a "When" clause that returns a value.
     /// </summary>
+<# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
+    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
     public sealed class FunctionTest<<#= TList(i, "", ", ") #>TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
@@ -26,7 +28,7 @@ namespace FlUnit
         private IReadOnlyCollection<ITestCase> cases;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionTest"/> class.
+        /// Initializes a new instance of the <see cref="FunctionTest{<#= TList(i, "", ", ") #>TResult}"/> class.
         /// </summary>
         /// <param name="configurationOverrides">Configuration overrides that the test should apply when run.</param>
 <# WriteLineIf(i > 0, "/// <param name=\"arrange\">The callback to run the \"Given\" clauses of the test, returning the test cases.</param>", 2); #>
@@ -143,6 +145,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);

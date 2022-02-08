@@ -3,7 +3,7 @@
 namespace FlUnit
 {
     /// <summary>
-    /// Exception class thrown to indicate test failure - implements <see cref="ITestFailureDetails"/> to communicate error details to the test runner.
+    /// Exception class thrown to indicate test failure, with fine control over the error details in the test result.
     /// </summary>
     public class TestFailureException : Exception, ITestFailureDetails
     {

@@ -134,9 +134,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testAction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithAction<#= TList(i, "<", ">") #> When(Action<#= TList(i, "<", ">") #> testAction)
+        public ActionTestBuilder<#= TList(i, "<", ">") #> When(Action<#= TList(i, "<", ">") #> testAction)
         {
-            return new TestBuilderWithAction<#= TList(i, "<", ">") #>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testAction);
+            return new ActionTestBuilder<#= TList(i, "<", ">") #>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testAction);
         }
 
         /// <summary>
@@ -144,9 +144,9 @@ namespace FlUnit
         /// </summary>
         /// <param name="testFunction">The function that is the "When" clause of the test.</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
-        public TestBuilderWithFunction<<#= TList(i, "", ", ") #>TResult> When<TResult>(Func<<#= TList(i, "", ", ") #>TResult> testFunction)
+        public FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult> When<TResult>(Func<<#= TList(i, "", ", ") #>TResult> testFunction)
         {
-            return new TestBuilderWithFunction<<#= TList(i, "", ", ") #>TResult>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testFunction);
+            return new FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testFunction);
         }
 	}
 <# } #>}

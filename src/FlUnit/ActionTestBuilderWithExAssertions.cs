@@ -7,41 +7,39 @@ using System.Runtime.CompilerServices;
 #else
 using System.Linq.Expressions;
 #endif
-using System.Runtime.ExceptionServices;
 
 namespace FlUnit
 {
     /// <summary>
-    /// Builder for providing the additional assertions for a test with 0 "Given" clauses
-    /// and for which the "When" clause returns a value - and is expected to return successfully.
+    /// Builder for providing additional assertions for a test with 0 "Given" clauses
+    /// and for which the "When" clause does not return a value, and is in fact expected to throw an exception.
     /// </summary>
-    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public sealed class TestBuilderWithFunctionAndRVAssertions<TResult>
+    public sealed class ActionTestBuilderWithExAssertions
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Func<TResult> testFunction;
+        private readonly Action testAction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithFunctionAndRVAssertions(
+        internal ActionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Func<TResult> testFunction,
+            Action testAction,
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
-            this.testFunction = testFunction;
+            this.testAction = testAction;
             assertions.Add(assertion);
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndRVAssertions{TResult}"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="ActionTestBuilderWithExAssertions"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithFunctionAndRVAssertions<TResult> builder)
+        public static implicit operator Test(ActionTestBuilderWithExAssertions builder)
         {
-            return new FunctionTest<TResult>(
+            return new ActionTest(
                 builder.configurationOverrides,
-                builder.testFunction,
-                tc => builder.assertions.Select(a => new FunctionTest<TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                builder.testAction,
+                tc => builder.assertions.Select(a => new ActionTest.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -49,14 +47,14 @@ namespace FlUnit
         /// Adds an additional assertion for the test.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<TResult> And(
-            Action<TResult> assertion,
+        public ActionTestBuilderWithExAssertions And(
+            Action<Exception> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
@@ -69,7 +67,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<TResult> And(Expression<Action<TResult>> assertion)
+        public ActionTestBuilderWithExAssertions And(Expression<Action<Exception>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -81,7 +79,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<TResult> And(Action<TResult> assertion, string description)
+        public ActionTestBuilderWithExAssertions And(Action<Exception> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;
@@ -90,16 +88,16 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<TResult> assert;
+            private readonly Action<Exception> assert;
 
-            internal AssertionImpl(Action<TResult> assert, string description)
+            internal AssertionImpl(Action<Exception> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal AssertionImpl(Expression<Action<TResult>> expression)
+            internal AssertionImpl(Expression<Action<Exception>> expression)
             {
                 assert = expression.Compile();
                 Description = expression.Body.ToString();
@@ -113,50 +111,49 @@ namespace FlUnit
 
             public string Description { get; }
 
-            internal void Invoke(TestFunctionOutcome<TResult> outcome)
+            internal void Invoke(TestActionOutcome outcome)
             {
-                outcome.ThrowIfException();
-                assert?.Invoke(outcome.Result);
+                outcome.ThrowIfNoException();
+                assert?.Invoke(outcome.Exception);
             }
         }
     }
 
     /// <summary>
-    /// Builder for providing the additional assertions for a test with 1 "Given" clause
-    /// and for which the "When" clause returns a value - and is expected to return successfully.
+    /// Builder for providing additional assertions for a test with 1 "Given" clause
+    /// and for which the "When" clause does not return a value, and is in fact expected to throw an exception.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
-    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public sealed class TestBuilderWithFunctionAndRVAssertions<T1, TResult>
+    public sealed class ActionTestBuilderWithExAssertions<T1>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly Func<IEnumerable<T1>> arrange;
-        private readonly Func<T1, TResult> testFunction;
+        private readonly Action<T1> testAction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithFunctionAndRVAssertions(
+        internal ActionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             Func<IEnumerable<T1>> arrange,
-            Func<T1, TResult> testFunction,
+            Action<T1> testAction,
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
-            this.testFunction = testFunction;
+            this.testAction = testAction;
             assertions.Add(assertion);
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndRVAssertions{T1, TResult}"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="ActionTestBuilderWithExAssertions{T1}"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithFunctionAndRVAssertions<T1, TResult> builder)
+        public static implicit operator Test(ActionTestBuilderWithExAssertions<T1> builder)
         {
-            return new FunctionTest<T1, TResult>(
+            return new ActionTest<T1>(
                 builder.configurationOverrides,
                 builder.arrange,
-                builder.testFunction,
-                tc => builder.assertions.Select(a => new FunctionTest<T1, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                builder.testAction,
+                tc => builder.assertions.Select(a => new ActionTest<T1>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -164,14 +161,14 @@ namespace FlUnit
         /// Adds an additional assertion for the test.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<T1, TResult> And(
-            Action<T1, TResult> assertion,
+        public ActionTestBuilderWithExAssertions<T1> And(
+            Action<T1, Exception> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
@@ -184,7 +181,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<T1, TResult> And(Expression<Action<T1, TResult>> assertion)
+        public ActionTestBuilderWithExAssertions<T1> And(Expression<Action<T1, Exception>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -196,7 +193,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<T1, TResult> And(Action<T1, TResult> assertion, string description)
+        public ActionTestBuilderWithExAssertions<T1> And(Action<T1, Exception> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;
@@ -205,16 +202,16 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<T1, TResult> assert;
+            private readonly Action<T1, Exception> assert;
 
-            internal AssertionImpl(Action<T1, TResult> assert, string description)
+            internal AssertionImpl(Action<T1, Exception> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal AssertionImpl(Expression<Action<T1, TResult>> expression)
+            internal AssertionImpl(Expression<Action<T1, Exception>> expression)
             {
                 assert = expression.Compile();
                 Description = expression.Body.ToString();
@@ -228,51 +225,50 @@ namespace FlUnit
 
             public string Description { get; }
 
-            internal void Invoke(T1 a1, TestFunctionOutcome<TResult> outcome)
+            internal void Invoke(T1 a1, TestActionOutcome outcome)
             {
-                outcome.ThrowIfException();
-                assert?.Invoke(a1, outcome.Result);
+                outcome.ThrowIfNoException();
+                assert?.Invoke(a1, outcome.Exception);
             }
         }
     }
 
     /// <summary>
-    /// Builder for providing the additional assertions for a test with 2 "Given" clauses
-    /// and for which the "When" clause returns a value - and is expected to return successfully.
+    /// Builder for providing additional assertions for a test with 2 "Given" clauses
+    /// and for which the "When" clause does not return a value, and is in fact expected to throw an exception.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
-    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public sealed class TestBuilderWithFunctionAndRVAssertions<T1, T2, TResult>
+    public sealed class ActionTestBuilderWithExAssertions<T1, T2>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
-        private readonly Func<T1, T2, TResult> testFunction;
+        private readonly Action<T1, T2> testAction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithFunctionAndRVAssertions(
+        internal ActionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
-            Func<T1, T2, TResult> testFunction,
+            Action<T1, T2> testAction,
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
-            this.testFunction = testFunction;
+            this.testAction = testAction;
             assertions.Add(assertion);
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndRVAssertions{T1, T2, TResult}"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="ActionTestBuilderWithExAssertions{T1, T2}"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithFunctionAndRVAssertions<T1, T2, TResult> builder)
+        public static implicit operator Test(ActionTestBuilderWithExAssertions<T1, T2> builder)
         {
-            return new FunctionTest<T1, T2, TResult>(
+            return new ActionTest<T1, T2>(
                 builder.configurationOverrides,
                 builder.arrange,
-                builder.testFunction,
-                tc => builder.assertions.Select(a => new FunctionTest<T1, T2, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                builder.testAction,
+                tc => builder.assertions.Select(a => new ActionTest<T1, T2>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -280,14 +276,14 @@ namespace FlUnit
         /// Adds an additional assertion for the test.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<T1, T2, TResult> And(
-            Action<T1, T2, TResult> assertion,
+        public ActionTestBuilderWithExAssertions<T1, T2> And(
+            Action<T1, T2, Exception> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
@@ -300,7 +296,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<T1, T2, TResult> And(Expression<Action<T1, T2, TResult>> assertion)
+        public ActionTestBuilderWithExAssertions<T1, T2> And(Expression<Action<T1, T2, Exception>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -312,7 +308,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<T1, T2, TResult> And(Action<T1, T2, TResult> assertion, string description)
+        public ActionTestBuilderWithExAssertions<T1, T2> And(Action<T1, T2, Exception> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;
@@ -321,16 +317,16 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<T1, T2, TResult> assert;
+            private readonly Action<T1, T2, Exception> assert;
 
-            internal AssertionImpl(Action<T1, T2, TResult> assert, string description)
+            internal AssertionImpl(Action<T1, T2, Exception> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal AssertionImpl(Expression<Action<T1, T2, TResult>> expression)
+            internal AssertionImpl(Expression<Action<T1, T2, Exception>> expression)
             {
                 assert = expression.Compile();
                 Description = expression.Body.ToString();
@@ -344,52 +340,51 @@ namespace FlUnit
 
             public string Description { get; }
 
-            internal void Invoke(T1 a1, T2 a2, TestFunctionOutcome<TResult> outcome)
+            internal void Invoke(T1 a1, T2 a2, TestActionOutcome outcome)
             {
-                outcome.ThrowIfException();
-                assert?.Invoke(a1, a2, outcome.Result);
+                outcome.ThrowIfNoException();
+                assert?.Invoke(a1, a2, outcome.Exception);
             }
         }
     }
 
     /// <summary>
-    /// Builder for providing the additional assertions for a test with 3 "Given" clauses
-    /// and for which the "When" clause returns a value - and is expected to return successfully.
+    /// Builder for providing additional assertions for a test with 3 "Given" clauses
+    /// and for which the "When" clause does not return a value, and is in fact expected to throw an exception.
     /// </summary>
     /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
     /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
     /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
-    /// <typeparam name="TResult">The return type of the "When" clause of the test.</typeparam>
-    public sealed class TestBuilderWithFunctionAndRVAssertions<T1, T2, T3, TResult>
+    public sealed class ActionTestBuilderWithExAssertions<T1, T2, T3>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
         private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
-        private readonly Func<T1, T2, T3, TResult> testFunction;
+        private readonly Action<T1, T2, T3> testAction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
-        internal TestBuilderWithFunctionAndRVAssertions(
+        internal ActionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
             (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
-            Func<T1, T2, T3, TResult> testFunction,
+            Action<T1, T2, T3> testAction,
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
-            this.testFunction = testFunction;
+            this.testAction = testAction;
             assertions.Add(assertion);
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="TestBuilderWithFunctionAndRVAssertions{T1, T2, T3, TResult}"/> to a <see cref="Test"/> (by building it).
+        /// Implicitly converts a <see cref="ActionTestBuilderWithExAssertions{T1, T2, T3}"/> to a <see cref="Test"/> (by building it).
         /// </summary>
         /// <param name="builder">The builder to convert.</param>
-        public static implicit operator Test(TestBuilderWithFunctionAndRVAssertions<T1, T2, T3, TResult> builder)
+        public static implicit operator Test(ActionTestBuilderWithExAssertions<T1, T2, T3> builder)
         {
-            return new FunctionTest<T1, T2, T3, TResult>(
+            return new ActionTest<T1, T2, T3>(
                 builder.configurationOverrides,
                 builder.arrange,
-                builder.testFunction,
-                tc => builder.assertions.Select(a => new FunctionTest<T1, T2, T3, TResult>.Case.Assertion(tc, a.Invoke, a.Description)));
+                builder.testAction,
+                tc => builder.assertions.Select(a => new ActionTest<T1, T2, T3>.Case.Assertion(tc, a.Invoke, a.Description)));
         }
 
 #if NET6_0
@@ -397,14 +392,14 @@ namespace FlUnit
         /// Adds an additional assertion for the test.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<T1, T2, T3, TResult> And(
-            Action<T1, T2, T3, TResult> assertion,
+        public ActionTestBuilderWithExAssertions<T1, T2, T3> And(
+            Action<T1, T2, T3, Exception> assertion,
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
@@ -417,7 +412,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<T1, T2, T3, TResult> And(Expression<Action<T1, T2, T3, TResult>> assertion)
+        public ActionTestBuilderWithExAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3, Exception>> assertion)
         {
             assertions.Add(new AssertionImpl(assertion));
             return this;
@@ -429,7 +424,7 @@ namespace FlUnit
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        public TestBuilderWithFunctionAndRVAssertions<T1, T2, T3, TResult> And(Action<T1, T2, T3, TResult> assertion, string description)
+        public ActionTestBuilderWithExAssertions<T1, T2, T3> And(Action<T1, T2, T3, Exception> assertion, string description)
         {
             assertions.Add(new AssertionImpl(assertion, description));
             return this;
@@ -438,16 +433,16 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<T1, T2, T3, TResult> assert;
+            private readonly Action<T1, T2, T3, Exception> assert;
 
-            internal AssertionImpl(Action<T1, T2, T3, TResult> assert, string description)
+            internal AssertionImpl(Action<T1, T2, T3, Exception> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
 #if !NET6_0
-            internal AssertionImpl(Expression<Action<T1, T2, T3, TResult>> expression)
+            internal AssertionImpl(Expression<Action<T1, T2, T3, Exception>> expression)
             {
                 assert = expression.Compile();
                 Description = expression.Body.ToString();
@@ -461,10 +456,10 @@ namespace FlUnit
 
             public string Description { get; }
 
-            internal void Invoke(T1 a1, T2 a2, T3 a3, TestFunctionOutcome<TResult> outcome)
+            internal void Invoke(T1 a1, T2 a2, T3 a3, TestActionOutcome outcome)
             {
-                outcome.ThrowIfException();
-                assert?.Invoke(a1, a2, a3, outcome.Result);
+                outcome.ThrowIfNoException();
+                assert?.Invoke(a1, a2, a3, outcome.Exception);
             }
         }
     }

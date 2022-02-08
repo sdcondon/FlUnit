@@ -17,6 +17,7 @@ namespace FlUnit
     /// <summary>
     /// Represents a test with <#= i #> "Given" clause<#= Plural(i) #> and a "When" clause that does not return a value.
     /// </summary>
+<# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } \"Given\" clause of the test."); #>
     public sealed class ActionTest<#= TList(i, "<", ">") #> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
@@ -97,7 +98,7 @@ namespace FlUnit
             {
 <# WriteLineIf(i > 0, "this.prereqs = prereqs;", 4); #>
                 this.act = act;
-                this.Assertions = makeAssertions(this).ToArray(); // assertions.Select(a => new Assertion(this, a.Action, a.Description)).ToArray();
+                this.Assertions = makeAssertions(this).ToArray();
             }
 
 <# if (i == 0) { #>
@@ -147,6 +148,11 @@ namespace FlUnit
 
                 public void Assert()
                 {
+                    if (testCase.invocationOutcome == null)
+                    {
+                        throw new InvalidOperationException("Test action not yet invoked");
+                    }
+
                     try
                     {
                         assert(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);

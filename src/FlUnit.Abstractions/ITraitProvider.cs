@@ -13,6 +13,6 @@ namespace FlUnit
         /// </summary>
         /// <param name="testProperty">Information about the test property to get the trait for.</param>
         /// <returns>The trait to apply to the test.</returns>
-        Trait GetTrait(PropertyInfo testProperty);
+        ITrait GetTrait(PropertyInfo testProperty);
     }
 }
