@@ -29,8 +29,9 @@ namespace FlUnit.Adapters
             }
             else
             {
-                // TODO-MAINTAINABILITY: this is bad - VSTest-specific behaviour. Sort this out, ideally by changing the ITestContainer interface to talk unequivocally in FlUnit terms,
-                // which'll mean that the adapter has a bit more work to do, but.. Sort this out BEFORE pulling common execution logic out of VSTest adapter.
+                // TODO-MAINTAINABILITY: this is really bad - VSTest-specific behaviour. Sort this out, ideally by changing the ITestContainer interface to
+                // talk unequivocally in FlUnit terms, which'll mean that the adapter has a bit more work to do, but.. Sort this out BEFORE pulling common
+                // execution logic out of VSTest adapter.
                 return null; 
             }
         }

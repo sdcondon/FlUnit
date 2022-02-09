@@ -68,7 +68,7 @@ namespace FlUnit.Adapters.VSTest
             IFrameworkHandle frameworkHandle,
             TestRunConfiguration testRunConfiguration)
         {
-            // NB: no thread (i.e. re-entry) safety here. Other framework adapters don't seem to bother,
+            // NB: no thread (i.e. re-entry) safety here. VSTest adapters for other frameworks don't seem to bother,
             // so presumably the platform is well-behaved in this regard, making it un-needed.
             if (cancellationTokenSource != null)
             {

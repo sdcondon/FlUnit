@@ -24,7 +24,7 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             ITestCaseDiscoverySink discoverySink)
         {
-            var testRunConfiguration = TestRunConfiguration.ReadFromXml(discoveryContext.RunSettings.SettingsXml, Constants.FlUnitConfigurationXmlElement);
+            var testRunConfiguration = TestRunConfiguration.ReadFromXml(discoveryContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
             MakeTestCases(sources, discoveryContext, logger, testRunConfiguration).ForEach(tc => discoverySink.SendTestCase(tc));
         }
 
@@ -43,7 +43,7 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             TestRunConfiguration testRunConfiguration)
         {
-            var assembly = Assembly.LoadFile(source);
+            var assembly = Assembly.LoadFile(source); // TODO: check exactly how other adapters go about this
 
             logger?.SendMessage(TestMessageLevel.Informational, $"Test discovery started for {assembly.FullName}");
 
@@ -75,12 +75,14 @@ namespace FlUnit.Adapters.VSTest
 
                     // Probably better to use JSON or similar..
                     // ..and in general need to pay more attention to how the serialization between discovery and execution works..
+                    // ..e.g. does the serialised version stick around? Do I need to worry about versioning test cases and executor version?
                     testCase.SetPropertyValue(
                         TestProperties.FlUnitTestProp,
                         $"{testMetadatum.TestProperty.DeclaringType.Assembly.GetName().Name}:{testMetadatum.TestProperty.DeclaringType.FullName}:{testMetadatum.TestProperty.Name}");
 
                     testCases.Add(testCase);
 
+                    // TODO: Neater message when there are no traits (or simply don't include them - was only a quick and dirty test)
                     logger?.SendMessage(
                         TestMessageLevel.Informational,
                         $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");

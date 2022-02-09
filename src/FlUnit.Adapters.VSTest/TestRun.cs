@@ -83,7 +83,7 @@ namespace FlUnit.Adapters
             TestOutcome testOutcome;
             if (!testArrangementPassed)
             {
-                testOutcome = testConfiguration.FailedArrangementOutcomeIsSkipped ? TestOutcome.Skipped : TestOutcome.Failed;
+                testOutcome = testConfiguration.ArrangementFailureCountsAsFailed ? TestOutcome.Failed: TestOutcome.ArrangementFailed;
             }
             else if (!allAssertionsPassed)
             {
@@ -114,7 +114,7 @@ namespace FlUnit.Adapters
                     startTime: arrangementStartTime,
                     endTime: DateTimeOffset.Now,
                     displayName: null,
-                    outcome: testConfiguration.FailedArrangementOutcomeIsSkipped ? TestOutcome.Skipped : TestOutcome.Failed,
+                    outcome: testConfiguration.ArrangementFailureCountsAsFailed ? TestOutcome.Failed : TestOutcome.ArrangementFailed,
                     errorMessage: errorMessage,
                     errorStackTrace: errorStackTrace);
 
@@ -130,7 +130,7 @@ namespace FlUnit.Adapters
             var startTime = actionStart;
             var endTime = actionEnd;
             string displayName = null;
-            var outcome = TestOutcome.Skipped;
+            TestOutcome outcome = TestOutcome.Failed;
             string errorMessage = null;
             string errorStackTrace = null;
 

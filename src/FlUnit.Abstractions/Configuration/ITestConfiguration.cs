@@ -8,9 +8,9 @@
     {
         /// <summary>
         /// Gets or sets a value indicating whether the outcome for the (singular) test result when test arrangement fails (that is, when one of the "Given" clauses throws)
-        /// should be "Skipped" (as opposed to "Failed").
+        /// should just be the same as those for which assertions failed (as opposed to some variation of "Skipped", depending on exactly what states the test runner supports).
         /// </summary>
-        bool FailedArrangementOutcomeIsSkipped { get; set; }
+        bool ArrangementFailureCountsAsFailed { get; set; }
 
         /// <summary>
         /// Gets or sets the strategy to use to label individual test results.

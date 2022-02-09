@@ -100,9 +100,9 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>FunctionTestBuilderWithRVAssertions.cs</LastGenOutput>
     </None>
-    <None Update="TestBuilderWithPrerequisites.tt">
+    <None Update="TestPrerequisitesBuilder.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestBuilderWithPrerequisites.cs</LastGenOutput>
+      <LastGenOutput>TestPrerequisitesBuilder.cs</LastGenOutput>
     </None>
     <None Update="FunctionTest.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -196,10 +196,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestBuilderWithFunctionAndRVAssertions.tt</DependentUpon>
     </Compile>
-    <Compile Update="TestBuilderWithPrerequisites.cs">
+    <Compile Update="TestPrerequisitesBuilder.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestBuilderWithPrerequisites.tt</DependentUpon>
+      <DependentUpon>TestPrerequisitesBuilder.tt</DependentUpon>
     </Compile>
     <Compile Update="FunctionTest.cs">
       <DesignTime>True</DesignTime>

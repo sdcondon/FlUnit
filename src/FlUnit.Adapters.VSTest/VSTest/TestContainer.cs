@@ -82,7 +82,7 @@ namespace FlUnit.Adapters.VSTest
                     return Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed;
                 case TestOutcome.Failed:
                     return Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Failed;
-                case TestOutcome.Skipped:
+                case TestOutcome.ArrangementFailed:
                     return Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Skipped;
                 default:
                     throw new ArgumentException();

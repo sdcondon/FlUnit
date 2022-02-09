@@ -15,11 +15,12 @@
         <TestConfiguration>
 
             <!--
-            FailedArrangementOutcomeIsSkipped specifies whether the outcome for the (singular) test result when test arrangement fails
-            (that is, when one of the "Given" clauses throws) should be "Skipped" (as opposed to "Failed").
-            Valid values are "true" and "false". The default is value is "true".
+            ArrangementFailureCountsAsFailed specifies whether the outcome for the (singular) test result when test arrangement fails
+            (that is, when one of the "Given" clauses throws) should just be the same as those for which assertions failed (as opposed
+            to some variation of "Skipped", depending on exactly what states the test runner supports - "Skipped" in VSTest's case).
+            Valid values are "true" and "false". The default value is "false".
             -->
-            <FailedArrangementOutcomeIsSkipped>false</FailedArrangementOutcomeIsSkipped>
+            <ArrangementFailureCountsAsFailed>false</ArrangementFailureCountsAsFailed>
 
             <!--
             NB: A "ResultNamingStrategy" setting also exists, but can only be specified via the UsingConfiguration builder method for the moment.

@@ -13,7 +13,7 @@
         /// <param name="assertion">The assertion for which the result to name is.</param>
         /// <returns>The display name of the result.</returns>
         /// <remarks>
-        /// TODO-MAINTAINABILITY: Need to think about how this overlaps ITestContainer interface.
+        /// TODO-MAINTAINABILITY: Need to think about how this is related to the ITestContainer interface.
         /// If that interface there is changed to make adapters more responsible for mapping FlUnit
         /// concepts to the test platform, how is this affected?
         /// E.g. Think about visual studio vs trx. Need to test out dotnet test again.

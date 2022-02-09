@@ -55,12 +55,12 @@ namespace FlUnit
     /// (and configuration overrides).
     /// </summary>
 <# WriteTypeParamDocs(i, i => $"The type of the { Ordinal(i) } pre-requisite already defined.", 1); #>
-	public sealed class TestBuilderWithPrerequisites<#= TList(i, "<", ">") #>
+	public sealed class TestPrerequisitesBuilder<#= TList(i, "<", ">") #>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
 
-		internal TestBuilderWithPrerequisites(
+		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides<#= i == 0 ? ")" : "," #>          
 <# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange)", 3); #>
         {
@@ -72,14 +72,14 @@ namespace FlUnit
         /// Adds a configuration override for the test.
         /// </summary>
         /// <param name="configurationOverride">The configuration override to be added.</param>
-        public TestBuilderWithPrerequisites<#= TList(i, "<", ">") #> UsingConfiguration(Action<ITestConfiguration> configurationOverride)
+        public TestPrerequisitesBuilder<#= TList(i, "<", ">") #> UsingConfiguration(Action<ITestConfiguration> configurationOverride)
         {
             // NB: We define a new enumerable and builder when overrides are added to facilitate builder re-use.
             // However, only create the new enumerable if an override is added (as opposed to in the ctor), to cut down on needless GC load.
             var overrides = new List<Action<ITestConfiguration>>(configurationOverrides);
             overrides.Add(configurationOverride);
 
-            return new TestBuilderWithPrerequisites<#= TList(i, "<", ">") #>(overrides<#= PrerequisiteBuilderPrereqArg(i) #>);
+            return new TestPrerequisitesBuilder<#= TList(i, "<", ">") #>(overrides<#= PrerequisiteBuilderPrereqArg(i) #>);
         }
 <# if (i == 0) { #>
 
@@ -89,9 +89,9 @@ namespace FlUnit
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
         /// <param name="prereq<#= i + 1 #>">The pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> Given<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> Given<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
         {
-            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false) #>);
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false) #>);
         }
 
         /// <summary>
@@ -100,9 +100,9 @@ namespace FlUnit
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
         /// <param name="prereqs<#= i + 1 #>">The pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> GivenEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
         {
-            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true) #>);
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true) #>);
         }
 <# } else if (i < MaxPrerequisiteCount) { #>
 
@@ -112,9 +112,9 @@ namespace FlUnit
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
         /// <param name="prereq<#= i + 1 #>">The pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
         {
-            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false) #>);
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false) #>);
         }
 
         /// <summary>
@@ -123,9 +123,9 @@ namespace FlUnit
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
         /// <param name="prereqs<#= i + 1 #>">The pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestBuilderWithPrerequisites<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
         {
-            return new TestBuilderWithPrerequisites<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true) #>);
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true) #>);
         }
 <# } #>
 

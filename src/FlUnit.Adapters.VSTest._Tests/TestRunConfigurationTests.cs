@@ -14,7 +14,7 @@ namespace FlUnit.Adapters.VSTest._Tests
                 Parallelise = true,
                 TestConfiguration = new
                 {
-                    FailedArrangementOutcomeIsSkipped = true
+                    ArrangementFailureCountsAsFailed = false
                 }
             });
         }
@@ -30,7 +30,7 @@ namespace FlUnit.Adapters.VSTest._Tests
                       <junksetting>i am junk</junksetting>
                       <parallelise>false</parallelise>
                       <testconfiguration>
-                        <FailedArrangementOutcomeIsSkipped>false</FailedArrangementOutcomeIsSkipped>
+                        <ArrangementFailureCountsAsFailed>true</ArrangementFailureCountsAsFailed>
                         <junksetting/>
                       </testconfiguration>
                     </flunit>
@@ -42,7 +42,7 @@ namespace FlUnit.Adapters.VSTest._Tests
                 Parallelise = false,
                 TestConfiguration = new
                 {
-                    FailedArrangementOutcomeIsSkipped = false
+                    ArrangementFailureCountsAsFailed = true
                 }
             });
         }

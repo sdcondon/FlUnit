@@ -29,16 +29,16 @@ public static class MyTests
 {
   // First, a heavily annotated example. Start by calling a method on the "TestThat" static class,
   // each of which return a builder to continue with.
-  public static Test WidgetCanProcessAThingy => TestThat
+  public static Test ProcessingOfCollaborator => TestThat
     // Arrange: Use the "Given" and "And" methods to provide delegates for obtaining each
     // pre-requisite of the test. Specifying pre-requisites is optional. Starting your test
     // with "When" is equally valid.
-    .Given(() => new Widget("widget1"))
-    .And(() => new Thingy("thingy1"))
+    .Given(() => new TestSubject())
+    .And(() => new Collaborator())
     // Act: Once all pre-requisites are specified, call "When" to specify the "Act" part of the test.
     // Provide a delegate that accepts one parameter for each pre-requisite. The delegate can return
     // a value or be void.
-    .When((wi, th) => wi.TryProcess(th))
+    .When((sut, collaborator) => sut.Process(collaborator))
     // Assert: assertions can be provided with the "ThenReturns" and "And" methods, or the "ThenThrows"
     // and "And" methods. You provide a delegate for the assertion itself and (optionally) a string
     // description for the associated test result. If you do not provide an explicit description, the text
@@ -46,9 +46,9 @@ public static class MyTests
     // "ThenReturns", the delegate should accept one parameter for each pre-requisite, and one for the
     // return value of the When clause (if it returns one). For "ThenThrows", see the third example,
     // below. Assertion failure should be indicated by a thrown exception.
-    .ThenReturns((wi, th, retVal) => retVal.Should().BeTrue())
-    .And((wi, th, retVal) => th.IsProcessed.Should().BeTrue())
-    .And((wi, th, retVal) => wi.HasProcessed.Should().BeTrue());
+    .ThenReturns((sut, collaborator, retVal) => retVal.Should().BeTrue())
+    .And((sut, collaborator, retVal) => sut.HasProcessed.Should().BeTrue())
+    .And((sut, collaborator, retVal) => collaborator.HasBeenProcessed.Should().BeTrue());
     // NB: No call required to build a Test from a builder - builders with at least one declared assertion
     // are implicitly convertible to Test instances.
 
@@ -56,30 +56,31 @@ public static class MyTests
   // object makes for more readable tests (separate given clauses is more useful when
   // when you have multiple test cases - see below). Also note how C# 9's lambda discard
   // parameters can make assertion clauses clearer. Finally, note that there is a parameterless
-  // version of ThenReturns, that adds the assertion that just verifies that the
-  // when clause returned successfully. An equivalent ThenThrows overload also exists:
-  public static Test WidgetCanProcessAThingy => TestThat
+  // version of ThenReturns, that adds an assertion that just verifies that the
+  // when clause returned successfully:
+  public static Test ProcessingOfCollaborator_ButPrettier => TestThat
     .Given(() => new
     {
-      widget = new Widget("widget1"),
-      thingy = new Thingy("thingy1")
+        sut = new TestSubject(),
+        collaborator = new Collaborator()
     })
-    .When(given => given.widget.TryProcess(given.thingy))
+    .When(given => given.sut.Process(given.collaborator))
     .ThenReturns()
     .And((_, retVal) => retVal.Should().BeTrue())
-    .And((given, _) => given.thingy.IsProcessed.Should().BeTrue())
-    .And((given, _) => given.widget.HasProcessed.Should().BeTrue());
+    .And((given, _) => given.sut.HasProcessed.Should().BeTrue())
+    .And((given, _) => given.collaborator.HasBeenProcessed.Should().BeTrue());
 
   // Expecting exceptions is easy, and test traits are supported
   // (at the test, class or assembly level):
   [Trait("Category", "Negative Tests")]
-  public static Test WidgetThrowsOnNullArg => TestThat
-    .Given(() => new Widget("widget1"))
-    .When(widget => widget.TryProcess(null))
+  public static Test ProcessThrowsOnNullCollaborator => TestThat
+    .Given(() => new TestSubject())
+    .When(sut => sut.Process(null))
     // Obviously, the difference between this and 'ThenReturns' is that the
     // final parameter of the delegate is the thrown exception, not the return value.
-    .ThenThrows((_, ex) => ex.Should().BeOfType<ArgumentNullException>())
-    .And((widget, _) => widget.HasProcessed.Should().BeFalse());
+    // A paramaterless overload of ThenThrows also exists, which adds an assertion
+    // that just verifies that an exception was thrown:
+    .ThenThrows((_, exception) => exception.Should().BeOfType(typeof(ArgumentNullException)));
 
   // Parameterised tests are supported without awkward attribute-based
   // argument retrieval. This is my favourite aspect of FlUnit - and I suspect

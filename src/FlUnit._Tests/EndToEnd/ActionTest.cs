@@ -211,29 +211,29 @@ namespace FlUnit._Tests
         public void ConfigurationOverrides()
         {
             var sharedBuilder = TestThat
-                .UsingConfiguration(c => c.FailedArrangementOutcomeIsSkipped = false);
+                .UsingConfiguration(c => c.ArrangementFailureCountsAsFailed = true);
 
             Test test1 = sharedBuilder
                 .When(() => { })
                 .ThenReturns();
 
             Test test2 = sharedBuilder
-                .UsingConfiguration(c => c.FailedArrangementOutcomeIsSkipped = true)
+                .UsingConfiguration(c => c.ArrangementFailureCountsAsFailed = false)
                 .When(() => { })
                 .ThenReturns();
 
             Configuration test1Config = new();
             test1.ApplyConfigurationOverrides(test1Config);
-            test1Config.FailedArrangementOutcomeIsSkipped = false;
+            test1Config.ArrangementFailureCountsAsFailed = true;
 
             Configuration test2Config = new();
             test2.ApplyConfigurationOverrides(test2Config);
-            test2Config.FailedArrangementOutcomeIsSkipped = true;
+            test2Config.ArrangementFailureCountsAsFailed = false;
         }
 
         private class Configuration : ITestConfiguration
         {
-            public bool FailedArrangementOutcomeIsSkipped { get; set; }
+            public bool ArrangementFailureCountsAsFailed { get; set; }
             public IResultNamingStrategy ResultNamingStrategy { get; set; }
         }
     }

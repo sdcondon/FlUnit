@@ -1,5 +1,4 @@
 ﻿using FlUnit.Configuration;
-using System;
 using System.Xml;
 
 namespace FlUnit.Adapters
@@ -11,7 +10,7 @@ namespace FlUnit.Adapters
     public class TestConfiguration : ITestConfiguration
     {
         /// <inheritdoc />
-        public bool FailedArrangementOutcomeIsSkipped { get; set; } = true;
+        public bool ArrangementFailureCountsAsFailed { get; set; } = false;
 
         /// <inheritdoc />
         public IResultNamingStrategy ResultNamingStrategy { get; set; } = new DefaultResultNamingStrategy();
@@ -29,9 +28,9 @@ namespace FlUnit.Adapters
             {
                 while (reader.NodeType != XmlNodeType.EndElement)
                 {
-                    if (reader.IsAtElementWithName(nameof(FailedArrangementOutcomeIsSkipped)))
+                    if (reader.IsAtElementWithName(nameof(ArrangementFailureCountsAsFailed)))
                     {
-                        reader.TryReadBoolean(b => configuration.FailedArrangementOutcomeIsSkipped = b);
+                        reader.TryReadBoolean(b => configuration.ArrangementFailureCountsAsFailed = b);
                     }
                     else
                     {
@@ -51,7 +50,7 @@ namespace FlUnit.Adapters
         {
             return new TestConfiguration()
             {
-                FailedArrangementOutcomeIsSkipped = FailedArrangementOutcomeIsSkipped,
+                ArrangementFailureCountsAsFailed = ArrangementFailureCountsAsFailed,
                 ResultNamingStrategy = ResultNamingStrategy,
             };
         }
