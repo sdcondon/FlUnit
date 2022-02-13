@@ -5,10 +5,8 @@ Here are a few patterns that may prove useful when using FlUnit.
 ## Affected Object Graph as Prerequisite
 
 It is entirely understandable when getting to grips with FlUnit to become stuck when trying to assert on something that is neither the return value of the `When` clause nor any of the objects referenced by it.
-
 The key point to realise here is that your prerequisites (i.e. `Given` clause outputs) don't have to be only the objects that are referenced in the "When" clause.
-
-Consider this example from SCGraphTheory.AdjacencyList, where we are testing the behaviour when removing an edge from a graph (a graph theory graph - a set of nodes and edges):
+Consider this example from SCGraphTheory.AdjacencyList, where we are testing the behaviour when removing a node from a graph (a graph theory graph - a set of nodes and edges connecting them):
 
 ```csharp
 public static Test NodeRemoval => TestThat
@@ -38,7 +36,7 @@ public static Test NodeRemoval => TestThat
 ```
 
 We only use the graph and the removed node in the "When" clause, but this operation should affect other objects too.
-By assembling an anonymous pre-requisite object consisting of all potentially affected objects, we can do this easily, while still maintaining the clear distinction between the "Arrange", "Act" and "Assert" parts of our test.
+By assembling an anonymous object consisting of all potentially affected objects as our pre-requisite, we can do this easily while still maintaining the clear distinction between the "Arrange", "Act" and "Assert" parts of our test.
 
 ## Test Cases as Records
 
