@@ -2,6 +2,44 @@
 
 Here are a few patterns that may prove useful when using FlUnit.
 
+## Affected Object Graph as Prerequisite
+
+It is entirely understandable when getting to grips with FlUnit to become stuck when trying to assert on something that is neither the return value of the `When` clause nor any of the objects referenced by it.
+
+The key point to realise here is that your prerequisites (i.e. `Given` clause outputs) don't have to be only the objects that are referenced in the "When" clause.
+
+Consider this example from SCGraphTheory.AdjacencyList, where we are testing the behaviour when removing an edge from a graph (a graph theory graph - a set of nodes and edges):
+
+```csharp
+public static Test NodeRemoval => TestThat
+    .Given(() =>
+    {
+        var graph = new Graph<Node, Edge>();
+
+        Node node1, node2, node3;
+        graph.Add(node1 = new Node());
+        graph.Add(node2 = new Node());
+        graph.Add(node3 = new Node());
+
+        Edge edge1, edge2, edge3;
+        graph.Add(edge1 = new Edge(node1, node2));
+        graph.Add(edge2 = new Edge(node2, node3));
+        graph.Add(edge3 = new Edge(node3, node1));
+
+        return new { graph, node1, node2, node3, edge1, edge2, edge3 };
+    })
+    .When(given => given.graph.Remove(given.node3))
+    .ThenReturns()
+    .And((_, returnValue) => returnValue.Should().BeTrue())
+    .And((given, _) => given.graph.Nodes.Should().BeEquivalentTo(new[] { given.node1, given.node2 }))
+    .And((given, _) => given.graph.Edges.Should().BeEquivalentTo(new[] { given.edge1 }))
+    .And((given, _) => given.node1.Edges.Should().BeEquivalentTo(new[] { given.edge1 }))
+    .And((given, _) => given.node2.Edges.Should().BeEmpty());
+```
+
+We only use the graph and the removed node in the "When" clause, but this operation should affect other objects too.
+By assembling an anonymous pre-requisite object consisting of all potentially affected objects, we can do this easily, while still maintaining the clear distinction between the "Arrange", "Act" and "Assert" parts of our test.
+
 ## Test Cases as Records
 
 Where you are testing the behaviour of some process with different inputs and expected outputs, consider creating a record encapsulating a test case and using `GivenEachOf`, like this:
