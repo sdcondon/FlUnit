@@ -2,8 +2,6 @@
 
 Other notes in no particular order.
 
-
-
 ### TDD Considerations
 
 If you're writing some tests before implementation (and using a lambda for your assertion), you'll likely need to specify the types of your parameters for your assertion to let your IDE help you write it. Appreciate this is perhaps an area where method-based test frameworks have an edge - this is a price we pay for a richer test model..
@@ -37,5 +35,5 @@ Finally, building expression trees comes at a performance cost.
 
 Test object lifetime is something you don't really need to worry about when writing tests (since its the test adapter that manages this).
 However, you may find of interest if you are wondering if the examples are `public static Test MyTest => ...` rather than `public static Test MyTest { get; } = ...` for succinctness only.
-While the abstraction doesn't require this, FlUnits `Test` implementations actually serve as containers for the pre-reqs and test action/function outcome - and are thus intended to be short-lived (to the extent that an invalidoperationexception is thrown if an adapter tries to run a Test instance twice).
+While the abstraction doesn't require this, FlUnits `Test` implementations actually serve as containers for the prerequisites and test action/function outcome - and are thus intended to be short-lived (to the extent that an invalidoperationexception is thrown if an adapter tries to run a Test instance twice).
 It is thus very intentional that the examples use a getter rather than an auto-initializer..

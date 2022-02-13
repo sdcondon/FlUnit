@@ -31,19 +31,19 @@ public static class MyTests
   // each of which return a builder to continue with.
   public static Test ProcessingOfCollaborator => TestThat
     // Arrange: Use the "Given" and "And" methods to provide delegates for obtaining each
-    // pre-requisite of the test. Specifying pre-requisites is optional. Starting your test
+    // prerequisite of the test. Specifying prerequisites is optional. Starting your test
     // with "When" is equally valid.
     .Given(() => new TestSubject())
     .And(() => new Collaborator())
-    // Act: Once all pre-requisites are specified, call "When" to specify the "Act" part of the test.
-    // Provide a delegate that accepts one parameter for each pre-requisite. The delegate can return
+    // Act: Once all prerequisites are specified, call "When" to specify the "Act" part of the test.
+    // Provide a delegate that accepts one parameter for each prerequisite. The delegate can return
     // a value or be void.
     .When((sut, collaborator) => sut.Process(collaborator))
     // Assert: assertions can be provided with the "ThenReturns" and "And" methods, or the "ThenThrows"
     // and "And" methods. You provide a delegate for the assertion itself and (optionally) a string
     // description for the associated test result. If you do not provide an explicit description, the text
     // of the assertion argument will be used - trimmed down to just its body if it is a lambda. For
-    // "ThenReturns", the delegate should accept one parameter for each pre-requisite, and one for the
+    // "ThenReturns", the delegate should accept one parameter for each prerequisite, and one for the
     // return value of the When clause (if it returns one). For "ThenThrows", see the third example,
     // below. Assertion failure should be indicated by a thrown exception.
     .ThenReturns((sut, collaborator, retVal) => retVal.Should().BeTrue())
@@ -146,11 +146,11 @@ Specific work, highest priority first:
   - Basic attachment & output support.
 This is likely to require injecting some kind of test context object.
 I really want to double-down on the convention-less/static nature of FlUnit - i.e. no convention-based ctor parameters, all discoverable via IDE method listings etc.
-Plan A right now is to introduce some kind of ITestContext as a pre-requisite if needed.
+Plan A right now is to introduce some kind of ITestContext as a prerequisite if needed.
 That is, `TestThat.GivenTestContext().And()...When((cxt, ) => ...)`.
 This particular approach doesn't allow for test context to be placed inside an anonymous prereq object, though.
 Which is perhaps a good thing? But is a mandate for users, rather than a choice.
-More concerning is that it doesn't allow context to be used during pre-req creation.
+More concerning is that it doesn't allow context to be used during prerequisite creation.
 So, instead (or as well) could allow for cxt to be specified as a parameter of Given delegates (`Given(cxt => ...)`).
 Then `GivenTestContext()` could still exist, simply as a more readable alias of `Given(cxt => cxt)`.
 Hmm, maybe - this is more complex?
