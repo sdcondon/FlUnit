@@ -29,6 +29,9 @@ namespace FlUnit
 #if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
@@ -37,10 +40,6 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions Then(
             Action<TestActionOutcome> assertion,
             string description = null,
@@ -54,13 +53,12 @@ namespace FlUnit
 #else
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions Then(Expression<Action<TestActionOutcome>> assertion)
         {
             return new ActionTestBuilderWithAssertions(
@@ -71,14 +69,13 @@ namespace FlUnit
 
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions Then(Action<TestActionOutcome> assertion, string description)
         {
             return new ActionTestBuilderWithAssertions(
@@ -263,6 +260,9 @@ namespace FlUnit
 #if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
@@ -271,10 +271,6 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions<T1> Then(
             Action<T1, TestActionOutcome> assertion,
             string description = null,
@@ -289,13 +285,12 @@ namespace FlUnit
 #else
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions<T1> Then(Expression<Action<T1, TestActionOutcome>> assertion)
         {
             return new ActionTestBuilderWithAssertions<T1>(
@@ -307,14 +302,13 @@ namespace FlUnit
 
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions<T1> Then(Action<T1, TestActionOutcome> assertion, string description)
         {
             return new ActionTestBuilderWithAssertions<T1>(
@@ -511,6 +505,9 @@ namespace FlUnit
 #if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
@@ -519,10 +516,6 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions<T1, T2> Then(
             Action<T1, T2, TestActionOutcome> assertion,
             string description = null,
@@ -537,13 +530,12 @@ namespace FlUnit
 #else
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions<T1, T2> Then(Expression<Action<T1, T2, TestActionOutcome>> assertion)
         {
             return new ActionTestBuilderWithAssertions<T1, T2>(
@@ -555,14 +547,13 @@ namespace FlUnit
 
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions<T1, T2> Then(Action<T1, T2, TestActionOutcome> assertion, string description)
         {
             return new ActionTestBuilderWithAssertions<T1, T2>(
@@ -760,6 +751,9 @@ namespace FlUnit
 #if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
@@ -768,10 +762,6 @@ namespace FlUnit
         /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
         /// </param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions<T1, T2, T3> Then(
             Action<T1, T2, T3, TestActionOutcome> assertion,
             string description = null,
@@ -786,13 +776,12 @@ namespace FlUnit
 #else
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions<T1, T2, T3> Then(Expression<Action<T1, T2, T3, TestActionOutcome>> assertion)
         {
             return new ActionTestBuilderWithAssertions<T1, T2, T3>(
@@ -804,14 +793,13 @@ namespace FlUnit
 
         /// <summary>
         /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
         /// </summary>
         /// <param name="assertion">The assertion.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
-        /// <remarks>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </remarks>
         public ActionTestBuilderWithAssertions<T1, T2, T3> Then(Action<T1, T2, T3, TestActionOutcome> assertion, string description)
         {
             return new ActionTestBuilderWithAssertions<T1, T2, T3>(

@@ -84,8 +84,7 @@ public static class MyTests
 
   // Parameterised tests are supported without awkward attribute-based
   // argument retrieval. This is my favourite aspect of FlUnit - and I suspect
-  // that anyone who tend toward test cases and parameterised tests
-  // will enjoy this.
+  // that anyone who tends toward parameterised tests will enjoy this.
   public static Test SumOfEvenAndOdd => TestThat
     .GivenEachOf(() => new[] { 1, 3, 5 })
     .AndEachOf(() => new[] { 2, 4, 6 })

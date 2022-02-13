@@ -21,13 +21,13 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            var runSettings = TestRunConfiguration.ReadFromXml(runContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
+            var testRunConfiguration = TestRunConfiguration.ReadFromXml(runContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
 
             RunTests(
-                TestDiscoverer.MakeTestCases(sources, runContext, null, runSettings),
+                TestDiscoverer.MakeTestCases(sources, runContext, null, testRunConfiguration),
                 runContext,
                 frameworkHandle,
-                runSettings);
+                testRunConfiguration);
         }
 
         /// <inheritdoc />
@@ -36,13 +36,13 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            var runSettings = TestRunConfiguration.ReadFromXml(runContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
+            var testRunConfiguration = TestRunConfiguration.ReadFromXml(runContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
 
             RunTests(
                 tests,
                 runContext,
                 frameworkHandle,
-                runSettings);
+                testRunConfiguration);
         }
 
         /// <inheritdoc />

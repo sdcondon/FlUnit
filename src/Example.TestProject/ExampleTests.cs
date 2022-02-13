@@ -8,7 +8,7 @@ namespace Example.TestProject
     public static class ExampleTests
     {
         // Basic example
-        public static Test ProcessHasSideEffects => TestThat
+        public static Test ProcessingOfCollaborator => TestThat
             .Given(() => new TestSubject())
             .And(() => new Collaborator())
             .When((sut, collaborator) => sut.Process(collaborator))
@@ -19,7 +19,7 @@ namespace Example.TestProject
         // Basic example with single anonymous object-valued 'Given' clause,
         // explicit separate assertion for verifying that the 'When' clause returned rather than throwing,
         // and discard params to make assertion clauses clearer
-        public static Test ProcessHasSideEffects2 => TestThat
+        public static Test ProcessingOfCollaborator_ButPrettier => TestThat
             .Given(() => new
             {
                 sut = new TestSubject(),
@@ -68,7 +68,7 @@ namespace Example.TestProject
             .When(sut => sut.Process(null))
             .ThenReturns((_, retVal) => retVal.Should().BeTrue());
 
-        // Test with no prereqs
+        // Test with no prerequisites
         public static Test CtorDoesntThrow => TestThat
             .When(() => new TestSubject())
             .ThenReturns(retVal => retVal.Should().BeOfType<TestSubject>());
