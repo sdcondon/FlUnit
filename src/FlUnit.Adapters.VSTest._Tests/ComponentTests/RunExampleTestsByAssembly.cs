@@ -36,7 +36,7 @@ namespace FlUnit.Adapters.VSTest._Tests
 
             // Assert
             AssertTestResult(
-                "Example.TestProject.ExampleTests.ProcessHasSideEffects",
+                "Example.TestProject.ExampleTests.ProcessingOfCollaborator",
                 new[]
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
@@ -50,7 +50,7 @@ namespace FlUnit.Adapters.VSTest._Tests
                 });
 
             AssertTestResult(
-                "Example.TestProject.ExampleTests.ProcessHasSideEffects2",
+                "Example.TestProject.ExampleTests.ProcessingOfCollaborator_ButPrettier",
                 new[]
                 {
                     new Trait("ClassLevelTrait", "ExampleTests")
