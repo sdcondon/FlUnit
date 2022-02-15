@@ -1,17 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace FlUnit
 {
     /// <summary>
     /// Interface for types representing an individual test case.
     /// </summary>
-    public interface ITestCase
+    public interface ITestCase : IFormattable
     {
-        /// <summary>
-        /// Gets the description of this case.
-        /// </summary>
-        string Description { get; }
-
         /// <summary>
         /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
         /// </summary>

@@ -26,7 +26,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("Test action should return successfully");
+            assertion.ToString().ShouldBe("Test action should return successfully");
             ((Action)assertion.Assert).ShouldNotThrow();
         }
 
@@ -47,7 +47,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("sb.Length.ShouldBe(1)");
+            assertion.ToString().ShouldBe("sb.Length.ShouldBe(1)");
             ((Action)assertion.Assert).ShouldNotThrow();
         }
 
@@ -70,11 +70,11 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(2);
 
             var assertion1 = test.Cases.Single().Assertions.First();
-            assertion1.Description.ShouldBe("Length should be correct");
+            assertion1.ToString().ShouldBe("Length should be correct");
             ((Action)assertion1.Assert).ShouldNotThrow();
 
             var assertion2 = test.Cases.Single().Assertions.Skip(1).First();
-            assertion2.Description.ShouldBe("Capacity should be consistent");
+            assertion2.ToString().ShouldBe("Capacity should be consistent");
             ((Action)assertion2.Assert).ShouldNotThrow();
         }
 
@@ -110,19 +110,19 @@ namespace FlUnit._Tests
             var case1 = test.Cases.First();
             ((Action)case1.Act).ShouldNotThrow();
             case1.Assertions.Count.ShouldBe(1);
-            case1.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
+            case1.Assertions.Single().ToString().ShouldBe("Outcome should be as expected");
             ((Action)case1.Assertions.Single().Assert).ShouldNotThrow();
 
             var case2 = test.Cases.Skip(1).First();
             ((Action)case2.Act).ShouldNotThrow();
             case2.Assertions.Count.ShouldBe(1);
-            case2.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
+            case2.Assertions.Single().ToString().ShouldBe("Outcome should be as expected");
             ((Action)case2.Assertions.Single().Assert).ShouldNotThrow();
 
             var case3 = test.Cases.Skip(2).First();
             ((Action)case3.Act).ShouldNotThrow();
             case3.Assertions.Count.ShouldBe(1);
-            case3.Assertions.Single().Description.ShouldBe("Outcome should be as expected");
+            case3.Assertions.Single().ToString().ShouldBe("Outcome should be as expected");
             ((Action)case3.Assertions.Single().Assert).ShouldNotThrow();
         }
 
@@ -144,9 +144,9 @@ namespace FlUnit._Tests
 
             var assertion = test.Cases.Single().Assertions.Single();
 #if NET6_0
-            assertion.Description.ShouldBe("exception.ShouldBeOfType<ArgumentOutOfRangeException>()");
+            assertion.ToString().ShouldBe("exception.ShouldBeOfType<ArgumentOutOfRangeException>()");
 #else // Example of LINQ not being a great solution - round trip..
-            assertion.Description.ShouldBe("exception.ShouldBeOfType()");
+            assertion.ToString().ShouldBe("exception.ShouldBeOfType()");
 #endif
             ((Action)assertion.Assert).ShouldNotThrow();
         }
@@ -168,7 +168,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("Test action should throw an exception");
+            assertion.ToString().ShouldBe("Test action should throw an exception");
             ((Action)assertion.Assert).ShouldNotThrow();
         }
 
@@ -189,7 +189,7 @@ namespace FlUnit._Tests
             test.Cases.Single().Assertions.Count.ShouldBe(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
-            assertion.Description.ShouldBe("sb.Length.ShouldBe(2)");
+            assertion.ToString().ShouldBe("sb.Length.ShouldBe(2)");
             ((Action)assertion.Assert).ShouldThrow(typeof(TestFailureException));
         }
 

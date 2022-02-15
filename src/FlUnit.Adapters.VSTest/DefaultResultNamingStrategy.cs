@@ -15,17 +15,15 @@ namespace FlUnit.Adapters
             // As with duration, there is room for some configuration of naming strategy at some point.
             if (test.Cases.Count > 1 && testCase.Assertions.Count > 1)
             {
-                return string.IsNullOrEmpty(testCase.Description)
-                    ? assertion.Description
-                    : string.Format(Messages.DefaultResultNamingStrategyFormat, assertion.Description, testCase.Description);
+                return string.Format(Messages.DefaultResultNamingStrategyFormat, assertion, testCase);
             }
             else if (test.Cases.Count > 1)
             {
-                return testCase.Description;
+                return testCase.ToString();
             }
             else if (testCase.Assertions.Count > 1)
             {
-                return assertion.Description;
+                return assertion.ToString();
             }
             else
             {

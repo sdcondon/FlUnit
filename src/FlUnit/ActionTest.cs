@@ -78,9 +78,6 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public string Description => string.Empty;
-
-            /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
@@ -101,6 +98,18 @@ namespace FlUnit
                     invocationOutcome = new TestActionOutcome(e);
                 }
             }
+
+            /// <inheritdoc />
+            public string ToString(string format, IFormatProvider formatProvider)
+            {
+                return "[implicit test case]";
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return ToString(null, null);
+            }
         }
 
         /// <summary>
@@ -110,6 +119,7 @@ namespace FlUnit
         {
             private readonly Case testCase;
             private readonly Action<TestActionOutcome> assert;
+            private readonly string description;
 
             internal Assertion(
                 Case testCase,
@@ -118,11 +128,8 @@ namespace FlUnit
             {
                 this.testCase = testCase;
                 this.assert = assert;
-                this.Description = description;
+                this.description = description;
             }
-
-            /// <inheritdoc />
-            public string Description { get; }
 
             /// <inheritdoc />
             public void Assert()
@@ -140,6 +147,18 @@ namespace FlUnit
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
+            }
+
+            /// <inheritdoc />
+            public string ToString(string format, IFormatProvider formatProvider)
+            {
+                return description;
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return ToString(null, null);
             }
         }
     }
@@ -225,9 +244,6 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public string Description => prereqs.ToString();
-
-            /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
@@ -248,6 +264,18 @@ namespace FlUnit
                     invocationOutcome = new TestActionOutcome(e);
                 }
             }
+
+            /// <inheritdoc />
+            public string ToString(string format, IFormatProvider formatProvider)
+            {
+                return prereqs.ToString();
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return ToString(null, null);
+            }
         }
 
         /// <summary>
@@ -257,6 +285,7 @@ namespace FlUnit
         {
             private readonly Case testCase;
             private readonly Action<T1, TestActionOutcome> assert;
+            private readonly string description;
 
             internal Assertion(
                 Case testCase,
@@ -265,11 +294,8 @@ namespace FlUnit
             {
                 this.testCase = testCase;
                 this.assert = assert;
-                this.Description = description;
+                this.description = description;
             }
-
-            /// <inheritdoc />
-            public string Description { get; }
 
             /// <inheritdoc />
             public void Assert()
@@ -287,6 +313,18 @@ namespace FlUnit
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
+            }
+
+            /// <inheritdoc />
+            public string ToString(string format, IFormatProvider formatProvider)
+            {
+                return description;
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return ToString(null, null);
             }
         }
     }
@@ -376,9 +414,6 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public string Description => prereqs.ToString();
-
-            /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
@@ -399,6 +434,18 @@ namespace FlUnit
                     invocationOutcome = new TestActionOutcome(e);
                 }
             }
+
+            /// <inheritdoc />
+            public string ToString(string format, IFormatProvider formatProvider)
+            {
+                return prereqs.ToString();
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return ToString(null, null);
+            }
         }
 
         /// <summary>
@@ -408,6 +455,7 @@ namespace FlUnit
         {
             private readonly Case testCase;
             private readonly Action<T1, T2, TestActionOutcome> assert;
+            private readonly string description;
 
             internal Assertion(
                 Case testCase,
@@ -416,11 +464,8 @@ namespace FlUnit
             {
                 this.testCase = testCase;
                 this.assert = assert;
-                this.Description = description;
+                this.description = description;
             }
-
-            /// <inheritdoc />
-            public string Description { get; }
 
             /// <inheritdoc />
             public void Assert()
@@ -438,6 +483,18 @@ namespace FlUnit
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
+            }
+
+            /// <inheritdoc />
+            public string ToString(string format, IFormatProvider formatProvider)
+            {
+                return description;
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return ToString(null, null);
             }
         }
     }
@@ -529,9 +586,6 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public string Description => prereqs.ToString();
-
-            /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
@@ -552,6 +606,18 @@ namespace FlUnit
                     invocationOutcome = new TestActionOutcome(e);
                 }
             }
+
+            /// <inheritdoc />
+            public string ToString(string format, IFormatProvider formatProvider)
+            {
+                return prereqs.ToString();
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return ToString(null, null);
+            }
         }
 
         /// <summary>
@@ -561,6 +627,7 @@ namespace FlUnit
         {
             private readonly Case testCase;
             private readonly Action<T1, T2, T3, TestActionOutcome> assert;
+            private readonly string description;
 
             internal Assertion(
                 Case testCase,
@@ -569,11 +636,8 @@ namespace FlUnit
             {
                 this.testCase = testCase;
                 this.assert = assert;
-                this.Description = description;
+                this.description = description;
             }
-
-            /// <inheritdoc />
-            public string Description { get; }
 
             /// <inheritdoc />
             public void Assert()
@@ -591,6 +655,18 @@ namespace FlUnit
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
+            }
+
+            /// <inheritdoc />
+            public string ToString(string format, IFormatProvider formatProvider)
+            {
+                return description;
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return ToString(null, null);
             }
         }
     }
