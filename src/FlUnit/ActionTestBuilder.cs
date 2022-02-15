@@ -970,4 +970,499 @@ namespace FlUnit
         }
 #endif
     }
+
+    /// <summary>
+    /// Builder for providing the first assertion for a test with 4 "Given" clauses
+    /// and for which the "When" clause does not return a value.
+    /// </summary>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
+    /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
+    /// <typeparam name="T4">The type of the 4th "Given" clause of the test.</typeparam>
+    public sealed class ActionTestBuilder<T1, T2, T3, T4>
+    {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange;
+        private readonly Action<T1, T2, T3, T4> testAction;
+
+        internal ActionTestBuilder(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange,
+            Action<T1, T2, T3, T4> testAction)
+        {
+            this.configurationOverrides = configurationOverrides;
+            this.arrange = arrange;
+            this.testAction = testAction;
+        }
+
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4> Then(
+            Action<T1, T2, T3, T4, TestActionOutcome> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4> Then(Expression<Action<T1, T2, T3, T4, TestActionOutcome>> assertion)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4>.AssertionImpl(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4> Then(Action<T1, T2, T3, T4, TestActionOutcome> assertion, string description)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description));
+        }
+#endif
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> ThenReturns()
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldReturn));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> ThenReturns(string description)
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>.AssertionImpl(description));
+        }
+
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> ThenReturns(
+            Action<T1, T2, T3, T4> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> ThenReturns(Expression<Action<T1, T2, T3, T4>> assertion)
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>.AssertionImpl(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> ThenReturns(Action<T1, T2, T3, T4> assertion, string description)
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description));
+        }
+#endif
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4> ThenThrows()
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldThrow));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4> ThenThrows(string description)
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>.AssertionImpl(description));
+        }
+
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4> ThenThrows(
+            Action<T1, T2, T3, T4, Exception> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4> ThenThrows(Expression<Action<T1, T2, T3, T4, Exception>> assertion)
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>.AssertionImpl(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4> ThenThrows(Action<T1, T2, T3, T4, Exception> assertion, string description)
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description));
+        }
+#endif
+    }
+
+    /// <summary>
+    /// Builder for providing the first assertion for a test with 5 "Given" clauses
+    /// and for which the "When" clause does not return a value.
+    /// </summary>
+    /// <typeparam name="T1">The type of the 1st "Given" clause of the test.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd "Given" clause of the test.</typeparam>
+    /// <typeparam name="T3">The type of the 3rd "Given" clause of the test.</typeparam>
+    /// <typeparam name="T4">The type of the 4th "Given" clause of the test.</typeparam>
+    /// <typeparam name="T5">The type of the 5th "Given" clause of the test.</typeparam>
+    public sealed class ActionTestBuilder<T1, T2, T3, T4, T5>
+    {
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange;
+        private readonly Action<T1, T2, T3, T4, T5> testAction;
+
+        internal ActionTestBuilder(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange,
+            Action<T1, T2, T3, T4, T5> testAction)
+        {
+            this.configurationOverrides = configurationOverrides;
+            this.arrange = arrange;
+            this.testAction = testAction;
+        }
+
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5> Then(
+            Action<T1, T2, T3, T4, T5, TestActionOutcome> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5> Then(Expression<Action<T1, T2, T3, T4, T5, TestActionOutcome>> assertion)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5> Then(Action<T1, T2, T3, T4, T5, TestActionOutcome> assertion, string description)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description));
+        }
+#endif
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> ThenReturns()
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldReturn));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> ThenReturns(string description)
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>.AssertionImpl(description));
+        }
+
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> ThenReturns(
+            Action<T1, T2, T3, T4, T5> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> ThenReturns(Expression<Action<T1, T2, T3, T4, T5>> assertion)
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to return successfully.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> ThenReturns(Action<T1, T2, T3, T4, T5> assertion, string description)
+        {
+            return new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description));
+        }
+#endif
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5> ThenThrows()
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>.AssertionImpl(Messages.ImplicitAssertionTestActionShouldThrow));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
+        /// </summary>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5> ThenThrows(string description)
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>.AssertionImpl(description));
+        }
+
+#if NET6_0
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5> ThenThrows(
+            Action<T1, T2, T3, T4, T5, Exception> assertion,
+            string description = null,
+            [CallerArgumentExpression("assertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+#else
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5> ThenThrows(Expression<Action<T1, T2, T3, T4, T5, Exception>> assertion)
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test if the test action is expected to throw an exception.
+        /// </summary>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5> ThenThrows(Action<T1, T2, T3, T4, T5, Exception> assertion, string description)
+        {
+            return new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description));
+        }
+#endif
+    }
 }

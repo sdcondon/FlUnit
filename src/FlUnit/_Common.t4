@@ -2,7 +2,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Linq" #><#+
 
-const int MaxPrerequisiteCount = 3;
+const int MaxPrerequisiteCount = 5;
 const int IndentSize = 4;
 
 string TypeParamDocs(int i, Func<int, string> desc)

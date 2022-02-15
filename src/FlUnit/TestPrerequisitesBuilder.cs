@@ -262,6 +262,28 @@ namespace FlUnit
         }
 
         /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T4">The type of the pre-requisite.</typeparam>
+        /// <param name="prereq4">The pre-requisite.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4> And<T4>(Func<T4> prereq4)
+        {
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, new SinglePrerequisiteClosure<T4>(prereq4).Arrange));
+        }
+
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T4">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs4">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4> AndEachOf<T4>(Func<IEnumerable<T4>> prereqs4)
+        {
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, prereqs4));
+        }
+
+        /// <summary>
         /// Adds a "When" clause that does not return a value.
         /// </summary>
         /// <param name="testAction">The function that is the "When" clause of the test.</param>
@@ -279,6 +301,141 @@ namespace FlUnit
         public FunctionTestBuilder<T1, T2, T3, TResult> When<TResult>(Func<T1, T2, T3, TResult> testFunction)
         {
             return new FunctionTestBuilder<T1, T2, T3, TResult>(configurationOverrides, arrange, testFunction);
+        }
+	}
+
+	/// <summary>
+    /// Test builder for which the "When" clause has not yet been provided - and as such can still be given more pre-requisites
+    /// (and configuration overrides).
+    /// </summary>
+    /// <typeparam name="T1">The type of the 1st pre-requisite already defined.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd pre-requisite already defined.</typeparam>
+    /// <typeparam name="T3">The type of the 3rd pre-requisite already defined.</typeparam>
+    /// <typeparam name="T4">The type of the 4th pre-requisite already defined.</typeparam>
+	public sealed class TestPrerequisitesBuilder<T1, T2, T3, T4>
+	{
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange;
+
+		internal TestPrerequisitesBuilder(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,          
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange)
+        {
+            this.configurationOverrides = configurationOverrides;
+            this.arrange = arrange;
+        }
+
+        /// <summary>
+        /// Adds a configuration override for the test.
+        /// </summary>
+        /// <param name="configurationOverride">The configuration override to be added.</param>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4> UsingConfiguration(Action<ITestConfiguration> configurationOverride)
+        {
+            // NB: We define a new enumerable and builder when overrides are added to facilitate builder re-use.
+            // However, only create the new enumerable if an override is added (as opposed to in the ctor), to cut down on needless GC load.
+            var overrides = new List<Action<ITestConfiguration>>(configurationOverrides);
+            overrides.Add(configurationOverride);
+
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4>(overrides, (arrange.Item1, arrange.Item2, arrange.Item3, arrange.Item4));
+        }
+
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T5">The type of the pre-requisite.</typeparam>
+        /// <param name="prereq5">The pre-requisite.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> And<T5>(Func<T5> prereq5)
+        {
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4, T5>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, arrange.Item4, new SinglePrerequisiteClosure<T5>(prereq5).Arrange));
+        }
+
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T5">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs5">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> AndEachOf<T5>(Func<IEnumerable<T5>> prereqs5)
+        {
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4, T5>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, arrange.Item4, prereqs5));
+        }
+
+        /// <summary>
+        /// Adds a "When" clause that does not return a value.
+        /// </summary>
+        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <returns>A builder for providing "Then" clauses.</returns>
+        public ActionTestBuilder<T1, T2, T3, T4> When(Action<T1, T2, T3, T4> testAction)
+        {
+            return new ActionTestBuilder<T1, T2, T3, T4>(configurationOverrides, arrange, testAction);
+        }
+
+        /// <summary>
+        /// Adds a "When" clause that returns a value.
+        /// </summary>
+        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <returns>A builder for providing "Then" clauses.</returns>
+        public FunctionTestBuilder<T1, T2, T3, T4, TResult> When<TResult>(Func<T1, T2, T3, T4, TResult> testFunction)
+        {
+            return new FunctionTestBuilder<T1, T2, T3, T4, TResult>(configurationOverrides, arrange, testFunction);
+        }
+	}
+
+	/// <summary>
+    /// Test builder for which the "When" clause has not yet been provided - and as such can still be given more pre-requisites
+    /// (and configuration overrides).
+    /// </summary>
+    /// <typeparam name="T1">The type of the 1st pre-requisite already defined.</typeparam>
+    /// <typeparam name="T2">The type of the 2nd pre-requisite already defined.</typeparam>
+    /// <typeparam name="T3">The type of the 3rd pre-requisite already defined.</typeparam>
+    /// <typeparam name="T4">The type of the 4th pre-requisite already defined.</typeparam>
+    /// <typeparam name="T5">The type of the 5th pre-requisite already defined.</typeparam>
+	public sealed class TestPrerequisitesBuilder<T1, T2, T3, T4, T5>
+	{
+        private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
+        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange;
+
+		internal TestPrerequisitesBuilder(
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides,          
+            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange)
+        {
+            this.configurationOverrides = configurationOverrides;
+            this.arrange = arrange;
+        }
+
+        /// <summary>
+        /// Adds a configuration override for the test.
+        /// </summary>
+        /// <param name="configurationOverride">The configuration override to be added.</param>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> UsingConfiguration(Action<ITestConfiguration> configurationOverride)
+        {
+            // NB: We define a new enumerable and builder when overrides are added to facilitate builder re-use.
+            // However, only create the new enumerable if an override is added (as opposed to in the ctor), to cut down on needless GC load.
+            var overrides = new List<Action<ITestConfiguration>>(configurationOverrides);
+            overrides.Add(configurationOverride);
+
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4, T5>(overrides, (arrange.Item1, arrange.Item2, arrange.Item3, arrange.Item4, arrange.Item5));
+        }
+
+        /// <summary>
+        /// Adds a "When" clause that does not return a value.
+        /// </summary>
+        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <returns>A builder for providing "Then" clauses.</returns>
+        public ActionTestBuilder<T1, T2, T3, T4, T5> When(Action<T1, T2, T3, T4, T5> testAction)
+        {
+            return new ActionTestBuilder<T1, T2, T3, T4, T5>(configurationOverrides, arrange, testAction);
+        }
+
+        /// <summary>
+        /// Adds a "When" clause that returns a value.
+        /// </summary>
+        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <returns>A builder for providing "Then" clauses.</returns>
+        public FunctionTestBuilder<T1, T2, T3, T4, T5, TResult> When<TResult>(Func<T1, T2, T3, T4, T5, TResult> testFunction)
+        {
+            return new FunctionTestBuilder<T1, T2, T3, T4, T5, TResult>(configurationOverrides, arrange, testFunction);
         }
 	}
 }
