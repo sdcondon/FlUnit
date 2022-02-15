@@ -11,6 +11,9 @@ Consider the following example from SCGraphTheory.AdjacencyList, where we are te
 We only use the graph and the removed node in the "When" clause, but this operation should affect other objects too.
 By assembling an anonymous object consisting of all potentially affected objects as our prerequisite, we can do this easily while still maintaining the clear distinction between the "Arrange", "Act" and "Assert" parts of our test.
 
+Note how similar this looks to a test you might write with a method-based framework - excepting the addition of the overhead of the creation of the anonymous object for prereqs and the delegate parameters.
+Whether what FlUnit offers (e.g. richer test result behaviour and ease of parameterised testing) outweighs this overhead is a key decision to make when deciding if FlUnit is right for your project.
+
 ```csharp
 public static Test NodeRemoval => TestThat
     .Given(() =>

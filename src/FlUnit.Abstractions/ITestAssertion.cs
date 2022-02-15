@@ -3,7 +3,7 @@
 namespace FlUnit
 {
     /// <summary>
-    /// Interface for types representing a invocable assertion for a test.
+    /// Interface for types representing a testable assertion for a test.
     /// </summary>
     public interface ITestAssertion : IFormattable
     {

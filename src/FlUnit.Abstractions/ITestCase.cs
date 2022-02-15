@@ -9,7 +9,7 @@ namespace FlUnit
     public interface ITestCase : IFormattable
     {
         /// <summary>
-        /// Named assertions that should all succeed (that is, not throw) once <see cref="Act"/> has been invoked.
+        /// Assertions that should all succeed (that is, not throw) once the <see cref="Act"/> method has been invoked.
         /// </summary>
         IReadOnlyCollection<ITestAssertion> Assertions { get; }
 

@@ -1,9 +1,10 @@
-# FlUnit Roadmap
+﻿# FlUnit Roadmap
 
 Proper issue tracking would be overkill at this point, so just a bullet list to organise my thoughts:
 
 - *(Feb - v1.0)* V1 diligence & release
-  - Split into separate repos for ease of versioning & release
+  - Increased maximum prerequisite count from 3 to 5 ✓
+  - Split into separate repos for ease of versioning & release - probably move the docs into a github pages repo
 - *(May / Jun - v1.1)* Possible post-v1 additions (after a break to work on other projects):
   - VSTest platform adapter improvements
     - Improvement of stack traces on test failure (eliminate FlUnit stack frames completely)
@@ -24,7 +25,7 @@ So, instead (or as well) could allow for cxt to be specified as a parameter of G
 Then `GivenTestContext()` could still exist, simply as a more readable alias of `Given(cxt => cxt)`.
 Hmm, maybe - this is more complex?
 Still mulling this one over.
-- *(At some point, probably - v1.2 or later)* Other features:
+- *(At some point, maybe - v1.2 or later)* Other features:
   - Support for async tests?
 
 Not going to do, at least in the near future:

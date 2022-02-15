@@ -7,9 +7,9 @@ namespace FlUnit
     /// implement to communicate error details to the test runner.
     /// </summary>
     /// <remarks>
-    /// Platform adapters should handle any thrown exception by recording a test failure result,
-    /// but using this interface gives test implementations finer control over the test error
-    /// message and stack trace (for example, to omit framework frames from the stack traces).
+    /// Platform adapters should handle *any* thrown exception by recording a test failure result,
+    /// but implementing this interface gives test implementations fine control over the error
+    /// message and stack trace included in the result.
     /// </remarks>
     public interface ITestFailureDetails
     {
