@@ -24,4 +24,4 @@ Available documentation can be found in the docs folder of this repository for t
   * **[Useful Patterns](./docs/user-guide/useful-patterns.md):** A few patterns that may prove useful when writing FlUnit tests
   * **[Test Run Configuration](./docs/user-guide/test-run-configuration.md):** What aspects of test execution can be configured, and how to accomplish this
   * **[Other Notes](./docs/user-guide/other-notes.md):** Assorted notes regarding the design of FlUnit and its usage
-* **[Roadmap](./docs/roadmap.md):** Proper issue tracking would be overkill at this point, so there's just some bullet points to organise my thoughts
+* **[Roadmap](./docs/roadmap.md):** Proper issue tracking would be overkill at this point, so there are just some bullet points to organise my thoughts
