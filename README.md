@@ -18,7 +18,7 @@ public static Test SumOfEvenAndOdd => TestThat
 ```
 
 Available documentation can be found in the docs folder of this repository for the moment. Specifically, we have:
-* **[User Guide](./docs/user-guide/README.md):** FlUnits user guide is admittedly a little sparse. The degree to which it is expanded upon will correlate with FlUnit's popularity..
+* **[User Guide](./docs/user-guide/README.md):** FlUnit's user guide is admittedly a little sparse. The degree to which it is expanded upon will correlate with FlUnit's popularity..
   * **[Getting Started](./docs/user-guide/getting-started.md):** Instructions for getting started with FlUnit.
   * **[Why FlUnit?](./docs/user-guide/why-flunit.md):** A brief overview on why you might want to use FlUnit (and why not).
   * **[Useful Patterns](./docs/user-guide/useful-patterns.md):** A few patterns that may prove useful when writing FlUnit tests
