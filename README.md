@@ -121,20 +121,7 @@ General ongoing work:
 
 Specific work, highest priority first:
 - *(Feb - v1.0)* V1 diligence & release
-  - Get some performance benchmarks in place ✓
-  - Documentation improvements ✓
-  - Resolve most TODOs: ✓
-    - Localisation basics ✓
-    - Tweak ITraitProvider interface ✓
-    - A bit more (probably uneeded, but easy and good practice) robustness in TestRun class ✓
-    - Quickly look into parallelisation in test discovery ✓
-    - Improve stack traces in failure results & fix awkward `throw new Exception` occurence in Outcome classes ✓
-    - Improved error message when an unexpected exception is thrown by a "When" clause ✓
-  - Review abstractions - for flexibility / stability
-    - Changed Trait to ITrait. Might be overkill, but meh ✓
-    - Want to look again at `Description` props of ITestCase and IAssertion vs flexibility of result naming. Should anything be done pre-v1 w.r.t. custom formattability of these objects?
-  - README in packages ✓
-  - Split into separate repos for ease of versioning & release?
+  - Split into separate repos for ease of versioning & release
 - *(May / Jun - v1.1)* Possible post-v1 additions (after a break to work on other projects):
   - VSTest platform adapter improvements
     - Improvement of stack traces on test failure (eliminate FlUnit stack frames completely)
