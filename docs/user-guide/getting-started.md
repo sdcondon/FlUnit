@@ -100,7 +100,7 @@ With the VSTest adapter:
     ![Visual Studio Test Result Example](./VSTestResultExample.png)
 * The duration reported for each result is the time taken for the `When` clause (and only the `When` clause) to execute. Configurability of this behaviour is on the list for v1.1.
 
-# Why FlUnit?
+## Why FlUnit?
 
 Introduction complete, now is a good time to talk about why you might want to use FlUnit (and why not).
 
