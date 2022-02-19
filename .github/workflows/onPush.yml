@@ -19,7 +19,3 @@ jobs:
     - name: Run FlUnit Tests
       working-directory: ./src/FlUnit._Tests
       run: dotnet test
-
-    - name: Run VSTest Adapter Tests
-      working-directory: ./src/FlUnit.Adapters.VSTest._Tests
-      run: dotnet test

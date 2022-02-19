@@ -4,6 +4,7 @@
 
 [![NuGet version (FlUnit)](https://img.shields.io/nuget/v/FlUnit.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit/) [![NuGet downloads (FlUnit)](https://img.shields.io/nuget/dt/FlUnit.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit/)
 
+This repo contains the source code for the core library of the FlUnit framework.
 FlUnit is a test framework in which tests are written using [builders](https://en.wikipedia.org/wiki/Builder_pattern) that expose a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface), like this:
 
 ```csharp
@@ -19,7 +20,7 @@ public static Test SumOfEvenAndOdd => TestThat
 
 Available documentation can be found in the docs folder of this repository for the moment. Specifically, we have:
 * **[User Guide](./docs/user-guide/README.md):** FlUnit's user guide is admittedly a little sparse. The degree to which it is expanded upon will correlate with FlUnit's popularity..
-  * **[Getting Started](./docs/user-guide/getting-started.md):** Instructions for getting started with FlUnit.
+  * **[Getting Started](./docs/user-guide/getting-started.md):** Instructions for getting started with FlUnit
   * **[Useful Patterns](./docs/user-guide/useful-patterns.md):** A few patterns that may prove useful when writing FlUnit tests
   * **[Test Run Configuration](./docs/user-guide/test-run-configuration.md):** What aspects of test execution can be configured, and how to accomplish this
   * **[Other Notes](./docs/user-guide/other-notes.md):** Assorted notes regarding the design of FlUnit and its usage

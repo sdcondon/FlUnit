@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <None Include="$(SolutionDir)\FlUnitIcon.png" Link="FlUnitIcon.png" Pack="true" PackagePath="" />
-    <None Include="README.md" Pack="true" PackagePath=""/>
+    <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,6 +62,10 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
 	</None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FlUnit.Abstractions" Version="1.*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -212,10 +216,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\FlUnit.Abstractions\FlUnit.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
