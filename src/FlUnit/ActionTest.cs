@@ -61,6 +61,13 @@ namespace FlUnit
             }
         }
 
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            // TODO: allow for tidy-up. perhaps dispose IDisposable prereqs (on the assumption that we
+            // own them) or invoke custom dispose method..
+        }
+
         /// <summary>
         /// Implementation of <see cref="ITestCase"/> used by <see cref="ActionTest"/>s.
         /// </summary>
@@ -222,6 +229,13 @@ namespace FlUnit
             {
                 throw new TestFailureException(string.Format(Messages.ArrangementFailureMessageFormat, e.Message), e.StackTrace, e);
             }
+        }
+
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            // TODO: allow for tidy-up. perhaps dispose IDisposable prereqs (on the assumption that we
+            // own them) or invoke custom dispose method..
         }
 
         /// <summary>
@@ -394,6 +408,13 @@ namespace FlUnit
             }
         }
 
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            // TODO: allow for tidy-up. perhaps dispose IDisposable prereqs (on the assumption that we
+            // own them) or invoke custom dispose method..
+        }
+
         /// <summary>
         /// Implementation of <see cref="ITestCase"/> used by <see cref="ActionTest{T1, T2}"/>s.
         /// </summary>
@@ -564,6 +585,13 @@ namespace FlUnit
             {
                 throw new TestFailureException(string.Format(Messages.ArrangementFailureMessageFormat, e.Message), e.StackTrace, e);
             }
+        }
+
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            // TODO: allow for tidy-up. perhaps dispose IDisposable prereqs (on the assumption that we
+            // own them) or invoke custom dispose method..
         }
 
         /// <summary>
@@ -740,6 +768,13 @@ namespace FlUnit
             }
         }
 
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            // TODO: allow for tidy-up. perhaps dispose IDisposable prereqs (on the assumption that we
+            // own them) or invoke custom dispose method..
+        }
+
         /// <summary>
         /// Implementation of <see cref="ITestCase"/> used by <see cref="ActionTest{T1, T2, T3, T4}"/>s.
         /// </summary>
@@ -914,6 +949,13 @@ namespace FlUnit
             {
                 throw new TestFailureException(string.Format(Messages.ArrangementFailureMessageFormat, e.Message), e.StackTrace, e);
             }
+        }
+
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            // TODO: allow for tidy-up. perhaps dispose IDisposable prereqs (on the assumption that we
+            // own them) or invoke custom dispose method..
         }
 
         /// <summary>

@@ -88,6 +88,13 @@ namespace FlUnit
             }
         }
 
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            // TODO: allow for tidy-up. perhaps dispose IDisposable prereqs (on the assumption that we
+            // own them) or invoke custom dispose method..
+        }
+
         /// <summary>
         /// Implementation of <see cref="ITestCase"/> used by <see cref="FunctionTest{<#= TList(i, "", ", ") #>TResult}"/>s.
         /// </summary>

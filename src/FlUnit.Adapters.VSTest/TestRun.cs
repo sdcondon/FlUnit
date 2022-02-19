@@ -53,48 +53,49 @@ namespace FlUnit.Adapters
 
         private void RunTest(ITestContainer testContainer, TestConfiguration testConfiguration)
         {
-            var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null);
-
-            if (test.HasConfigurationOverrides)
+            using (var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null))
             {
-                testConfiguration = testConfiguration.Clone();
-                test.ApplyConfigurationOverrides(testConfiguration);
-            }
-
-            testContainer.RecordStart();
-
-            var testArrangementPassed = TryArrangeTestInstance(test, testContainer, testConfiguration);
-            var allAssertionsPassed = testArrangementPassed;
-            if (testArrangementPassed)
-            {
-                foreach (var testCase in test.Cases)
+                if (test.HasConfigurationOverrides)
                 {
-                    var actionStart = DateTimeOffset.Now;
-                    testCase.Act();
-                    var actionEnd = DateTimeOffset.Now;
+                    testConfiguration = testConfiguration.Clone();
+                    test.ApplyConfigurationOverrides(testConfiguration);
+                }
 
-                    foreach (var assertion in testCase.Assertions)
+                testContainer.RecordStart();
+
+                var testArrangementPassed = TryArrangeTestInstance(test, testContainer, testConfiguration);
+                var allAssertionsPassed = testArrangementPassed;
+                if (testArrangementPassed)
+                {
+                    foreach (var testCase in test.Cases)
                     {
-                        allAssertionsPassed &= CheckTestAssertion(test, testCase, actionStart, actionEnd, assertion, testConfiguration, testContainer);
+                        var actionStart = DateTimeOffset.Now;
+                        testCase.Act();
+                        var actionEnd = DateTimeOffset.Now;
+
+                        foreach (var assertion in testCase.Assertions)
+                        {
+                            allAssertionsPassed &= CheckTestAssertion(test, testCase, actionStart, actionEnd, assertion, testConfiguration, testContainer);
+                        }
                     }
                 }
-            }
 
-            TestOutcome testOutcome;
-            if (!testArrangementPassed)
-            {
-                testOutcome = testConfiguration.ArrangementFailureCountsAsFailed ? TestOutcome.Failed: TestOutcome.ArrangementFailed;
-            }
-            else if (!allAssertionsPassed)
-            {
-                testOutcome = TestOutcome.Failed;
-            }
-            else
-            {
-                testOutcome = TestOutcome.Passed;
-            }
+                TestOutcome testOutcome;
+                if (!testArrangementPassed)
+                {
+                    testOutcome = testConfiguration.ArrangementFailureCountsAsFailed ? TestOutcome.Failed : TestOutcome.ArrangementFailed;
+                }
+                else if (!allAssertionsPassed)
+                {
+                    testOutcome = TestOutcome.Failed;
+                }
+                else
+                {
+                    testOutcome = TestOutcome.Passed;
+                }
 
-            testContainer.RecordEnd(testOutcome);
+                testContainer.RecordEnd(testOutcome);
+            }
         }
 
         private static bool TryArrangeTestInstance(Test test, ITestContainer testContainer, ITestConfiguration testConfiguration)

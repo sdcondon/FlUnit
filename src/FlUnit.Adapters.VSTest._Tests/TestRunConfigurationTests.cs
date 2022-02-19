@@ -6,17 +6,19 @@ namespace FlUnit.Adapters.VSTest._Tests
     [TestClass]
     public class TestRunConfigurationTests
     {
+        private static readonly object ExpectedDefaultSettings = new
+        {
+            Parallelise = true,
+            TestConfiguration = new
+            {
+                ArrangementFailureCountsAsFailed = false
+            }
+        };
+
         [TestMethod]
         public void DefaultSettings()
         {
-            TestRunConfiguration.ReadFromXml(null, "flunit").Should().BeEquivalentTo(new
-            {
-                Parallelise = true,
-                TestConfiguration = new
-                {
-                    ArrangementFailureCountsAsFailed = false
-                }
-            });
+            TestRunConfiguration.ReadFromXml(null, "flunit").Should().BeEquivalentTo(ExpectedDefaultSettings);
         }
 
         [TestMethod]
@@ -45,6 +47,21 @@ namespace FlUnit.Adapters.VSTest._Tests
                     ArrangementFailureCountsAsFailed = true
                 }
             });
+        }
+
+        [TestMethod]
+        public void DoesntContainRightSection()
+        {
+            var xml =
+                @"<runsettings>
+                    <someothersection>hello</someothersection>
+                    <notflunit>
+                      <parallelise>false</parallelise>
+                    </notflunit>
+                    <parallelise>im not in the right place</parallelise>
+                  </runsettings>";
+
+            TestRunConfiguration.ReadFromXml(xml, "flunit").Should().BeEquivalentTo(ExpectedDefaultSettings);
         }
     }
 }

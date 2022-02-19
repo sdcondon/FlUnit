@@ -4,6 +4,7 @@ Proper issue tracking would be overkill at this point, so just a bullet list to 
 
 - *(Feb - v1.0)* V1 diligence & release
   - Increased maximum prerequisite count from 3 to 5 ✓
+  - Abstraction tweak: Made Test class IDisposable ✓
   - Split into separate repos for ease of versioning & release - probably move the docs into a github pages repo
 - *(May / Jun - v1.1)* Possible post-v1 additions (after a break to work on other projects):
   - VSTest platform adapter improvements
@@ -25,6 +26,7 @@ So, instead (or as well) could allow for cxt to be specified as a parameter of G
 Then `GivenTestContext()` could still exist, simply as a more readable alias of `Given(cxt => cxt)`.
 Hmm, maybe - this is more complex?
 Still mulling this one over.
+  - Basic test tidy-up support
 - *(At some point, maybe - v1.2 or later)* Other features:
   - Support for async tests?
 

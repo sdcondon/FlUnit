@@ -11,7 +11,7 @@ namespace FlUnit.Adapters
     /// It will stay internal until such time as a second adapter exists, to limit the impact of said adapter prompting changes..
     /// <para/>
     /// The other slight worry here is that its going to be too large and unfocused - especially if I end up adding Log methods to it.
-    /// Originally separated metadata container from TestRunResultHandler and TestResultHandler.. Reserve the right to return to that (before v1..).
+    /// Originally, I had separate metadata container, ITestRunResultHandler and ITestResultHandler - may return to that..
     /// </remarks>
     internal interface ITestContainer
     {
