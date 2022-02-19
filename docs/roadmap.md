@@ -2,10 +2,6 @@
 
 Proper issue tracking would be overkill at this point, so just a bullet list to organise my thoughts:
 
-- *(Feb - v1.0)* V1 diligence & release
-  - Increased maximum prerequisite count from 3 to 5 ✓
-  - Abstraction tweak: Made Test class IDisposable ✓
-  - Split into separate repos for ease of versioning & release - probably move the docs into a github pages repo
 - *(May / Jun - v1.1)* Possible post-v1 additions (after a break to work on other projects):
   - VSTest platform adapter improvements
     - Improvement of stack traces on test failure (eliminate FlUnit stack frames completely)
