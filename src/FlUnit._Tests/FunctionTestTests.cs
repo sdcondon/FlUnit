@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace FlUnit._Tests
 {
-    //// NB: These tests conver the builders, too..
+    //// NB: These tests cover the builders, too..
     [TestClass]
     public class FunctionTestTests
     {
