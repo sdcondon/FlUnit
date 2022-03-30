@@ -58,7 +58,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that does not return a value.
         /// </summary>
-        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <param name="testAction">The action that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public ActionTestBuilder When(Action testAction)
         {
@@ -68,7 +68,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that returns a value.
         /// </summary>
-        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <param name="testFunction">The function that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public FunctionTestBuilder<TResult> When<TResult>(Func<TResult> testFunction)
         {
@@ -133,7 +133,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that does not return a value.
         /// </summary>
-        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <param name="testAction">The action that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public ActionTestBuilder<T1> When(Action<T1> testAction)
         {
@@ -143,7 +143,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that returns a value.
         /// </summary>
-        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <param name="testFunction">The function that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public FunctionTestBuilder<T1, TResult> When<TResult>(Func<T1, TResult> testFunction)
         {
@@ -209,7 +209,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that does not return a value.
         /// </summary>
-        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <param name="testAction">The action that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public ActionTestBuilder<T1, T2> When(Action<T1, T2> testAction)
         {
@@ -219,7 +219,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that returns a value.
         /// </summary>
-        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <param name="testFunction">The function that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public FunctionTestBuilder<T1, T2, TResult> When<TResult>(Func<T1, T2, TResult> testFunction)
         {
@@ -286,7 +286,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that does not return a value.
         /// </summary>
-        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <param name="testAction">The action that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public ActionTestBuilder<T1, T2, T3> When(Action<T1, T2, T3> testAction)
         {
@@ -296,7 +296,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that returns a value.
         /// </summary>
-        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <param name="testFunction">The function that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public FunctionTestBuilder<T1, T2, T3, TResult> When<TResult>(Func<T1, T2, T3, TResult> testFunction)
         {
@@ -364,7 +364,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that does not return a value.
         /// </summary>
-        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <param name="testAction">The action that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public ActionTestBuilder<T1, T2, T3, T4> When(Action<T1, T2, T3, T4> testAction)
         {
@@ -374,7 +374,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that returns a value.
         /// </summary>
-        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <param name="testFunction">The function that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public FunctionTestBuilder<T1, T2, T3, T4, TResult> When<TResult>(Func<T1, T2, T3, T4, TResult> testFunction)
         {
@@ -421,7 +421,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that does not return a value.
         /// </summary>
-        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <param name="testAction">The action that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public ActionTestBuilder<T1, T2, T3, T4, T5> When(Action<T1, T2, T3, T4, T5> testAction)
         {
@@ -431,7 +431,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that returns a value.
         /// </summary>
-        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <param name="testFunction">The function that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public FunctionTestBuilder<T1, T2, T3, T4, T5, TResult> When<TResult>(Func<T1, T2, T3, T4, T5, TResult> testFunction)
         {

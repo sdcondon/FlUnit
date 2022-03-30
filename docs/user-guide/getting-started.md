@@ -70,7 +70,7 @@ public static class MyTests
     .When(sut => sut.Process(null))
     // Obviously, the difference between this and 'ThenReturns' is that the
     // final parameter of the delegate is the thrown exception, not the return value.
-    // A paramaterless overload of ThenThrows also exists, which adds an assertion
+    // A parameterless overload of ThenThrows also exists, which adds an assertion
     // that just verifies that an exception was thrown:
     .ThenThrows((_, exception) => exception.Should().BeOfType(typeof(ArgumentNullException)));
 
@@ -102,7 +102,7 @@ With the VSTest adapter:
 
 ## Why FlUnit?
 
-Introduction complete, now is a good time to talk about why you might want to use FlUnit (and why not).
+Introduction complete, here we talk about why you might want to use FlUnit (and why not).
 
 FlUnit's notable strengths include:
 
@@ -118,6 +118,7 @@ The fluent builders enable you to discover functionality by your IDE showing ava
 
 As with any design, there are downsides. FlUnit's notable weaknesses include:
 
+- The baseline complexity of FlUnit tests is 
 - The enforced test structure can make certain scenarios a little awkward.
   - Primarily, people have become stuck when getting to grips with FlUnit and trying to assert on objects that are neither the return value of the `When` clause nor any of the prerequisites referenced by it. There is a [simple pattern of usage](./useful-patterns.md#affected-object-graph-as-prerequisite) that can get you over this hurdle - but this is likely to be the main reason not to use FlUnit if you consider it too awkward.
   - Also consider what is needed to check the value of an out parameter. Ugly code..

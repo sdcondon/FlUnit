@@ -132,7 +132,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that does not return a value.
         /// </summary>
-        /// <param name="testAction">The function that is the "When" clause of the test.</param>
+        /// <param name="testAction">The action that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public ActionTestBuilder<#= TList(i, "<", ">") #> When(Action<#= TList(i, "<", ">") #> testAction)
         {
@@ -142,7 +142,7 @@ namespace FlUnit
         /// <summary>
         /// Adds a "When" clause that returns a value.
         /// </summary>
-        /// <param name="testFunction">The function that is the "When" clause of the test.</param>
+        /// <param name="testFunction">The function that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
         /// <returns>A builder for providing "Then" clauses.</returns>
         public FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult> When<TResult>(Func<<#= TList(i, "", ", ") #>TResult> testFunction)
         {

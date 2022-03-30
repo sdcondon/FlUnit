@@ -51,11 +51,11 @@ public static class MyTests
     private record TestCase(char Char, int Count, string Expected);
     
     public static Test RepeatBehaviour => TestThat
-        .GivenEachOf(() => new[]
+        .GivenEachOf(() => new TestCase[]
         {
-            new TestCase(Char: 'A', Count: 0, Expected: ""),
-            new TestCase(Char: 'A', Count: 1, Expected: "A"),
-            new TestCase(Char: 'A', Count: 2, Expected: "AA"),
+            new(Char: 'A', Count: 0, Expected: ""),
+            new(Char: 'A', Count: 1, Expected: "A"),
+            new(Char: 'A', Count: 2, Expected: "AA"),
         })
         .When(tc => new string(tc.Char, tc.Count))
         .ThenReturns((tc, retVal) => retVal.ShouldBe(tc.Expected));
