@@ -118,7 +118,7 @@ The fluent builders enable you to discover functionality by your IDE showing ava
 
 As with any design, there are downsides. FlUnit's notable weaknesses include:
 
-- The baseline complexity of FlUnit tests is 
+- The baseline complexity of FlUnit tests is greater than that of tests using a method-based framework.
 - The enforced test structure can make certain scenarios a little awkward.
   - Primarily, people have become stuck when getting to grips with FlUnit and trying to assert on objects that are neither the return value of the `When` clause nor any of the prerequisites referenced by it. There is a [simple pattern of usage](./useful-patterns.md#affected-object-graph-as-prerequisite) that can get you over this hurdle - but this is likely to be the main reason not to use FlUnit if you consider it too awkward.
   - Also consider what is needed to check the value of an out parameter. Ugly code..
