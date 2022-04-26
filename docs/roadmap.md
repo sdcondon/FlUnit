@@ -25,6 +25,7 @@ Then `GivenTestContext()` could still exist, simply as a more readable alias of 
 Hmm, maybe - this is more complex?
 Still mulling this one over.
 - *(At some point, maybe - v1.2 or later)* Other features:
+  - Look at achieving greater accuracy in durations. Now that I realise you can record duration separately to start and end time. I could pause the the duration timing while doing framework-y things..
   - Support for async tests?
 
 Not going to do, at least in the near future:
