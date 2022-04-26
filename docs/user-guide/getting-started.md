@@ -91,14 +91,14 @@ public static class MyTests
 
 If you've included a reference to the VSTest adapter, the Visual Studio IDE and `dotnet test` should both be able to find and run the tests.
 
-With the VSTest adapter:
+With the VSTest adapter (as of v1.0.1):
 * Tests are named for the name of the property.
 * Tests with multiple cases or multiple assertions give one result per test case per assertion. It is possible to override this logic with a configuration setting, but by default the label of each result depends on the multiplicity of cases and assertions, as follows:
   * With a single case and multiple assertions, the result label is the description of the assertion.
   * With multiple cases each with a single assertion, the result label is the ToString of the case (which when there are multiple given clauses, is a value tuple of each)
   * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for test case \{case ToString\}", like this:  
     ![Visual Studio Test Result Example](./VSTestResultExample.png)
-* The duration reported for each result is the time taken for the `When` clause (and only the `When` clause) to execute. Configurability of this behaviour is on the list for v1.1.
+* The duration reported for the first assertion of each test case is the time taken for the `When` clause and the assertion to execute. All assertions after the first report only their own duration. Note that this means that using the parameterless `ThenReturns()` or `ThenThrows()` builder methods you're going to get an assertion that tells you (pretty closely..) how long the `When` clause took. Configurability of this behaviour will be revisited at some point.
 
 ## Why FlUnit?
 
