@@ -6,7 +6,6 @@ Proper issue tracking would be overkill at this point, so just a bullet list to 
   - VSTest platform adapter improvements
     - Improvement of stack traces on test failure (eliminate FlUnit stack frames completely)
     - Get rid of some aspects of the core execution logic that are too influenced by VSTest
-    - While at it, figure out and fix VS reporting all test durations as < 1ms. Start time and end time are reported correctly when producing TRX, so not entirely sure whats going on, but should be able to figure it out from the docs, or more likely by looking at adapters for other frameworks.
   - A little more configurability:
     - For specification of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations).
     - Allow for control over parallel partitioning - likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Also want to allow for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
