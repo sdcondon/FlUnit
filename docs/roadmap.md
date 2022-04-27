@@ -11,7 +11,6 @@ Proper issue tracking would be overkill at this point, so just a bullet list to 
     - Allow for control over parallel partitioning - likely to be trait based (e.g. allow specification of a trait name - all tests with same value won't run in parallel). Also want to allow for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
     - Support custom test case labelling. Could be via support in IAssertion for format strings specified in config?
   - Basic test tidy-up support
-  - Add some tags to the NuGet package.
   - (most likely of these to be shunted into 1.2) Basic attachment & output support.
 This is likely to require injecting some kind of test context object.
 I really want to double-down on the convention-less/static nature of FlUnit - i.e. no convention-based ctor parameters, all discoverable via IDE method listings etc.
