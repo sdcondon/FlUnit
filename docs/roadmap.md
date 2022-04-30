@@ -3,7 +3,7 @@
 Proper issue tracking would be overkill at this point, so just a bullet list to organise my thoughts:
 
 - *(May / Jun - v1.1)* Possible post-v1 additions (after a break to work on other projects) - unlikely that ALL of this will make it into 1.1, but we'll see:
-  - VSTest platform adapter improvements
+  - VSTest platform adapter internal improvements
     - Improvement of stack traces on test failure (eliminate FlUnit stack frames completely)
     - Get rid of some aspects of the core execution logic that are too influenced by VSTest
   - A little more configurability:
