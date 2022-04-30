@@ -47,7 +47,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -66,7 +66,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions And(Expression<Action> assertion)
         {
@@ -77,7 +77,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions And(Action assertion, string description)
@@ -161,7 +161,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -180,7 +180,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1> And(Expression<Action<T1>> assertion)
         {
@@ -191,7 +191,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1> And(Action<T1> assertion, string description)
@@ -276,7 +276,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -295,7 +295,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1, T2> And(Expression<Action<T1, T2>> assertion)
         {
@@ -306,7 +306,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1, T2> And(Action<T1, T2> assertion, string description)
@@ -392,7 +392,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -411,7 +411,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3>> assertion)
         {
@@ -422,7 +422,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1, T2, T3> And(Action<T1, T2, T3> assertion, string description)
@@ -509,7 +509,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -528,7 +528,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> And(Expression<Action<T1, T2, T3, T4>> assertion)
         {
@@ -539,7 +539,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> And(Action<T1, T2, T3, T4> assertion, string description)
@@ -627,7 +627,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -646,7 +646,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> And(Expression<Action<T1, T2, T3, T4, T5>> assertion)
         {
@@ -657,7 +657,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> And(Action<T1, T2, T3, T4, T5> assertion, string description)

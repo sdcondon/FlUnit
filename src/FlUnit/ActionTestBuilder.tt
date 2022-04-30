@@ -131,7 +131,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -153,7 +153,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #> ThenReturns(Expression<Action<#= TList(i, "<", ">") #>> assertion)
         {
@@ -167,7 +167,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #> ThenReturns(Action<#= TList(i, "<", ">") #> assertion, string description)
@@ -211,7 +211,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -233,7 +233,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #> ThenThrows(Expression<Action<<#= TList(i, "", ", ") #>Exception>> assertion)
         {
@@ -247,7 +247,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #> ThenThrows(Action<<#= TList(i, "", ", ") #>Exception> assertion, string description)

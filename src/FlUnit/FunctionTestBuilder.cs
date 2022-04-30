@@ -120,7 +120,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -143,7 +143,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<TResult> ThenReturns(
             Expression<Action<TResult>> assertion)
@@ -157,7 +157,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<TResult> ThenReturns(
@@ -200,7 +200,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -223,7 +223,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<TResult> ThenThrows(
             Expression<Action<Exception>> assertion)
@@ -237,7 +237,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<TResult> ThenThrows(
@@ -372,7 +372,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -396,7 +396,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, TResult> ThenReturns(
             Expression<Action<T1, TResult>> assertion)
@@ -411,7 +411,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, TResult> ThenReturns(
@@ -457,7 +457,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -481,7 +481,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, TResult> ThenThrows(
             Expression<Action<T1, Exception>> assertion)
@@ -496,7 +496,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, TResult> ThenThrows(
@@ -633,7 +633,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -657,7 +657,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, T2, TResult> ThenReturns(
             Expression<Action<T1, T2, TResult>> assertion)
@@ -672,7 +672,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, T2, TResult> ThenReturns(
@@ -718,7 +718,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -742,7 +742,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, T2, TResult> ThenThrows(
             Expression<Action<T1, T2, Exception>> assertion)
@@ -757,7 +757,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, T2, TResult> ThenThrows(
@@ -895,7 +895,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -919,7 +919,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, T2, T3, TResult> ThenReturns(
             Expression<Action<T1, T2, T3, TResult>> assertion)
@@ -934,7 +934,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, T2, T3, TResult> ThenReturns(
@@ -980,7 +980,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -1004,7 +1004,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult> ThenThrows(
             Expression<Action<T1, T2, T3, Exception>> assertion)
@@ -1019,7 +1019,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult> ThenThrows(
@@ -1158,7 +1158,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -1182,7 +1182,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, TResult> ThenReturns(
             Expression<Action<T1, T2, T3, T4, TResult>> assertion)
@@ -1197,7 +1197,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, TResult> ThenReturns(
@@ -1243,7 +1243,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -1267,7 +1267,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult> ThenThrows(
             Expression<Action<T1, T2, T3, T4, Exception>> assertion)
@@ -1282,7 +1282,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult> ThenThrows(
@@ -1422,7 +1422,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -1446,7 +1446,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5, TResult> ThenReturns(
             Expression<Action<T1, T2, T3, T4, T5, TResult>> assertion)
@@ -1461,7 +1461,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5, TResult> ThenReturns(
@@ -1507,7 +1507,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -1531,7 +1531,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult> ThenThrows(
             Expression<Action<T1, T2, T3, T4, T5, Exception>> assertion)
@@ -1546,7 +1546,7 @@ namespace FlUnit
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult> ThenThrows(

@@ -62,7 +62,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion. Optional.</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -81,7 +81,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult> And(Expression<Action<<#= TList(i, "", ", ") #>TResult>> assertion)
         {
@@ -92,7 +92,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult> And(Action<<#= TList(i, "", ", ") #>TResult> assertion, string description)

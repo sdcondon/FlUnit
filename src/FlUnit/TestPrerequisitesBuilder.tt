@@ -111,7 +111,7 @@ namespace FlUnit
         /// Adds the first "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq<#= i + 1 #>">The pre-requisite.</param>
+        /// <param name="prereq<#= i + 1 #>">A delegate for obtaining the pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<<#= TList(i + 1) #>> Given<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
         {
@@ -122,7 +122,11 @@ namespace FlUnit
         /// Adds the first "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq<#= i + 1 #>">The pre-requisite.</param>
+        /// <param name="prereq<#= i + 1 #>">
+        /// A delegate for obtaining the pre-requisite.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<<#= TList(i + 1) #>> Given<T<#= i + 1 #>>(Func<ITestContext, T<#= i + 1 #>> prereq<#= i + 1 #>)
         {
@@ -145,7 +149,7 @@ namespace FlUnit
         /// Adds the first "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs<#= i + 1 #>">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs<#= i + 1 #>">A delegate for obtaining the pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
         {
@@ -156,7 +160,11 @@ namespace FlUnit
         /// Adds the first "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs<#= i + 1 #>">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs<#= i + 1 #>">
+        /// A delegate for obtaining the pre-requisites, one for each test case.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenEachOf<T<#= i + 1 #>>(Func<ITestContext, IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
         {
@@ -168,7 +176,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq<#= i + 1 #>">The pre-requisite.</param>
+        /// <param name="prereq<#= i + 1 #>">A delegate for obtaining the pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
         {
@@ -179,7 +187,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq<#= i + 1 #>">The pre-requisite.</param>
+        /// <param name="prereq<#= i + 1 #>">
+        /// A delegate for obtaining the pre-requisite.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<ITestContext, T<#= i + 1 #>> prereq<#= i + 1 #>)
         {
@@ -202,7 +214,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs<#= i + 1 #>">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs<#= i + 1 #>">A delegate for obtaining the pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
         {
@@ -213,7 +225,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs<#= i + 1 #>">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs<#= i + 1 #>">
+        /// A delegate for obtaining the pre-requisites, one for each test case.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<ITestContext, IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
         {

@@ -46,7 +46,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -65,7 +65,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions And(Expression<Action<Exception>> assertion)
         {
@@ -76,7 +76,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions And(Action<Exception> assertion, string description)
@@ -160,7 +160,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -179,7 +179,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1> And(Expression<Action<T1, Exception>> assertion)
         {
@@ -190,7 +190,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1> And(Action<T1, Exception> assertion, string description)
@@ -275,7 +275,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -294,7 +294,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1, T2> And(Expression<Action<T1, T2, Exception>> assertion)
         {
@@ -305,7 +305,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1, T2> And(Action<T1, T2, Exception> assertion, string description)
@@ -391,7 +391,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -410,7 +410,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3, Exception>> assertion)
         {
@@ -421,7 +421,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1, T2, T3> And(Action<T1, T2, T3, Exception> assertion, string description)
@@ -508,7 +508,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -527,7 +527,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1, T2, T3, T4> And(Expression<Action<T1, T2, T3, T4, Exception>> assertion)
         {
@@ -538,7 +538,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1, T2, T3, T4> And(Action<T1, T2, T3, T4, Exception> assertion, string description)
@@ -626,7 +626,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion. Optional</param>
         /// <param name="assertionExpression">
         /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
@@ -645,7 +645,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5> And(Expression<Action<T1, T2, T3, T4, T5, Exception>> assertion)
         {
@@ -656,7 +656,7 @@ namespace FlUnit
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
-        /// <param name="assertion">The assertion.</param>
+        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
         /// <param name="description">The description of the assertion.</param>
         /// <returns>A builder for providing additional assertions for the test.</returns>
         public ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5> And(Action<T1, T2, T3, T4, T5, Exception> assertion, string description)

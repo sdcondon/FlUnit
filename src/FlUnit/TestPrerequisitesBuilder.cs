@@ -37,7 +37,7 @@ namespace FlUnit
         /// Adds the first "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T1">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq1">The pre-requisite.</param>
+        /// <param name="prereq1">A delegate for obtaining the pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1> Given<T1>(Func<T1> prereq1)
         {
@@ -48,7 +48,11 @@ namespace FlUnit
         /// Adds the first "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T1">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq1">The pre-requisite.</param>
+        /// <param name="prereq1">
+        /// A delegate for obtaining the pre-requisite.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1> Given<T1>(Func<ITestContext, T1> prereq1)
         {
@@ -71,7 +75,7 @@ namespace FlUnit
         /// Adds the first "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T1">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs1">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs1">A delegate for obtaining the pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1> GivenEachOf<T1>(Func<IEnumerable<T1>> prereqs1)
         {
@@ -82,7 +86,11 @@ namespace FlUnit
         /// Adds the first "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T1">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs1">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs1">
+        /// A delegate for obtaining the pre-requisites, one for each test case.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1> GivenEachOf<T1>(Func<ITestContext, IEnumerable<T1>> prereqs1)
         {
@@ -146,7 +154,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T2">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq2">The pre-requisite.</param>
+        /// <param name="prereq2">A delegate for obtaining the pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2> And<T2>(Func<T2> prereq2)
         {
@@ -157,7 +165,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T2">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq2">The pre-requisite.</param>
+        /// <param name="prereq2">
+        /// A delegate for obtaining the pre-requisite.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2> And<T2>(Func<ITestContext, T2> prereq2)
         {
@@ -180,7 +192,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T2">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs2">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs2">A delegate for obtaining the pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2> AndEachOf<T2>(Func<IEnumerable<T2>> prereqs2)
         {
@@ -191,7 +203,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T2">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs2">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs2">
+        /// A delegate for obtaining the pre-requisites, one for each test case.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2> AndEachOf<T2>(Func<ITestContext, IEnumerable<T2>> prereqs2)
         {
@@ -256,7 +272,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T3">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq3">The pre-requisite.</param>
+        /// <param name="prereq3">A delegate for obtaining the pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3> And<T3>(Func<T3> prereq3)
         {
@@ -267,7 +283,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T3">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq3">The pre-requisite.</param>
+        /// <param name="prereq3">
+        /// A delegate for obtaining the pre-requisite.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3> And<T3>(Func<ITestContext, T3> prereq3)
         {
@@ -290,7 +310,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T3">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs3">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs3">A delegate for obtaining the pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3> AndEachOf<T3>(Func<IEnumerable<T3>> prereqs3)
         {
@@ -301,7 +321,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T3">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs3">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs3">
+        /// A delegate for obtaining the pre-requisites, one for each test case.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3> AndEachOf<T3>(Func<ITestContext, IEnumerable<T3>> prereqs3)
         {
@@ -367,7 +391,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T4">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq4">The pre-requisite.</param>
+        /// <param name="prereq4">A delegate for obtaining the pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4> And<T4>(Func<T4> prereq4)
         {
@@ -378,7 +402,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T4">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq4">The pre-requisite.</param>
+        /// <param name="prereq4">
+        /// A delegate for obtaining the pre-requisite.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4> And<T4>(Func<ITestContext, T4> prereq4)
         {
@@ -401,7 +429,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T4">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs4">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs4">A delegate for obtaining the pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4> AndEachOf<T4>(Func<IEnumerable<T4>> prereqs4)
         {
@@ -412,7 +440,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T4">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs4">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs4">
+        /// A delegate for obtaining the pre-requisites, one for each test case.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4> AndEachOf<T4>(Func<ITestContext, IEnumerable<T4>> prereqs4)
         {
@@ -479,7 +511,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T5">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq5">The pre-requisite.</param>
+        /// <param name="prereq5">A delegate for obtaining the pre-requisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> And<T5>(Func<T5> prereq5)
         {
@@ -490,7 +522,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T5">The type of the pre-requisite.</typeparam>
-        /// <param name="prereq5">The pre-requisite.</param>
+        /// <param name="prereq5">
+        /// A delegate for obtaining the pre-requisite.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> And<T5>(Func<ITestContext, T5> prereq5)
         {
@@ -513,7 +549,7 @@ namespace FlUnit
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T5">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs5">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs5">A delegate for obtaining the pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> AndEachOf<T5>(Func<IEnumerable<T5>> prereqs5)
         {
@@ -524,7 +560,11 @@ namespace FlUnit
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T5">The type of the pre-requisite.</typeparam>
-        /// <param name="prereqs5">The pre-requisites, one for each test case.</param>
+        /// <param name="prereqs5">
+        /// A delegate for obtaining the pre-requisites, one for each test case.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> AndEachOf<T5>(Func<ITestContext, IEnumerable<T5>> prereqs5)
         {
