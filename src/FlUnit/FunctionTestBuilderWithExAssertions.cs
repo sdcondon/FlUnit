@@ -129,13 +129,13 @@ namespace FlUnit
     public sealed class FunctionTestBuilderWithExAssertions<T1, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Func<IEnumerable<T1>> arrange;
+        private readonly Func<ITestContext, IEnumerable<T1>> arrange;
         private readonly Func<T1, TResult> testFunction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal FunctionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Func<IEnumerable<T1>> arrange,
+            Func<ITestContext, IEnumerable<T1>> arrange,
             Func<T1, TResult> testFunction,
             AssertionImpl assertion)
         {
@@ -245,13 +245,13 @@ namespace FlUnit
     public sealed class FunctionTestBuilderWithExAssertions<T1, T2, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange;
         private readonly Func<T1, T2, TResult> testFunction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal FunctionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange,
             Func<T1, T2, TResult> testFunction,
             AssertionImpl assertion)
         {
@@ -362,13 +362,13 @@ namespace FlUnit
     public sealed class FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange;
         private readonly Func<T1, T2, T3, TResult> testFunction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal FunctionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange,
             Func<T1, T2, T3, TResult> testFunction,
             AssertionImpl assertion)
         {
@@ -480,13 +480,13 @@ namespace FlUnit
     public sealed class FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange;
         private readonly Func<T1, T2, T3, T4, TResult> testFunction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal FunctionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange,
             Func<T1, T2, T3, T4, TResult> testFunction,
             AssertionImpl assertion)
         {
@@ -599,13 +599,13 @@ namespace FlUnit
     public sealed class FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange;
         private readonly Func<T1, T2, T3, T4, T5, TResult> testFunction;
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal FunctionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange,
             Func<T1, T2, T3, T4, T5, TResult> testFunction,
             AssertionImpl assertion)
         {

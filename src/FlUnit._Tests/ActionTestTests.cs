@@ -2,6 +2,7 @@ using FluentAssertions;
 using FlUnit.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -20,7 +21,7 @@ namespace FlUnit._Tests
                 .ThenReturns();
 
             // Act & Assert
-            ((Action)test.Arrange).Should().NotThrow();
+            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
             test.Cases.Count.Should().Be(1);
 
             ((Action)test.Cases.Single().Act).Should().NotThrow();
@@ -45,7 +46,7 @@ namespace FlUnit._Tests
 #endif
 
             // Act & Assert
-            ((Action)test.Arrange).Should().NotThrow();
+            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
             test.Cases.Count.Should().Be(1);
 
             ((Action)test.Cases.Single().Act).Should().NotThrow();
@@ -68,7 +69,7 @@ namespace FlUnit._Tests
                 .And((sb, str) => sb.Capacity.Should().BeGreaterThanOrEqualTo(sb.Length), "Capacity should be consistent");
 
             // Act & Assert
-            ((Action)test.Arrange).Should().NotThrow();
+            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
             test.Cases.Count.Should().Be(1);
 
             ((Action)test.Cases.Single().Act).Should().NotThrow();
@@ -109,7 +110,7 @@ namespace FlUnit._Tests
                 }, "Outcome should be as expected");
 
             // Act & Assert
-            ((Action)test.Arrange).Should().NotThrow();
+            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
             test.Cases.Count.Should().Be(3);
 
             var case1 = test.Cases.First();
@@ -145,7 +146,7 @@ namespace FlUnit._Tests
 #endif
 
             // Act & Assert
-            ((Action)test.Arrange).Should().NotThrow();
+            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
             test.Cases.Count.Should().Be(1);
 
             ((Action)test.Cases.Single().Act).Should().NotThrow();
@@ -167,7 +168,7 @@ namespace FlUnit._Tests
                 .ThenThrows();
 
             // Act & Assert
-            ((Action)test.Arrange).Should().NotThrow();
+            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
             test.Cases.Count.Should().Be(1);
 
             ((Action)test.Cases.Single().Act).Should().NotThrow();
@@ -192,7 +193,7 @@ namespace FlUnit._Tests
 #endif
 
             // Act & Assert
-            ((Action)test.Arrange).Should().NotThrow();
+            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
             test.Cases.Count.Should().Be(1);
 
             ((Action)test.Cases.Single().Act).Should().NotThrow();
@@ -210,7 +211,7 @@ namespace FlUnit._Tests
                 .When(() => { })
                 .ThenReturns(() => { }, "Empty assertion");
 
-            ((Action)test.Arrange).Should().NotThrow();
+            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
             test.Cases.Count.Should().Be(1);
 
             test.Cases.Single().Act();
@@ -241,6 +242,23 @@ namespace FlUnit._Tests
             test2Config.ArrangementFailureCountsAsFailed = false;
         }
 
+        [TestMethod]
+        public void TestOutput()
+        {
+            Test test = TestThat
+                .GivenTestContext()
+                .When(ctx => ctx.WriteOutput("Hello world"))
+                .ThenReturns();
+
+            var testContext = new TestContext();
+
+            ((Action)(() => test.Arrange(testContext))).Should().NotThrow();
+            test.Cases.Count.Should().Be(1);
+
+            ((Action)test.Cases.Single().Act).Should().NotThrow();
+            testContext.OutputMessages.Should().BeEquivalentTo(new[] { "Hello world" });
+        }
+
 #if !NET6_0
         [TestMethod]
         public void LinqAssertions()
@@ -251,7 +269,7 @@ namespace FlUnit._Tests
                 .Then(o => Assert.Fail());
 
             // Act & Assert
-            ((Action)test.Arrange).Should().NotThrow();
+            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
             test.Cases.Count.Should().Be(1);
 
             ((Action)test.Cases.Single().Act).Should().NotThrow();
@@ -267,6 +285,15 @@ namespace FlUnit._Tests
         {
             public bool ArrangementFailureCountsAsFailed { get; set; }
             public IResultNamingStrategy ResultNamingStrategy { get; set; }
+        }
+
+        private class TestContext : ITestContext
+        {
+            public List<string> OutputMessages { get; } = new List<string>();
+
+            public void WriteOutput(string output) => OutputMessages.Add(output);
+
+            public void WriteOutputLine(string output) => throw new NotImplementedException();
         }
     }
 }

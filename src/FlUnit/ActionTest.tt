@@ -63,18 +63,18 @@ namespace FlUnit
         }
 
         /// <inheritdoc />
-        public override void Arrange()
+        public override void Arrange(ITestContext testContext)
         {
             try
             {
 <# if (i == 0) { #>
                 cases = new[] { new Case(act, makeAssertions) };
 <# } else if (i == 1) { #>
-                cases = arrange().Select(p => new Case(p, act, makeAssertions)).ToArray();
+                cases = arrange(testContext).Select(p => new Case(p, act, makeAssertions)).ToArray();
 <# } else if (i > 1) { #>
                 cases = (
 <# for (int j = 0; j < i; j++) { #>
-                    from p<#= j + 1 #> in arrange.Item<#= j + 1 #>()
+                    from p<#= j + 1 #> in arrange.Item<#= j + 1 #>(testContext)
 <# } #>
                     select new Case((<#= List(i, i => $"p{i}") #>), act, makeAssertions)).ToArray();
 <# } #>

@@ -10,10 +10,10 @@ namespace FlUnit
     /// <typeparam name="T">The type of the prerequisite.</typeparam>
     internal class SinglePrerequisiteClosure<T>
     {
-        private Func<T> prerequisite;
+        private readonly Func<ITestContext, T> prerequisite;
 
-        public SinglePrerequisiteClosure(Func<T> prerequisite) => this.prerequisite = prerequisite;
+        public SinglePrerequisiteClosure(Func<ITestContext, T> prerequisite) => this.prerequisite = prerequisite;
 
-        public IEnumerable<T> Arrange() => new[] { prerequisite() };
+        public IEnumerable<T> Arrange(ITestContext testContext) => new[] { prerequisite(testContext) };
     }
 }

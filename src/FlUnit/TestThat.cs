@@ -25,12 +25,37 @@ namespace FlUnit
         public static TestPrerequisitesBuilder<T> Given<T>(Func<T> prerequisite) => new TestPrerequisitesBuilder(Array.Empty<Action<ITestConfiguration>>()).Given(prerequisite);
 
         /// <summary>
+        /// Starts building a test by providing a "Given" clause, makng use of the test context.
+        /// </summary>
+        /// <typeparam name="T">The type of the pre-requisite.</typeparam>
+        /// <param name="prerequisite">A delegate to create the pre-requisite.</param>
+        /// <returns>A builder for providing more "Given" clauses or a "When" clause.</returns>
+        public static TestPrerequisitesBuilder<T> Given<T>(Func<ITestContext, T> prerequisite) => new TestPrerequisitesBuilder(Array.Empty<Action<ITestConfiguration>>()).Given(prerequisite);
+
+        /// <summary>
         /// Starts building a test with multiple cases by providing a "Given" clause.
         /// </summary>
         /// <typeparam name="T">The type of the pre-requisite.</typeparam>
         /// <param name="prerequisites">A delegate to create the pre-requisites - one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or a "When" clause.</returns>
         public static TestPrerequisitesBuilder<T> GivenEachOf<T>(Func<IEnumerable<T>> prerequisites) => new TestPrerequisitesBuilder(Array.Empty<Action<ITestConfiguration>>()).GivenEachOf(prerequisites);
+
+        /// <summary>
+        /// Starts building a test with multiple cases by providing a "Given" clause, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T">The type of the pre-requisite.</typeparam>
+        /// <param name="prerequisites">A delegate to create the pre-requisites - one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or a "When" clause.</returns>
+        public static TestPrerequisitesBuilder<T> GivenEachOf<T>(Func<ITestContext, IEnumerable<T>> prerequisites) => new TestPrerequisitesBuilder(Array.Empty<Action<ITestConfiguration>>()).GivenEachOf(prerequisites);
+
+        /// <summary>
+        /// Starts building a test by defining the test context as the first prerequisite. This is just a more readable alias of:
+        /// <code>
+        /// Given(ctx => ctx)
+        /// </code>
+        /// </summary>
+        /// <returns>A builder for providing more "Given" clauses or a "When" clause.</returns>
+        public static TestPrerequisitesBuilder<ITestContext> GivenTestContext() => new TestPrerequisitesBuilder(Array.Empty<Action<ITestConfiguration>>()).GivenTestContext();
 
         /// <summary>
         /// Starts building a test with no "Given" clauses and a "When" clause that does not return a value.

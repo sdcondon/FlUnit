@@ -41,7 +41,30 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1> Given<T1>(Func<T1> prereq1)
         {
+            return new TestPrerequisitesBuilder<T1>(configurationOverrides, new SinglePrerequisiteClosure<T1>(tc => prereq1()).Arrange);
+        }
+
+        /// <summary>
+        /// Adds the first "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T1">The type of the pre-requisite.</typeparam>
+        /// <param name="prereq1">The pre-requisite.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1> Given<T1>(Func<ITestContext, T1> prereq1)
+        {
             return new TestPrerequisitesBuilder<T1>(configurationOverrides, new SinglePrerequisiteClosure<T1>(prereq1).Arrange);
+        }
+                
+        /// <summary>
+        /// Adds the first "Given" clause for the test - that defines the test context as the prerequisite. This is just a more readable alias of:
+        /// <code>
+        /// Given(ctx => ctx)
+        /// </code>
+        /// </summary>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<ITestContext> GivenTestContext()
+        {
+            return new TestPrerequisitesBuilder<ITestContext>(configurationOverrides, new SinglePrerequisiteClosure<ITestContext>(ctx => ctx).Arrange);
         }
 
         /// <summary>
@@ -51,6 +74,17 @@ namespace FlUnit
         /// <param name="prereqs1">The pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1> GivenEachOf<T1>(Func<IEnumerable<T1>> prereqs1)
+        {
+            return new TestPrerequisitesBuilder<T1>(configurationOverrides, tc => prereqs1());
+        }
+
+        /// <summary>
+        /// Adds the first "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T1">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs1">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1> GivenEachOf<T1>(Func<ITestContext, IEnumerable<T1>> prereqs1)
         {
             return new TestPrerequisitesBuilder<T1>(configurationOverrides, prereqs1);
         }
@@ -84,11 +118,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Func<IEnumerable<T1>> arrange;
+        private readonly Func<ITestContext, IEnumerable<T1>> arrange;
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,          
-            Func<IEnumerable<T1>> arrange)
+            Func<ITestContext, IEnumerable<T1>> arrange)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -116,7 +150,30 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2> And<T2>(Func<T2> prereq2)
         {
+            return new TestPrerequisitesBuilder<T1, T2>(configurationOverrides, (arrange, new SinglePrerequisiteClosure<T2>(tc => prereq2()).Arrange));
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T2">The type of the pre-requisite.</typeparam>
+        /// <param name="prereq2">The pre-requisite.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2> And<T2>(Func<ITestContext, T2> prereq2)
+        {
             return new TestPrerequisitesBuilder<T1, T2>(configurationOverrides, (arrange, new SinglePrerequisiteClosure<T2>(prereq2).Arrange));
+        }
+        
+        /// <summary>
+        /// Adds a "Given" clause for the test that defines the test context as a pre-requisite. This is just a more readable alias of:
+        /// <code>
+        /// And(ctx => ctx)
+        /// </code>
+        /// </summary>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, ITestContext> AndTestContext()
+        {
+            return new TestPrerequisitesBuilder<T1, ITestContext>(configurationOverrides, (arrange, new SinglePrerequisiteClosure<ITestContext>(ctx => ctx).Arrange));
         }
 
         /// <summary>
@@ -126,6 +183,17 @@ namespace FlUnit
         /// <param name="prereqs2">The pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2> AndEachOf<T2>(Func<IEnumerable<T2>> prereqs2)
+        {
+            return new TestPrerequisitesBuilder<T1, T2>(configurationOverrides, (arrange, tc => prereqs2()));
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T2">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs2">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2> AndEachOf<T2>(Func<ITestContext, IEnumerable<T2>> prereqs2)
         {
             return new TestPrerequisitesBuilder<T1, T2>(configurationOverrides, (arrange, prereqs2));
         }
@@ -160,11 +228,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1, T2>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange;
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,          
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange)
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -192,7 +260,30 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3> And<T3>(Func<T3> prereq3)
         {
+            return new TestPrerequisitesBuilder<T1, T2, T3>(configurationOverrides, (arrange.Item1, arrange.Item2, new SinglePrerequisiteClosure<T3>(tc => prereq3()).Arrange));
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T3">The type of the pre-requisite.</typeparam>
+        /// <param name="prereq3">The pre-requisite.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3> And<T3>(Func<ITestContext, T3> prereq3)
+        {
             return new TestPrerequisitesBuilder<T1, T2, T3>(configurationOverrides, (arrange.Item1, arrange.Item2, new SinglePrerequisiteClosure<T3>(prereq3).Arrange));
+        }
+        
+        /// <summary>
+        /// Adds a "Given" clause for the test that defines the test context as a pre-requisite. This is just a more readable alias of:
+        /// <code>
+        /// And(ctx => ctx)
+        /// </code>
+        /// </summary>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, ITestContext> AndTestContext()
+        {
+            return new TestPrerequisitesBuilder<T1, T2, ITestContext>(configurationOverrides, (arrange.Item1, arrange.Item2, new SinglePrerequisiteClosure<ITestContext>(ctx => ctx).Arrange));
         }
 
         /// <summary>
@@ -202,6 +293,17 @@ namespace FlUnit
         /// <param name="prereqs3">The pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3> AndEachOf<T3>(Func<IEnumerable<T3>> prereqs3)
+        {
+            return new TestPrerequisitesBuilder<T1, T2, T3>(configurationOverrides, (arrange.Item1, arrange.Item2, tc => prereqs3()));
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T3">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs3">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3> AndEachOf<T3>(Func<ITestContext, IEnumerable<T3>> prereqs3)
         {
             return new TestPrerequisitesBuilder<T1, T2, T3>(configurationOverrides, (arrange.Item1, arrange.Item2, prereqs3));
         }
@@ -237,11 +339,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1, T2, T3>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange;
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,          
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange)
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -269,7 +371,30 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4> And<T4>(Func<T4> prereq4)
         {
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, new SinglePrerequisiteClosure<T4>(tc => prereq4()).Arrange));
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T4">The type of the pre-requisite.</typeparam>
+        /// <param name="prereq4">The pre-requisite.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4> And<T4>(Func<ITestContext, T4> prereq4)
+        {
             return new TestPrerequisitesBuilder<T1, T2, T3, T4>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, new SinglePrerequisiteClosure<T4>(prereq4).Arrange));
+        }
+        
+        /// <summary>
+        /// Adds a "Given" clause for the test that defines the test context as a pre-requisite. This is just a more readable alias of:
+        /// <code>
+        /// And(ctx => ctx)
+        /// </code>
+        /// </summary>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, ITestContext> AndTestContext()
+        {
+            return new TestPrerequisitesBuilder<T1, T2, T3, ITestContext>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, new SinglePrerequisiteClosure<ITestContext>(ctx => ctx).Arrange));
         }
 
         /// <summary>
@@ -279,6 +404,17 @@ namespace FlUnit
         /// <param name="prereqs4">The pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4> AndEachOf<T4>(Func<IEnumerable<T4>> prereqs4)
+        {
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, tc => prereqs4()));
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T4">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs4">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4> AndEachOf<T4>(Func<ITestContext, IEnumerable<T4>> prereqs4)
         {
             return new TestPrerequisitesBuilder<T1, T2, T3, T4>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, prereqs4));
         }
@@ -315,11 +451,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1, T2, T3, T4>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange;
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,          
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange)
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -347,7 +483,30 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> And<T5>(Func<T5> prereq5)
         {
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4, T5>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, arrange.Item4, new SinglePrerequisiteClosure<T5>(tc => prereq5()).Arrange));
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T5">The type of the pre-requisite.</typeparam>
+        /// <param name="prereq5">The pre-requisite.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> And<T5>(Func<ITestContext, T5> prereq5)
+        {
             return new TestPrerequisitesBuilder<T1, T2, T3, T4, T5>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, arrange.Item4, new SinglePrerequisiteClosure<T5>(prereq5).Arrange));
+        }
+        
+        /// <summary>
+        /// Adds a "Given" clause for the test that defines the test context as a pre-requisite. This is just a more readable alias of:
+        /// <code>
+        /// And(ctx => ctx)
+        /// </code>
+        /// </summary>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4, ITestContext> AndTestContext()
+        {
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4, ITestContext>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, arrange.Item4, new SinglePrerequisiteClosure<ITestContext>(ctx => ctx).Arrange));
         }
 
         /// <summary>
@@ -357,6 +516,17 @@ namespace FlUnit
         /// <param name="prereqs5">The pre-requisites, one for each test case.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> AndEachOf<T5>(Func<IEnumerable<T5>> prereqs5)
+        {
+            return new TestPrerequisitesBuilder<T1, T2, T3, T4, T5>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, arrange.Item4, tc => prereqs5()));
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T5">The type of the pre-requisite.</typeparam>
+        /// <param name="prereqs5">The pre-requisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<T1, T2, T3, T4, T5> AndEachOf<T5>(Func<ITestContext, IEnumerable<T5>> prereqs5)
         {
             return new TestPrerequisitesBuilder<T1, T2, T3, T4, T5>(configurationOverrides, (arrange.Item1, arrange.Item2, arrange.Item3, arrange.Item4, prereqs5));
         }
@@ -394,11 +564,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1, T2, T3, T4, T5>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange;
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,          
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange)
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange)
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;

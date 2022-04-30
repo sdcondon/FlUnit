@@ -52,7 +52,7 @@ namespace FlUnit
         /// <summary>
         /// Arranges the test.
         /// </summary>
-        public override void Arrange()
+        public override void Arrange(ITestContext testContext)
         {
             try
             {
@@ -180,7 +180,7 @@ namespace FlUnit
     public sealed class FunctionTest<T1, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Func<IEnumerable<T1>> arrange;
+        private readonly Func<ITestContext, IEnumerable<T1>> arrange;
         private readonly Func<T1, TResult> act;
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
@@ -194,7 +194,7 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Func<IEnumerable<T1>> arrange,
+            Func<ITestContext, IEnumerable<T1>> arrange,
             Func<T1, TResult> act,
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
@@ -224,11 +224,11 @@ namespace FlUnit
         /// <summary>
         /// Arranges the test.
         /// </summary>
-        public override void Arrange()
+        public override void Arrange(ITestContext testContext)
         {
             try
             {
-                cases = arrange().Select(p => new Case(p, act, makeAssertions)).ToArray();
+                cases = arrange(testContext).Select(p => new Case(p, act, makeAssertions)).ToArray();
             }
             catch (Exception e)
             {
@@ -356,7 +356,7 @@ namespace FlUnit
     public sealed class FunctionTest<T1, T2, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange;
         private readonly Func<T1, T2, TResult> act;
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
@@ -370,7 +370,7 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange,
             Func<T1, T2, TResult> act,
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
@@ -400,13 +400,13 @@ namespace FlUnit
         /// <summary>
         /// Arranges the test.
         /// </summary>
-        public override void Arrange()
+        public override void Arrange(ITestContext testContext)
         {
             try
             {
                 cases = (
-                    from p1 in arrange.Item1()
-                    from p2 in arrange.Item2()
+                    from p1 in arrange.Item1(testContext)
+                    from p2 in arrange.Item2(testContext)
                     select new Case((p1, p2), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
@@ -536,7 +536,7 @@ namespace FlUnit
     public sealed class FunctionTest<T1, T2, T3, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange;
         private readonly Func<T1, T2, T3, TResult> act;
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
@@ -550,7 +550,7 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange,
             Func<T1, T2, T3, TResult> act,
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
@@ -580,14 +580,14 @@ namespace FlUnit
         /// <summary>
         /// Arranges the test.
         /// </summary>
-        public override void Arrange()
+        public override void Arrange(ITestContext testContext)
         {
             try
             {
                 cases = (
-                    from p1 in arrange.Item1()
-                    from p2 in arrange.Item2()
-                    from p3 in arrange.Item3()
+                    from p1 in arrange.Item1(testContext)
+                    from p2 in arrange.Item2(testContext)
+                    from p3 in arrange.Item3(testContext)
                     select new Case((p1, p2, p3), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
@@ -718,7 +718,7 @@ namespace FlUnit
     public sealed class FunctionTest<T1, T2, T3, T4, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange;
         private readonly Func<T1, T2, T3, T4, TResult> act;
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
@@ -732,7 +732,7 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange,
             Func<T1, T2, T3, T4, TResult> act,
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
@@ -762,15 +762,15 @@ namespace FlUnit
         /// <summary>
         /// Arranges the test.
         /// </summary>
-        public override void Arrange()
+        public override void Arrange(ITestContext testContext)
         {
             try
             {
                 cases = (
-                    from p1 in arrange.Item1()
-                    from p2 in arrange.Item2()
-                    from p3 in arrange.Item3()
-                    from p4 in arrange.Item4()
+                    from p1 in arrange.Item1(testContext)
+                    from p2 in arrange.Item2(testContext)
+                    from p3 in arrange.Item3(testContext)
+                    from p4 in arrange.Item4(testContext)
                     select new Case((p1, p2, p3, p4), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
@@ -902,7 +902,7 @@ namespace FlUnit
     public sealed class FunctionTest<T1, T2, T3, T4, T5, TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange;
         private readonly Func<T1, T2, T3, T4, T5, TResult> act;
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
@@ -916,7 +916,7 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange,
             Func<T1, T2, T3, T4, T5, TResult> act,
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
@@ -946,16 +946,16 @@ namespace FlUnit
         /// <summary>
         /// Arranges the test.
         /// </summary>
-        public override void Arrange()
+        public override void Arrange(ITestContext testContext)
         {
             try
             {
                 cases = (
-                    from p1 in arrange.Item1()
-                    from p2 in arrange.Item2()
-                    from p3 in arrange.Item3()
-                    from p4 in arrange.Item4()
-                    from p5 in arrange.Item5()
+                    from p1 in arrange.Item1(testContext)
+                    from p2 in arrange.Item2(testContext)
+                    from p3 in arrange.Item3(testContext)
+                    from p4 in arrange.Item4(testContext)
+                    from p5 in arrange.Item5(testContext)
                     select new Case((p1, p2, p3, p4, p5), act, makeAssertions)).ToArray();
             }
             catch (Exception e)

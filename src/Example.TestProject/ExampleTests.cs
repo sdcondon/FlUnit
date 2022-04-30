@@ -112,6 +112,23 @@ namespace Example.TestProject
             .And((_, _, sum) => (sum % 2).Should().Be(1))
             .And((x, _, sum) => sum.Should().BeGreaterThan(x));
 
+        // More features: per-test configuration overrides and output messages
+        public static Test AdvancedFunctionality => TestThat
+            .UsingConfiguration(c => c.ArrangementFailureCountsAsFailed = true)
+            .GivenTestContext()
+            .AndEachOf(() => new[] { 1, 3, 5 })
+            .When((ctx, i) =>
+            {
+                ctx.WriteOutputLine($"About to calculate {i} + 1..");
+                return i + 1;
+            })
+            .ThenReturns()
+            .And((ctx, i, sum) =>
+            {
+                ctx.WriteOutputLine($"About to check the result of {i} + 1..");
+                sum.Should().Be(i + 1);
+            });
+
         private class TestSubject
         {
             public TestSubject(bool shouldThrow = false)

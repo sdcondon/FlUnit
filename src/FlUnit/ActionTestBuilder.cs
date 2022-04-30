@@ -244,12 +244,12 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Func<IEnumerable<T1>> arrange;
+        private readonly Func<ITestContext, IEnumerable<T1>> arrange;
         private readonly Action<T1> testAction;
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Func<IEnumerable<T1>> arrange,
+            Func<ITestContext, IEnumerable<T1>> arrange,
             Action<T1> testAction)
         {
             this.configurationOverrides = configurationOverrides;
@@ -489,12 +489,12 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1, T2>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange;
         private readonly Action<T1, T2> testAction;
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange,
             Action<T1, T2> testAction)
         {
             this.configurationOverrides = configurationOverrides;
@@ -735,12 +735,12 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1, T2, T3>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange;
         private readonly Action<T1, T2, T3> testAction;
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange,
             Action<T1, T2, T3> testAction)
         {
             this.configurationOverrides = configurationOverrides;
@@ -982,12 +982,12 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1, T2, T3, T4>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange;
         private readonly Action<T1, T2, T3, T4> testAction;
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange,
             Action<T1, T2, T3, T4> testAction)
         {
             this.configurationOverrides = configurationOverrides;
@@ -1230,12 +1230,12 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1, T2, T3, T4, T5>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange;
+        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange;
         private readonly Action<T1, T2, T3, T4, T5> testAction;
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<IEnumerable<T1>>, Func<IEnumerable<T2>>, Func<IEnumerable<T3>>, Func<IEnumerable<T4>>, Func<IEnumerable<T5>>) arrange,
+            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange,
             Action<T1, T2, T3, T4, T5> testAction)
         {
             this.configurationOverrides = configurationOverrides;
