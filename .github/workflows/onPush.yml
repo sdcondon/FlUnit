@@ -17,5 +17,5 @@ jobs:
       run: dotnet build
 
     - name: Run FlUnit Tests
-      working-directory: ./src/FlUnit._Tests
+      working-directory: ./src/FlUnit.Tests
       run: dotnet test
