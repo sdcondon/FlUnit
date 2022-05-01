@@ -41,7 +41,7 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<T1> Given<T1>(Func<T1> prereq1)
         {
-            return new TestPrerequisitesBuilder<T1>(configurationOverrides, new SinglePrerequisiteClosure<T1>(tc => prereq1()).Arrange);
+            return new TestPrerequisitesBuilder<T1>(configurationOverrides, new SinglePrerequisiteClosure<T1>(tc => prereq1()).Arrange); // TODO - compiler generated closure bad for stack trace
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace FlUnit
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
         public TestPrerequisitesBuilder<ITestContext> GivenTestContext()
         {
-            return new TestPrerequisitesBuilder<ITestContext>(configurationOverrides, new SinglePrerequisiteClosure<ITestContext>(ctx => ctx).Arrange);
+            return new TestPrerequisitesBuilder<ITestContext>(configurationOverrides, new SinglePrerequisiteClosure<ITestContext>(ctx => ctx).Arrange); // TODO - compiler generated closure bad for stack trace
         }
 
         /// <summary>
