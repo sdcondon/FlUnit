@@ -22,6 +22,6 @@ Available documentation can be found in the docs folder of this repository for t
 * **[User Guide](./docs/user-guide/README.md):** FlUnit's user guide is admittedly a little sparse. The degree to which it is expanded upon will correlate with FlUnit's popularity..
   * **[Getting Started](./docs/user-guide/getting-started.md):** Instructions for getting started with FlUnit
   * **[Useful Patterns](./docs/user-guide/useful-patterns.md):** A few patterns that may prove useful when writing FlUnit tests
-  * **[Test Run Configuration](./docs/user-guide/test-run-configuration.md):** What aspects of test execution can be configured, and how to accomplish this
+  * **[Advanced Functionality](./docs/user-guide/advanced-functionality.md):** Details of functionality not covered in "getting started"
   * **[Other Notes](./docs/user-guide/other-notes.md):** Assorted notes regarding the design of FlUnit and its usage
 * **[Roadmap](./docs/roadmap.md):** Proper issue tracking would be overkill at this point, so there are just some bullet points to organise my thoughts
