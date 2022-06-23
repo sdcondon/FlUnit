@@ -251,6 +251,7 @@ namespace FlUnit.Tests
                 .When(ctx =>
                 {
                     ctx.WriteOutput("Hello world");
+                    ctx.WriteError("Argh!");
                     return 1;
                 })
                 .ThenReturns();
@@ -262,6 +263,7 @@ namespace FlUnit.Tests
 
             ((Action)test.Cases.Single().Act).Should().NotThrow();
             testContext.OutputMessages.Should().BeEquivalentTo(new[] { "Hello world" });
+            testContext.ErrorMessages.Should().BeEquivalentTo(new[] { "Argh!" });
         }
 
 #if !NET6_0
@@ -294,7 +296,13 @@ namespace FlUnit.Tests
 
         private class TestContext : ITestContext
         {
+            public List<string> ErrorMessages { get; } = new List<string>();
+
             public List<string> OutputMessages { get; } = new List<string>();
+
+            public void WriteError(string error) => ErrorMessages.Add(error);
+
+            public void WriteErrorLine(string error) => throw new NotImplementedException();
 
             public void WriteOutput(string output) => OutputMessages.Add(output);
 
