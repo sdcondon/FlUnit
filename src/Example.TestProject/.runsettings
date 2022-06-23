@@ -7,6 +7,13 @@
         -->
         <Parallelise>true</Parallelise>
 
+	    <!--
+        (From v1.1 of the adapter) ParallelPartitioningTrait specifies the trait name to control partitioning of tests run in parallel.
+        Tests with the same value for the trait with this key will be executed in the same partition, and thus not run in parallel.
+		The default value is (null) - which results in no partitioning, and thus no such guarantees.
+        -->
+	    <!--<ParallelPartitioningTrait>MyTrait</ParallelPartitioningTrait>-->
+
         <!--
         The TestConfiguration element contains settings that affect individual tests,
         as opposed to the run as a whole. These are the settings that it is possible
