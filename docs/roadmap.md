@@ -2,7 +2,7 @@
 
 Proper issue tracking would be overkill, so just a bullet list to organise my thoughts:
 
-- *v1.2 will include some subset of the following. I'll release it when new functionality would be useful for me, or if FlUnit hits somewhere around the ~10k download mark):*
+- *v1.2 will include some subset of the following. I'll release it when new functionality would be useful for me, or if FlUnit hits somewhere around the ~10k download mark:*
   - Configurability:
     - Of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations). Look at achieving greater accuracy in durations in the vstest adapter. Now that I realise you can record duration separately to start and end time. I could pause the the duration timing while doing framework-y things..
     - Probably following on from the above, take a look at configurability of test execution strategy in general (should different cases be different "Tests" and so on)
