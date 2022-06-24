@@ -1,6 +1,6 @@
 # Advanced Fuctionality
 
-This document details some more advanced areas of FlUnit's functionality, not covered in "[getting started](.\getting-started.md)".
+This document details some more advanced areas of FlUnit's functionality, not covered in "[getting started](./getting-started.md)".
 
 ## Test Run Configuration
 
