@@ -15,4 +15,8 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Version>0.0.0-localbuild+localbuild</Version>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
 </Project>
