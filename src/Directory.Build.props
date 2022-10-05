@@ -6,7 +6,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/sdcondon/FlUnit.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/sdcondon/FlUnit</PackageProjectUrl>
-	<PackageReleaseNotes>https://github.com/sdcondon/FlUnit/releases</PackageReleaseNotes>
+	<PackageReleaseNotes>See https://github.com/sdcondon/FlUnit/releases.</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>2019-2022 Simon Condon</Copyright>
     <PackageTags>unit test fluent</PackageTags>
