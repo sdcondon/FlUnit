@@ -13,10 +13,16 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <Version>0.0.0-localbuild+localbuild</Version>
+
+    <!-- NB: timestamp below doesn't include seconds because depending on such a package gets VS into an infinite restore loop.. -->
+    <Version>0.0.0-local.$([System.DateTime]::Now.ToString(yyMMdd.HHmm))</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' != 'true' And Exists('C:\Users\simon\Code\Packages')">
+    <PackageOutputPath>C:\Users\simon\Code\Packages</PackageOutputPath>
   </PropertyGroup>
 </Project>
