@@ -68,15 +68,15 @@ namespace FlUnit
             try
             {
 <# if (i == 0) { #>
-                cases = new[] { new Case(act, makeAssertions) };
+                cases = new[] { new Case(this, act, makeAssertions) };
 <# } else if (i == 1) { #>
-                cases = arrange(testContext).Select(p => new Case(p, act, makeAssertions)).ToArray();
+                cases = arrange(testContext).Select(p => new Case(this, p, act, makeAssertions)).ToArray();
 <# } else if (i > 1) { #>
                 cases = (
 <# for (int j = 0; j < i; j++) { #>
                     from p<#= j + 1 #> in arrange.Item<#= j + 1 #>(testContext)
 <# } #>
-                    select new Case((<#= List(i, i => $"p{i}") #>), act, makeAssertions)).ToArray();
+                    select new Case(this, (<#= List(i, i => $"p{i}") #>), act, makeAssertions)).ToArray();
 <# } #>
             }
             catch (Exception e)
@@ -102,14 +102,19 @@ namespace FlUnit
             internal TestActionOutcome invocationOutcome;
 
             internal Case(
+                Test test,
 <# WriteLineIf(i > 0, $"{PrereqsFieldType(i)} prereqs,", 4); #>
                 Action<#= TList(i, "<", ">") #> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
+                this.Test = test;
 <# WriteLineIf(i > 0, "this.prereqs = prereqs;", 4); #>
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
+
+            /// <inheritdoc />
+            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -168,6 +173,9 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
+
+            /// <inheritdoc />
+            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()

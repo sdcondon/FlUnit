@@ -56,7 +56,7 @@ namespace FlUnit
         {
             try
             {
-                cases = new[] { new Case(act, makeAssertions) };
+                cases = new[] { new Case(this, act, makeAssertions) };
             }
             catch (Exception e)
             {
@@ -80,12 +80,17 @@ namespace FlUnit
             internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
+                Test test,
                 Func<TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
+                this.Test = test;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
+
+            /// <inheritdoc />
+            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -139,6 +144,9 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
+
+            /// <inheritdoc />
+            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -228,7 +236,7 @@ namespace FlUnit
         {
             try
             {
-                cases = arrange(testContext).Select(p => new Case(p, act, makeAssertions)).ToArray();
+                cases = arrange(testContext).Select(p => new Case(this, p, act, makeAssertions)).ToArray();
             }
             catch (Exception e)
             {
@@ -253,14 +261,19 @@ namespace FlUnit
             internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
+                Test test,
                 T1 prereqs,
                 Func<T1, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
+                this.Test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
+
+            /// <inheritdoc />
+            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -314,6 +327,9 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
+
+            /// <inheritdoc />
+            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -407,7 +423,7 @@ namespace FlUnit
                 cases = (
                     from p1 in arrange.Item1(testContext)
                     from p2 in arrange.Item2(testContext)
-                    select new Case((p1, p2), act, makeAssertions)).ToArray();
+                    select new Case(this, (p1, p2), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
             {
@@ -432,14 +448,19 @@ namespace FlUnit
             internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
+                Test test,
                 (T1, T2) prereqs,
                 Func<T1, T2, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
+                this.Test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
+
+            /// <inheritdoc />
+            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -493,6 +514,9 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
+
+            /// <inheritdoc />
+            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -588,7 +612,7 @@ namespace FlUnit
                     from p1 in arrange.Item1(testContext)
                     from p2 in arrange.Item2(testContext)
                     from p3 in arrange.Item3(testContext)
-                    select new Case((p1, p2, p3), act, makeAssertions)).ToArray();
+                    select new Case(this, (p1, p2, p3), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
             {
@@ -613,14 +637,19 @@ namespace FlUnit
             internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
+                Test test,
                 (T1, T2, T3) prereqs,
                 Func<T1, T2, T3, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
+                this.Test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
+
+            /// <inheritdoc />
+            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -674,6 +703,9 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
+
+            /// <inheritdoc />
+            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -771,7 +803,7 @@ namespace FlUnit
                     from p2 in arrange.Item2(testContext)
                     from p3 in arrange.Item3(testContext)
                     from p4 in arrange.Item4(testContext)
-                    select new Case((p1, p2, p3, p4), act, makeAssertions)).ToArray();
+                    select new Case(this, (p1, p2, p3, p4), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
             {
@@ -796,14 +828,19 @@ namespace FlUnit
             internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
+                Test test,
                 (T1, T2, T3, T4) prereqs,
                 Func<T1, T2, T3, T4, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
+                this.Test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
+
+            /// <inheritdoc />
+            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -857,6 +894,9 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
+
+            /// <inheritdoc />
+            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -956,7 +996,7 @@ namespace FlUnit
                     from p3 in arrange.Item3(testContext)
                     from p4 in arrange.Item4(testContext)
                     from p5 in arrange.Item5(testContext)
-                    select new Case((p1, p2, p3, p4, p5), act, makeAssertions)).ToArray();
+                    select new Case(this, (p1, p2, p3, p4, p5), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
             {
@@ -981,14 +1021,19 @@ namespace FlUnit
             internal TestFunctionOutcome<TResult> invocationOutcome;
 
             internal Case(
+                Test test,
                 (T1, T2, T3, T4, T5) prereqs,
                 Func<T1, T2, T3, T4, T5, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
+                this.Test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
+
+            /// <inheritdoc />
+            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -1042,6 +1087,9 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
+
+            /// <inheritdoc />
+            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
