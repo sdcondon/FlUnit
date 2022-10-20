@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace FlUnit
 {
@@ -76,6 +77,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Func<TResult> act;
             internal TestFunctionOutcome<TResult> invocationOutcome;
 
@@ -84,13 +86,10 @@ namespace FlUnit
                 Func<TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -144,9 +143,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -256,6 +252,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Func<T1, TResult> act;
             internal readonly T1 prereqs;
             internal TestFunctionOutcome<TResult> invocationOutcome;
@@ -266,14 +263,11 @@ namespace FlUnit
                 Func<T1, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -299,7 +293,16 @@ namespace FlUnit
             /// <inheritdoc />
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                string prereqToString = prereqs.ToString();
+
+                if (prereqToString.Equals(prereqs.GetType().ToString()))
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else
+                {
+                    return prereqToString;
+                }
             }
 
             /// <inheritdoc />
@@ -327,9 +330,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -443,6 +443,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Func<T1, T2, TResult> act;
             internal readonly (T1, T2) prereqs;
             internal TestFunctionOutcome<TResult> invocationOutcome;
@@ -453,14 +454,11 @@ namespace FlUnit
                 Func<T1, T2, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -486,7 +484,45 @@ namespace FlUnit
             /// <inheritdoc />
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                List<string> nonTypeNames = new List<string>();
+
+#if NET6_0_OR_GREATER
+                var tuple = prereqs as ITuple;
+                for (var i = 0; i < tuple.Length; i++)
+                {
+                    var item = tuple[i];
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+#else
+                void AddItemIfItOverridesToString(object item)
+                {
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+
+                AddItemIfItOverridesToString(prereqs.Item1);
+                AddItemIfItOverridesToString(prereqs.Item2);
+#endif
+
+                if (nonTypeNames.Count == 0)
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else if (nonTypeNames.Count == 1)
+                {
+                    return nonTypeNames[0];
+                }
+                else
+                {
+                    return $"({string.Join(", ", nonTypeNames)})";
+                }
             }
 
             /// <inheritdoc />
@@ -514,9 +550,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -632,6 +665,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Func<T1, T2, T3, TResult> act;
             internal readonly (T1, T2, T3) prereqs;
             internal TestFunctionOutcome<TResult> invocationOutcome;
@@ -642,14 +676,11 @@ namespace FlUnit
                 Func<T1, T2, T3, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -675,7 +706,46 @@ namespace FlUnit
             /// <inheritdoc />
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                List<string> nonTypeNames = new List<string>();
+
+#if NET6_0_OR_GREATER
+                var tuple = prereqs as ITuple;
+                for (var i = 0; i < tuple.Length; i++)
+                {
+                    var item = tuple[i];
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+#else
+                void AddItemIfItOverridesToString(object item)
+                {
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+
+                AddItemIfItOverridesToString(prereqs.Item1);
+                AddItemIfItOverridesToString(prereqs.Item2);
+                AddItemIfItOverridesToString(prereqs.Item3);
+#endif
+
+                if (nonTypeNames.Count == 0)
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else if (nonTypeNames.Count == 1)
+                {
+                    return nonTypeNames[0];
+                }
+                else
+                {
+                    return $"({string.Join(", ", nonTypeNames)})";
+                }
             }
 
             /// <inheritdoc />
@@ -703,9 +773,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -823,6 +890,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Func<T1, T2, T3, T4, TResult> act;
             internal readonly (T1, T2, T3, T4) prereqs;
             internal TestFunctionOutcome<TResult> invocationOutcome;
@@ -833,14 +901,11 @@ namespace FlUnit
                 Func<T1, T2, T3, T4, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -866,7 +931,47 @@ namespace FlUnit
             /// <inheritdoc />
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                List<string> nonTypeNames = new List<string>();
+
+#if NET6_0_OR_GREATER
+                var tuple = prereqs as ITuple;
+                for (var i = 0; i < tuple.Length; i++)
+                {
+                    var item = tuple[i];
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+#else
+                void AddItemIfItOverridesToString(object item)
+                {
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+
+                AddItemIfItOverridesToString(prereqs.Item1);
+                AddItemIfItOverridesToString(prereqs.Item2);
+                AddItemIfItOverridesToString(prereqs.Item3);
+                AddItemIfItOverridesToString(prereqs.Item4);
+#endif
+
+                if (nonTypeNames.Count == 0)
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else if (nonTypeNames.Count == 1)
+                {
+                    return nonTypeNames[0];
+                }
+                else
+                {
+                    return $"({string.Join(", ", nonTypeNames)})";
+                }
             }
 
             /// <inheritdoc />
@@ -894,9 +999,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -1016,6 +1118,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Func<T1, T2, T3, T4, T5, TResult> act;
             internal readonly (T1, T2, T3, T4, T5) prereqs;
             internal TestFunctionOutcome<TResult> invocationOutcome;
@@ -1026,14 +1129,11 @@ namespace FlUnit
                 Func<T1, T2, T3, T4, T5, TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -1059,7 +1159,48 @@ namespace FlUnit
             /// <inheritdoc />
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                List<string> nonTypeNames = new List<string>();
+
+#if NET6_0_OR_GREATER
+                var tuple = prereqs as ITuple;
+                for (var i = 0; i < tuple.Length; i++)
+                {
+                    var item = tuple[i];
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+#else
+                void AddItemIfItOverridesToString(object item)
+                {
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+
+                AddItemIfItOverridesToString(prereqs.Item1);
+                AddItemIfItOverridesToString(prereqs.Item2);
+                AddItemIfItOverridesToString(prereqs.Item3);
+                AddItemIfItOverridesToString(prereqs.Item4);
+                AddItemIfItOverridesToString(prereqs.Item5);
+#endif
+
+                if (nonTypeNames.Count == 0)
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else if (nonTypeNames.Count == 1)
+                {
+                    return nonTypeNames[0];
+                }
+                else
+                {
+                    return $"({string.Join(", ", nonTypeNames)})";
+                }
             }
 
             /// <inheritdoc />
@@ -1087,9 +1228,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()

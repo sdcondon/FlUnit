@@ -9,6 +9,7 @@ using FlUnit.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace FlUnit
 {
@@ -100,6 +101,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Func<<#= TList(i, "", ", ") #>TResult> act;
 <# WriteLineIf(i > 0, $"internal readonly {PrereqsFieldType(i)} prereqs;", 3); #>
             internal TestFunctionOutcome<TResult> invocationOutcome;
@@ -110,14 +112,11 @@ namespace FlUnit
                 Func<<#= TList(i, "", ", ") #>TResult> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
 <# WriteLineIf(i > 0, "this.prereqs = prereqs;", 4); #>
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -145,8 +144,58 @@ namespace FlUnit
             {
 <# if (i == 0) { #>
                 return "[implicit test case]";
+<# } else if (i == 1) { #>
+                string prereqToString = prereqs.ToString();
+
+                if (prereqToString.Equals(prereqs.GetType().ToString()))
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else
+                {
+                    return prereqToString;
+                }
 <# } else { #>
-                return prereqs.ToString();
+                List<string> nonTypeNames = new List<string>();
+
+#if NET6_0_OR_GREATER
+                var tuple = prereqs as ITuple;
+                for (var i = 0; i < tuple.Length; i++)
+                {
+                    var item = tuple[i];
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+#else
+                void AddItemIfItOverridesToString(object item)
+                {
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+
+<# for (int j = 1; j <= i; j++) { #>
+                AddItemIfItOverridesToString(prereqs.Item<#= j #>);
+<# } #>
+#endif
+
+                if (nonTypeNames.Count == 0)
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else if (nonTypeNames.Count == 1)
+                {
+                    return nonTypeNames[0];
+                }
+                else
+                {
+                    return $"({string.Join(", ", nonTypeNames)})";
+                }
 <# } #>
             }
 
@@ -175,9 +224,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()

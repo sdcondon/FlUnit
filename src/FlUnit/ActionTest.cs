@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace FlUnit
 {
@@ -73,6 +74,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Action act;
             internal TestActionOutcome invocationOutcome;
 
@@ -81,13 +83,10 @@ namespace FlUnit
                 Action act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -112,6 +111,8 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+            // TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
                 return "[implicit test case]";
@@ -142,9 +143,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -251,6 +249,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Action<T1> act;
             internal readonly T1 prereqs;
             internal TestActionOutcome invocationOutcome;
@@ -261,14 +260,11 @@ namespace FlUnit
                 Action<T1> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -293,9 +289,20 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+            // TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                string prereqToString = prereqs.ToString();
+
+                if (prereqToString.Equals(prereqs.GetType().ToString()))
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else
+                {
+                    return prereqToString;
+                }
             }
 
             /// <inheritdoc />
@@ -323,9 +330,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -436,6 +440,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Action<T1, T2> act;
             internal readonly (T1, T2) prereqs;
             internal TestActionOutcome invocationOutcome;
@@ -446,14 +451,11 @@ namespace FlUnit
                 Action<T1, T2> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -478,9 +480,49 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+            // TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                List<string> nonTypeNames = new List<string>();
+
+#if NET6_0_OR_GREATER
+                var tuple = prereqs as ITuple;
+                for (var i = 0; i < tuple.Length; i++)
+                {
+                    var item = tuple[i];
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+#else
+                void AddItemIfItOverridesToString(object item)
+                {
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+
+                AddItemIfItOverridesToString(prereqs.Item1);
+                AddItemIfItOverridesToString(prereqs.Item2);
+#endif
+
+                if (nonTypeNames.Count == 0)
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else if (nonTypeNames.Count == 1)
+                {
+                    return nonTypeNames[0];
+                }
+                else
+                {
+                    return $"({string.Join(", ", nonTypeNames)})";
+                }
             }
 
             /// <inheritdoc />
@@ -508,9 +550,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -623,6 +662,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Action<T1, T2, T3> act;
             internal readonly (T1, T2, T3) prereqs;
             internal TestActionOutcome invocationOutcome;
@@ -633,14 +673,11 @@ namespace FlUnit
                 Action<T1, T2, T3> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -665,9 +702,50 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+            // TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                List<string> nonTypeNames = new List<string>();
+
+#if NET6_0_OR_GREATER
+                var tuple = prereqs as ITuple;
+                for (var i = 0; i < tuple.Length; i++)
+                {
+                    var item = tuple[i];
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+#else
+                void AddItemIfItOverridesToString(object item)
+                {
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+
+                AddItemIfItOverridesToString(prereqs.Item1);
+                AddItemIfItOverridesToString(prereqs.Item2);
+                AddItemIfItOverridesToString(prereqs.Item3);
+#endif
+
+                if (nonTypeNames.Count == 0)
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else if (nonTypeNames.Count == 1)
+                {
+                    return nonTypeNames[0];
+                }
+                else
+                {
+                    return $"({string.Join(", ", nonTypeNames)})";
+                }
             }
 
             /// <inheritdoc />
@@ -695,9 +773,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -812,6 +887,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Action<T1, T2, T3, T4> act;
             internal readonly (T1, T2, T3, T4) prereqs;
             internal TestActionOutcome invocationOutcome;
@@ -822,14 +898,11 @@ namespace FlUnit
                 Action<T1, T2, T3, T4> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -854,9 +927,51 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+            // TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                List<string> nonTypeNames = new List<string>();
+
+#if NET6_0_OR_GREATER
+                var tuple = prereqs as ITuple;
+                for (var i = 0; i < tuple.Length; i++)
+                {
+                    var item = tuple[i];
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+#else
+                void AddItemIfItOverridesToString(object item)
+                {
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+
+                AddItemIfItOverridesToString(prereqs.Item1);
+                AddItemIfItOverridesToString(prereqs.Item2);
+                AddItemIfItOverridesToString(prereqs.Item3);
+                AddItemIfItOverridesToString(prereqs.Item4);
+#endif
+
+                if (nonTypeNames.Count == 0)
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else if (nonTypeNames.Count == 1)
+                {
+                    return nonTypeNames[0];
+                }
+                else
+                {
+                    return $"({string.Join(", ", nonTypeNames)})";
+                }
             }
 
             /// <inheritdoc />
@@ -884,9 +999,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
@@ -1003,6 +1115,7 @@ namespace FlUnit
         /// </summary>
         public class Case : ITestCase
         {
+            private readonly Test test;
             private readonly Action<T1, T2, T3, T4, T5> act;
             internal readonly (T1, T2, T3, T4, T5) prereqs;
             internal TestActionOutcome invocationOutcome;
@@ -1013,14 +1126,11 @@ namespace FlUnit
                 Action<T1, T2, T3, T4, T5> act,
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
-                this.Test = test;
+                this.test = test;
                 this.prereqs = prereqs;
                 this.act = act;
                 this.Assertions = makeAssertions(this).ToArray();
             }
-
-            /// <inheritdoc />
-            public Test Test { get; }
 
             /// <inheritdoc />
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
@@ -1045,9 +1155,52 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+            // TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                return prereqs.ToString();
+                List<string> nonTypeNames = new List<string>();
+
+#if NET6_0_OR_GREATER
+                var tuple = prereqs as ITuple;
+                for (var i = 0; i < tuple.Length; i++)
+                {
+                    var item = tuple[i];
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+#else
+                void AddItemIfItOverridesToString(object item)
+                {
+                    var itemToString = item.ToString();
+                    if (!itemToString.Equals(item.GetType().ToString()))
+                    {
+                        nonTypeNames.Add(itemToString);
+                    }
+                }
+
+                AddItemIfItOverridesToString(prereqs.Item1);
+                AddItemIfItOverridesToString(prereqs.Item2);
+                AddItemIfItOverridesToString(prereqs.Item3);
+                AddItemIfItOverridesToString(prereqs.Item4);
+                AddItemIfItOverridesToString(prereqs.Item5);
+#endif
+
+                if (nonTypeNames.Count == 0)
+                {
+                    return $"test case #{Array.IndexOf(test.Cases.ToArray(), this) + 1}";
+                }
+                else if (nonTypeNames.Count == 1)
+                {
+                    return nonTypeNames[0];
+                }
+                else
+                {
+                    return $"({string.Join(", ", nonTypeNames)})";
+                }
             }
 
             /// <inheritdoc />
@@ -1075,9 +1228,6 @@ namespace FlUnit
                 this.assert = assert;
                 this.description = description;
             }
-
-            /// <inheritdoc />
-            public ITestCase TestCase => testCase;
 
             /// <inheritdoc />
             public void Assert()
