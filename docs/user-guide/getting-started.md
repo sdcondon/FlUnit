@@ -95,8 +95,8 @@ With the VSTest adapter (as of v1.0.1):
 * Tests are named for the name of the property.
 * Tests with multiple cases or multiple assertions give one result per test case per assertion. It is possible to override this logic with a configuration setting, but by default the label of each result depends on the multiplicity of cases and assertions, as follows:
   * With a single case and multiple assertions, the result label is the description of the assertion.
-  * With multiple cases each with a single assertion, the result label is the ToString of the case (which when there are multiple given clauses, is a value tuple of each)
-  * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for test case \{case ToString\}", like this:  
+  * With multiple cases each with a single assertion, the result label is formulated each as follows. We look at each prerequisite's ToString. If any override ToString (i.e. don't just return the type name), the label is the ToString of each such prerequisite. If none of the prerequisites override ToString, the case label is just "test case #X".
+  * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for \{case label, as above\}", like this:  
     ![Visual Studio Test Result Example](./VSTestResultExample.png)
 * The duration reported for the first assertion of each test case is the time taken for the `When` clause and the assertion to execute. All assertions after the first report only their own duration. Note that this means that using the parameterless `ThenReturns()` or `ThenThrows()` builder methods you're going to get an assertion that tells you (pretty closely..) how long the `When` clause took. Configurability of this behaviour will be revisited at some point.
 
