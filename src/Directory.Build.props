@@ -13,8 +13,10 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+	<EmbedUntrackedSources>true</EmbedUntrackedSources>
 
-    <!-- NB: timestamp below doesn't include seconds because depending on such a package gets VS into an infinite restore loop.. -->
+    <!-- NB #1: timestamp below doesn't include seconds because depending on such a package gets VS into an infinite restore loop -->
+	<!-- NB #2: leading zeroes are invalid in numeric sections - hence the 'T' instead of a dot (I work late sometimes). Will go wrong in 2100, but who cares -->
     <Version>0.0.0-local.$([System.DateTime]::Now.ToString(yyMMddTHHmm))</Version>
   </PropertyGroup>
 
@@ -22,6 +24,7 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
+  <!-- Will make this cleverer if anyone else starts contributing to this (look for local package sources with Powershell, maybe) -->
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' != 'true' And Exists('C:\Users\simon\Code\Packages')">
     <PackageOutputPath>C:\Users\simon\Code\Packages</PackageOutputPath>
   </PropertyGroup>
