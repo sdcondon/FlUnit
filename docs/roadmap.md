@@ -2,7 +2,7 @@
 
 Proper issue tracking would be overkill, so just a bullet list to organise my thoughts:
 
-- I'm starting to (gradually) work on **v1.3** now, driven purely by things that annoy me in my own usage of this framework. v1.2 is likely to include:
+- I'm starting to (gradually) work on **v1.3** now, driven purely by things that annoy me in my own usage of this framework. v1.3 is likely to include:
   - Configurability:
     - Take a look at configurability of test execution strategy in general (should different cases be different "Tests" and so on)
     - Test case labelling is annoying at the mo. Better support for custom test case labelling.
