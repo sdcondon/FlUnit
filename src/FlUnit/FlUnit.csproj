@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageIcon>FlUnitIcon.png</PackageIcon>
+    <PackageIcon>FlUnit-128.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>A test framework within which tests are defined using a fluent builder.</Description>
   </PropertyGroup>
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(SolutionDir)\FlUnitIcon.png" Link="FlUnitIcon.png" Pack="true" PackagePath="" />
+    <None Include="$(SolutionDir)\FlUnit-128.png" Link="FlUnitIcon-128.png" Pack="true" PackagePath="" />
     <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 

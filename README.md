@@ -1,4 +1,4 @@
-﻿![FlUnit Logo](src/FlUnitIcon.png)
+﻿![FlUnit Logo](src/FlUnit-128.png)
 
 # FlUnit
 
