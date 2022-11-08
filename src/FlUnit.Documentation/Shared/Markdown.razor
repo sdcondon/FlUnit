@@ -71,8 +71,6 @@
 
     protected override void Write(HtmlRenderer renderer, CodeBlock obj)
     {
-      renderer.EnsureLine();
-
       if (obj is FencedCodeBlock fencedCodeBlock)
       {
         var attr = obj.TryGetAttributes() ?? new();
