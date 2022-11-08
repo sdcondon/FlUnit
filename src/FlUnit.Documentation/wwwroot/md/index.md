@@ -13,4 +13,9 @@ public static Test SumOfEvenAndOdd => TestThat
   .And((_, y, sum) => sum.Should().BeGreaterThan(y));
 ```
 
-The FlUnit NuGet package is the core library of FlUnit - it contains all of the builder stuff that you directly consume to write your FlUnit tests.
+The recommended initial learning path is as follows:
+
+1. **[Getting Started](user-guide/getting-started.md):** Instructions for getting started with FlUnit.
+1. **[Useful Patterns](user-guide/useful-patterns.md):** A few patterns that may prove useful when writing FlUnit tests
+1. **[Advanced Functionality](user-guide/advanced-functionality.md):** Details of functionality not covered in "getting started"
+1. **[Other Notes](user-guide/other-notes.md):** Assorted notes regarding the design of FlUnit and its usage

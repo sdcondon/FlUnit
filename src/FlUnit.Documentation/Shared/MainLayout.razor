@@ -1,12 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject IJSRuntime JS
-
-@code {
-  protected override void OnAfterRender(bool firstRender)
-  {
-    JS.InvokeVoidAsync("PR.prettyPrint");
-  }
-}
 
 <div class="page">
   <div class="sidebar">

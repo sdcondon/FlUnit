@@ -1,11 +1,11 @@
 # Advanced Fuctionality
 
-This document details some more advanced areas of FlUnit's functionality, not covered in "[getting started](./getting-started.md)".
+This document details some more advanced areas of FlUnit's functionality, not covered in "[getting started](user-guide/getting-started.md)".
 
 ## Test Run Configuration
 
 If VSTest is being used, FlUnit test configuration can be provided in a "FlUnit" element in the .runsettings file.
-See the [annotated example](../../src/Example.TestProject/.runsettings) in the example test project for details.
+See the [annotated example](https://github.com/sdcondon/FlUnit/blob/main/src/Example.TestProject/.runsettings) in the example test project for details.
 
 Configuration that applies to individual tests can be overridden by individual tests through the use of the `UsingConfiguration` builder method.
 Configuration overrides can be specified at any point up until the `When` clause is specified.

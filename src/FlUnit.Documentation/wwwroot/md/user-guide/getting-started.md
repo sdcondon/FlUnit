@@ -8,10 +8,10 @@ Create a .NET 6 class library and add some package references:
 - [`coverlet.collector`](https://www.nuget.org/packages/coverlet.collector/) does work with FlUnit tests - so feel free to add that, too.
 
 NB: a .NET Standard 2.0 version of the framework does exist, and targeting earlier versions of the framework does work, but there are some caveats.
-Details can be found [here](./other-notes#caveats-when-targeting-net-5-or-earlier). All the examples and documentation below assumes .NET 6.
+Details can be found [here](user-guide/other-notes.md#caveats-when-targeting-net-5-or-earlier). All the examples and documentation below assumes .NET 6.
 
 As shown below, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them.
-More examples can be found in the [example test project](../../src/Example.TestProject/ExampleTests.cs).
+More examples can be found in the [example test project](https://github.com/sdcondon/FlUnit/blob/main/src/Example.TestProject/ExampleTests.cs).
 
 ```csharp
 using FlUnit;
@@ -97,7 +97,7 @@ With the VSTest adapter (as of v1.0.1):
   * With a single case and multiple assertions, the result label is the description of the assertion.
   * With multiple cases each with a single assertion, the result label is formulated each as follows. We look at each prerequisite's ToString. If any override ToString (i.e. don't just return the type name), the label is the ToString of each such prerequisite. If none of the prerequisites override ToString, the case label is just "test case #X".
   * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for \{case label, as above\}", like this:  
-    ![Visual Studio Test Result Example](./img/VSTestResultExample.png)
+    ![Visual Studio Test Result Example](img/VSTestResultExample.png)
 * The duration reported for the first assertion of each test case is the time taken for the `When` clause and the assertion to execute. All assertions after the first report only their own duration. Note that this means that using the parameterless `ThenReturns()` or `ThenThrows()` builder methods you're going to get an assertion that tells you (pretty closely..) how long the `When` clause took. Configurability of this behaviour will be revisited at some point.
 
 ## Why FlUnit?
@@ -118,9 +118,9 @@ The fluent builders enable you to discover functionality by your IDE showing ava
 
 As with any design, there are downsides. FlUnit's notable weaknesses include:
 
-- The baseline complexity of FlUnit tests is greater than that of tests using a method-based framework.
-- The enforced test structure can make certain scenarios a little awkward.
-  - Primarily, people have become stuck when getting to grips with FlUnit and trying to assert on objects that are neither the return value of the `When` clause nor any of the prerequisites referenced by it. There is a [simple pattern of usage](./useful-patterns.md#affected-object-graph-as-prerequisite) that can get you over this hurdle - but this is likely to be the main reason not to use FlUnit if you consider it too awkward.
+- The **baseline complexity** of FlUnit tests is greater than that of tests using a method-based framework.
+- The **enforced test structure** can make certain scenarios a little awkward.
+  - Primarily, people have become stuck when getting to grips with FlUnit and trying to assert on objects that are neither the return value of the `When` clause nor any of the prerequisites referenced by it. There is a [simple pattern of usage](user-guide/useful-patterns.md#affected-object-graph-as-prerequisite) that can get you over this hurdle - but this is likely to be the main reason not to use FlUnit if you consider it too awkward.
   - Also consider what is needed to check the value of an out parameter. Ugly code..
-- Delegate params get unwieldy for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above. Using C# 9's lambda discard parameters can also make things a little clearer.
-- All of the passing of test objects (arranged prerequisites, return values ..) between the provided delegates (as opposed to having a single test method) comes at a performance cost - though I've not run any explicit tests to validate the extent of this. The fact that the VSTest adapter is minimal so far likely counteracts it to some degree at the moment.
+- **Delegate params can get unwieldy** for even a modest number of separate "Given" clauses. Of course, can always do a single Given of, say, an anonymous object with a bunch of things in it - as shown above. Using C# 9's lambda discard parameters can also make things a little clearer.
+- All of the passing of test objects (arranged prerequisites, return values ..) between the provided delegates (as opposed to having a single test method) comes at a **performance cost** - though I've not run any explicit tests to validate the extent of this. The fact that the VSTest adapter is minimal so far likely counteracts it to some degree at the moment.

@@ -3,7 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "provider": "cdnjs",
       "library": "bootstrap-icons@1.9.1",
       "destination": "wwwroot/css/bootstrap-icons/",
       "files": [
@@ -12,6 +11,39 @@
         "font/bootstrap-icons.css",
         "font/bootstrap-icons.json",
         "font/bootstrap-icons.min.css"
+      ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "google-code-prettify@1.0.5",
+      "destination": "wwwroot/lib/google-code-prettify/",
+      "files": [
+        "styles/demo.html",
+        "styles/desert.css",
+        "styles/doxy.css",
+        "styles/index.html",
+        "styles/sons-of-obsidian.css",
+        "styles/sunburst.css",
+        "bin/prettify.min.css",
+        "bin/prettify.min.js",
+        "bin/run_prettify.min.js"
+      ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "google-code-prettify@1.0.5",
+      "destination": "wwwroot/lib/google-code-prettify/",
+      "files": [
+        "bin/prettify.min.css",
+        "bin/prettify.min.js",
+        "bin/run_prettify.min.js",
+        "README.md",
+        "styles/demo.html",
+        "styles/desert.css",
+        "styles/doxy.css",
+        "styles/index.html",
+        "styles/sons-of-obsidian.css",
+        "styles/sunburst.css"
       ]
     }
   ]
