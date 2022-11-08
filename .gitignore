@@ -23,6 +23,7 @@ x64/
 x86/
 bld/
 [Bb]in/
+!/src/FlUnit.Documentation/wwwroot/lib/google-code-prettify/bin
 [Oo]bj/
 [Ll]og/
 
