@@ -1,6 +1,6 @@
 ﻿# FlUnit
 
-FlUnit is a test framework in which tests are written using [builders](https://en.wikipedia.org/wiki/Builder_pattern) that expose a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface), like this:
+FlUnit is a .NET test framework in which tests are written using [builders](https://en.wikipedia.org/wiki/Builder_pattern) that expose a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface), like this:
 
 ```csharp
 public static Test SumOfEvenAndOdd => TestThat
