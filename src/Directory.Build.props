@@ -5,7 +5,7 @@
     <Product>FlUnit - A fluent unit test framework</Product>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/sdcondon/FlUnit.git</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/sdcondon/FlUnit</PackageProjectUrl>
+    <PackageProjectUrl>https://sdcondon.net/FlUnit</PackageProjectUrl>
 	<PackageReleaseNotes>See https://github.com/sdcondon/FlUnit/releases.</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>2019-2022 Simon Condon</Copyright>
