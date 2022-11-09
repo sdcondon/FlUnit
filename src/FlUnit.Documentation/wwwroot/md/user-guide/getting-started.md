@@ -28,21 +28,21 @@ public static class MyTests
     .Given(() => new TestSubject())
     .And(() => new Collaborator())
     // Act: Once all prerequisites are specified, call "When" to specify the "Act" part of the test.
-    // Provide a delegate that accepts one parameter for each prerequisite. The delegate can return
+    // Provide a delegate that has one parameter for each prerequisite. The delegate can return
     // a value or be void.
     .When((sut, collaborator) => sut.Process(collaborator))
     // Assert: assertions can be provided with the "ThenReturns" and "And" methods, or the "ThenThrows"
     // and "And" methods. You provide a delegate for the assertion itself and (optionally) a string
     // description for the associated test result. If you do not provide an explicit description, the text
     // of the assertion argument will be used - trimmed down to just its body if it is a lambda. For
-    // "ThenReturns", the delegate should accept one parameter for each prerequisite, and one for the
+    // "ThenReturns", the delegate should have one parameter for each prerequisite, and one for the
     // return value of the When clause (if it returns one). For "ThenThrows", see the third example,
     // below. Assertion failure should be indicated by a thrown exception.
     .ThenReturns((sut, collaborator, retVal) => retVal.Should().BeTrue())
     .And((sut, collaborator, retVal) => sut.HasProcessed.Should().BeTrue())
     .And((sut, collaborator, retVal) => collaborator.HasBeenProcessed.Should().BeTrue());
-    // NB: No call required to build a Test from a builder - builders with at least one declared assertion
-    // are implicitly convertible to Test instances.
+    // NB: No call is required to build a Test from a builder, because builders with at least one declared
+	// assertion are implicitly convertible to Test instances.
 
   // You may find that a single 'given' clause returning an anonymous
   // object makes for more readable tests (separate given clauses is more useful when
@@ -93,12 +93,18 @@ If you've included a reference to the VSTest adapter, the Visual Studio IDE and 
 
 With the VSTest adapter (as of v1.0.1):
 * Tests are named for the name of the property.
-* Tests with multiple cases or multiple assertions give one result per test case per assertion. Labelling logic is specifiable with a configuration setting, but by default the label of each result depends on the multiplicity of cases and assertions, as follows:
+* Tests with multiple cases or multiple assertions give one result per test case per assertion.
+  Labelling logic is specifiable with a configuration setting, but by default the label of each result depends on the multiplicity of cases and assertions, as follows:
   * With a single case and multiple assertions, the result label is the description of the assertion.
-  * With multiple cases each with a single assertion, the result label is formulated each as follows. We look at each prerequisite's ToString. If any override ToString (i.e. don't just return the type name), the label is the ToString of each such prerequisite. If none of the prerequisites override ToString, the case label is just "test case #X".
+  * With multiple cases each with a single assertion, the result labels are formulated as follows.
+  We look at each prerequisite's ToString. If any override ToString (i.e. don't just return the type name), the label is the ToString of each such prerequisite.
+  If none of the prerequisites override ToString, the case label is just "test case #X".
   * With multiple cases each with a multiple assertions, the result label is "\{assertion description\} for \{case label, as above\}", like this:  
     ![Visual Studio Test Result Example](img/VSTestResultExample.png)
-* The duration reported for the first assertion of each test case is the time taken for the `When` clause and the assertion to execute. All assertions after the first report only their own duration. Note that this means that using the parameterless `ThenReturns()` or `ThenThrows()` builder methods you're going to get an assertion that tells you (pretty closely..) how long the `When` clause took. Configurability of this behaviour will be revisited at some point.
+* The duration reported for the first assertion of each test case is the time taken for the `When` clause and the assertion to execute.
+  All assertions after the first report only their own duration.
+  Note that this means that using the parameterless `ThenReturns()` or `ThenThrows()` builder methods you're going to get an assertion that tells you (very roughly, of course) how long the `When` clause took.
+  Configurability of this behaviour will be revisited at some point.
 
 ## Why FlUnit?
 
