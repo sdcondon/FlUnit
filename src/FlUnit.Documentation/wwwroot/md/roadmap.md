@@ -10,7 +10,7 @@ Proper issue tracking would be overkill, so just a bullet list to organise my th
   - Configurability:
     - Of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations). Look at achieving greater accuracy in durations in the vstest adapter. Now that I realise you can record duration separately to start and end time. I could pause the the duration timing while doing framework-y things..
     - Expand on parallel partitioning control by allowing for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
-  - Basic test tidy-up support. Open questions here about if/when we should consider objects (pre-requisites, test function return values) to be "owned" by the test, and thus its responsibility to dispose of. What is the ideal default behaviour, and by what mechanisms should we support deviation from that.
+  - Basic test tidy-up support. Open questions here about if/when we should consider objects (prerequisites, test function return values) to be "owned" by the test, and thus its responsibility to dispose of. What is the ideal default behaviour, and by what mechanisms should we support deviation from that.
   - Support for async tests?
   - Test attachment support
   - VSTest platform adapter internal improvements

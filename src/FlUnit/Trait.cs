@@ -6,7 +6,7 @@
     public sealed class Trait : ITrait
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ITrait"/> class.
+        /// Initializes a new instance of the <see cref="Trait"/> class.
         /// </summary>
         /// <param name="name">The name of the trait.</param>
         public Trait(string name) => Name = name;
