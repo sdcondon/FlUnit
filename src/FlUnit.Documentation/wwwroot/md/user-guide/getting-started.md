@@ -42,7 +42,7 @@ public static class MyTests
     .And((sut, collaborator, retVal) => sut.HasProcessed.Should().BeTrue())
     .And((sut, collaborator, retVal) => collaborator.HasBeenProcessed.Should().BeTrue());
     // NB: No call is required to build a Test from a builder, because builders with at least one declared
-	// assertion are implicitly convertible to Test instances.
+    // assertion are implicitly convertible to Test instances.
 
   // You may find that a single 'given' clause returning an anonymous
   // object makes for more readable tests (separate given clauses is more useful when

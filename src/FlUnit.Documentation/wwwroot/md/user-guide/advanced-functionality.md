@@ -30,4 +30,4 @@ public static Test MyTest => TestThat
     .ThenReturns();
 ```
 
-If all you need as a prerequisite as the test context itself, you can use `GivenTestContext()` as a more readable alias of `Given(ctx => ctx)`;
+If all you need as a prerequisite is the test context itself, you can use `GivenTestContext()` as a more readable alias of `Given(ctx => ctx)`;

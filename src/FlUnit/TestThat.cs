@@ -10,7 +10,7 @@ namespace FlUnit
     public static class TestThat
     {
         /// <summary>
-        /// Starts building a test by providing an override to be applied to the test configuration used by the test runner (generally by being read from a configuration file - .runsettings, in the cae of VSTest).
+        /// Starts building a test by providing an override to be applied to the test configuration used by the test runner (generally by being read from a configuration file - .runsettings, in the case of VSTest).
         /// </summary>
         /// <param name="configurationOverride">The override to apply.</param>
         /// <returns>A builder for providing "Given" clauses or a "When" clause.</returns>
