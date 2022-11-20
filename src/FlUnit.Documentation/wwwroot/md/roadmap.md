@@ -7,10 +7,11 @@ Proper issue tracking would be overkill, so just a bullet list to organise my th
     - Test case labelling is still annoying after the minor improvement made in v1.2. Better support for custom test case labelling, and perhaps further improved default labelling. Currently mulling over some options, including:
 	  - in default labelling, spot and eliminate *all* type names (even ones contained *within* prereq tostrings..).
 	  not trivial, it seems - cant e.g. verify anon type names with gettype.
-	  would probably require reflection - which id really rather avoid in default code.
+	  would probably require reflection - which id really rather avoid in a default behaviour.
 	  - in default labelling, eliminate common result suffixes.
 	  would require creating all results before submitting any.
 	  would also rather avoid - hacky and the results look awkward anyway.
+	  Rejected idea included only for completeness.
 	  - Add LabelledAs(delegate) builder method to override prereq labelling in a strongly-typed manner.
 	  Not too tough, but overlaps/overrides other behaviours in a perhaps confusing way..?
 	  i.e. would need to play nice with labelling strategy.
