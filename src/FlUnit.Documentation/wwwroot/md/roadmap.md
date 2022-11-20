@@ -4,7 +4,28 @@ Proper issue tracking would be overkill, so just a bullet list to organise my th
 
 - I'm starting to (gradually) work on **v1.3** now, driven purely by things that annoy me in my own usage of this framework. v1.3 is likely to include:
   - Configurability:
-    - Test case labelling is still annoying after the minor improvement made in v1.2. Better support for custom test case labelling.
+    - Test case labelling is still annoying after the minor improvement made in v1.2. Better support for custom test case labelling, and perhaps further improved default labelling. Currently mulling over some options, including:
+	  - in default labelling, spot and eliminate *all* type names (even ones contained *within* prereq tostrings..).
+	  not trivial, it seems - cant e.g. verify anon type names with gettype.
+	  would probably require reflection - which id really rather avoid in default code.
+	  - in default labelling, eliminate common result suffixes.
+	  would require creating all results before submitting any.
+	  would also rather avoid - hacky and the results look awkward anyway.
+	  - Add LabelledAs(delegate) builder method to override prereq labelling in a strongly-typed manner.
+	  Not too tough, but overlaps/overrides other behaviours in a perhaps confusing way..?
+	  i.e. would need to play nice with labelling strategy.
+	  A promising option, though.
+	  - Add format string support to prerreqs.
+	  "g" for current behaviour, "i" for test case index, integers for ToString of prereq of corresponding index.
+	  Useless on its own, would need labelling strategy to make use of it (see need bullet points).
+	  But seems a good idea.
+	  - Add config property for result label (e.g. `UsingConfiguration(c => c.ResultLabel = "{0} for test case {1:test case #@i}")` or `UsingConfiguration(c => c.ResultLabel = "{0} for test case {1:@0 + @1}")`).
+	  useless on its own - requires the labelling strategy to use it.
+	  - Add config property for prereq format (e.g. `UsingConfiguration(c => c.PrerequisiteFormatString = "test case #@i")` or `UsingConfiguration(c => c.PrerequisiteFormatString = "@0 + @1")`).
+	  useless on its own - requires the labelling strategy to use it.
+	  Con: seems most useful for particular values for particular test cases, but config really for stuff across a whole test suite.
+	  when its for a particular test, `LabelledAs` feels more powerful?
+	  - In docs, add recommendation to override ToString when using the "Test Cases as Records" pattern
     - Expand on parallel partitioning control by allowing for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
 - On the to-do list for later:
   - Configurability:
