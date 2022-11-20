@@ -4,14 +4,20 @@ Proper issue tracking would be overkill, so just a bullet list to organise my th
 
 - I'm starting to (gradually) work on **v1.3** now, driven purely by things that annoy me in my own usage of this framework. v1.3 is likely to include:
   - Configurability:
-    - Take a look at configurability of test execution strategy in general (should different cases be different "Tests" and so on)
-    - Test case labelling is annoying at the mo. Better support for custom test case labelling.
+    - Test case labelling is still annoying after the minor improvement made in v1.2. Better support for custom test case labelling.
+    - Expand on parallel partitioning control by allowing for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
 - On the to-do list for later:
   - Configurability:
     - Of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations). Look at achieving greater accuracy in durations in the vstest adapter. Now that I realise you can record duration separately to start and end time. I could pause the the duration timing while doing framework-y things..
-    - Expand on parallel partitioning control by allowing for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
+	- Take a look at configurability of test execution strategy in general (should different cases be different "Tests" and so on).
+*NTS: What this'd look like, probably: TestDiscovery to get Test and `Arrange` it.
+Look at resulting (potentially overridden) test config for appropriate granularity setting.
+Then return testmetadata that now optionally include case/assertion index.
+This index info would need to be included in VSTest case serialization (see VSTest.TestDiscoverer and TestContainer).
+TestRun would need to then act accordingly (TBD whether it could/should execute once but split the results, or rerun) based on the metadata.
+Of course a gotcha here is that GivenEach.. doesn't have to return the same number of cases each time (which I maintain is good behaviour - allows for storage of cases in external media). Would need to handle that gracefully.*
   - Basic test tidy-up support. Open questions here about if/when we should consider objects (prerequisites, test function return values) to be "owned" by the test, and thus its responsibility to dispose of. What is the ideal default behaviour, and by what mechanisms should we support deviation from that.
-  - Support for async tests?
+  - Support for async tests (given and when clauses should defo be allowed to be async - and probably also assertions)
   - Test attachment support
   - VSTest platform adapter internal improvements
     - Improvement of stack traces on test failure (eliminate FlUnit stack frames completely)
