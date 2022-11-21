@@ -1,4 +1,4 @@
-# Advanced Fuctionality
+# Advanced Functionality
 
 This document details some more advanced areas of FlUnit's functionality, not covered in "[getting started](user-guide/getting-started.md)".
 
