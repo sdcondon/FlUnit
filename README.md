@@ -14,7 +14,7 @@ For documentation of the package itself, see https://sdcondon.net/FlUnit/.
 
 I've not bothered writing up any documentation for developers - and likely won't until someone else expresses an interest in contributing.
 I use Visual Studio, and once cloned, it should "just work" as far as compiling is concerned.
-There are no esoteric third-party dependencies here, and aside from [T4](https://learn.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2022#design-time-t4-text-templates) (might try to get rid of or at least minimise this at some point), no particularly unusual aspects of the solution.
+There are no esoteric third-party dependencies here, and aside from [T4](https://learn.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2022#design-time-t4-text-templates), no particularly unusual aspects of the solution.
 
 ## Issues and Contributions
 

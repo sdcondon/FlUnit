@@ -13,7 +13,7 @@ Configuration overrides can be specified at any point up until the `When` clause
 ## Test Context (v1.1 and later)
 
 Optionally, when specifying test prerequisites with `Given` and `GivenEachOf`, you can use an overload with a `Func<ITestContext, T>` parameter rather than a `Func<T>`.
-That is, you can provide a delegate that accepts an `ITestContext` object - that will be provided by the test runner. This context object can be used to write test output and error messages, like this:
+That is, you can provide a delegate that accepts an `ITestContext` object. This context object is provided by the test runner and can be used to write test output and error messages, like this:
 
 ```csharp
 public static Test MyTest => TestThat
