@@ -113,6 +113,8 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+			// TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
                 return "[implicit test case]";
@@ -291,6 +293,8 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+			// TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
                 string prereqToString = prereqs.ToString();
@@ -482,6 +486,8 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+			// TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
                 List<string> nonTypeNames = new List<string>();
@@ -704,6 +710,8 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+			// TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
                 List<string> nonTypeNames = new List<string>();
@@ -929,6 +937,8 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+			// TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
                 List<string> nonTypeNames = new List<string>();
@@ -1157,6 +1167,8 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
+			// TODO: Ultimately I'd like to offer some light support for format strings - perhaps something like (empty/"g"/"G" for the current behaviour, )
+            // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
                 List<string> nonTypeNames = new List<string>();
