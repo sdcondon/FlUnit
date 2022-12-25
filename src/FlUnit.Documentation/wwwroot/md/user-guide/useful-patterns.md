@@ -69,7 +69,7 @@ A real example of this can be found [here](https://github.com/sdcondon/SCGraphTh
 Re-use of the builders that are returned at each step of building up the prerequisites of a test is one way to achieve succinct and readable test code re-use.
 A simple example follows.
 
-Note that once you start specifying assertions, the builders are mutable (each "And" modifies the existing builder..), so can't be re-used (the getter approach below would work though). Might revisit this decision at some point. Not sure why people would want to re-use a builder once the "When" clause has been specified, but there is something to be said for consistent behaviour..
+Note that once you start specifying assertions, the builders are mutable (each "And" modifies the existing builder..), so can't be re-used. Might revisit this decision at some point. Not sure why people would want to re-use a builder once the "When" clause has been specified, but there is something to be said for consistent behaviour..
 
 ```csharp
 public static class MyTests
