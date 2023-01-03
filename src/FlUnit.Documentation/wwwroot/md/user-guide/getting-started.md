@@ -1,6 +1,6 @@
 # Getting Started
 
-Create a .NET 6 class library and add some package references:
+Create a .NET 6 (or above) class library and add some package references:
 - [`Microsoft.NET.Test.Sdk`](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/) - to identify this as a test project
 - [`FlUnit`](https://www.nuget.org/packages/FlUnit/) - which contains the important stuff - the builder and test classes
 - [`FlUnit.VS.TestAdapter`](https://www.nuget.org/packages/FlUnit.VS.TestAdapter/) - the VSTest adapter package, so that the VSTest platform knows how to find and run FlUnit tests.
@@ -8,7 +8,7 @@ Create a .NET 6 class library and add some package references:
 - [`coverlet.collector`](https://www.nuget.org/packages/coverlet.collector/) does work with FlUnit tests - so feel free to add that, too.
 
 NB: a .NET Standard 2.0 version of the framework does exist, and targeting earlier versions of the framework does work, but there are some caveats.
-Details can be found [here](user-guide/other-notes.md#caveats-when-targeting-net-5-or-earlier). All the examples and documentation below assumes .NET 6.
+Details can be found [here](user-guide/other-notes.md#caveats-when-targeting-net-5-or-earlier). All the examples and documentation below assumes .NET 6+.
 
 As shown below, tests are defined as public static gettable properties of public static classes, with the help of a fluent builder to construct them.
 More examples can be found in the [example test project](https://github.com/sdcondon/FlUnit/blob/main/src/Example.TestProject/ExampleTests.cs).
