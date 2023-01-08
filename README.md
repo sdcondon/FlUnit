@@ -10,7 +10,7 @@ This repo contains the source code for the FlUnit NuGet package.
 
 For documentation of the package itself, see https://sdcondon.net/FlUnit/.
 
-## Developer Documentation
+## Source Documentation
 
 I have not written up any documentation of the source (e.g. repo summary, design discussion, build guidance…) - and likely won't unless someone else expresses an interest in contributing.
 I use Visual Studio, and once cloned, it should "just work" as far as compiling is concerned.
