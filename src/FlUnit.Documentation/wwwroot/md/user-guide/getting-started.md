@@ -117,7 +117,7 @@ FlUnit's notable strengths include:
 The resultant reduced thinking time & confusion risk can be massively powerful, especially in "inner loop" (i.e. unit-level) tests.
 In particular, the enforced structure for tests (notably, no interlacing of action and assertion) pushes you to write easily understandable tests.
 - **It's conventionless and discoverable.**
-The fluent builders enable you to discover functionality by your IDE showing available builder methods. No more having to look up what attributes you need to do parameterised tests, how to inject context into a test class constructor, and how what static types to use to do test output.
+The fluent builders enable you to discover functionality by your IDE showing available builder methods. No more having to look up what attributes you need to do parameterised tests, how to inject context into a test class constructor, and what static types to use to do test output.
 - **A richer model for tests than that found in many other test frameworks** (without requiring the verbose code required by frameworks such as MSpec) makes a few things possible, some of which are demonstrated in the "getting started" guidance, above.
   - Parameterised tests are easy without requiring awkward attribute-based parameter retrieval. Note that this is essentially because the prerequisites are passed to the "When" delegate - meaning that *all* tests are parameterised.
   - The "arrange" clauses of a test don't have to be counted as part of the test proper, providing an easy way to distinguish inconclusive tests (because their arrangements failed) from failed ones - providing some assistance to the isolation of issues.
