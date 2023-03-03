@@ -46,10 +46,11 @@ public static class MyTests
 
   // You may find that a single 'given' clause returning an anonymous
   // object makes for more readable tests (separate given clauses is more useful when
-  // when you have multiple test cases - see below). Also note how C# 9's lambda discard
+  // when you have multiple test cases - see below). Also note that C# 9's lambda discard
   // parameters can make assertion clauses clearer. Finally, note that there is a parameterless
   // version of ThenReturns, that adds an assertion that just verifies that the
-  // when clause returned successfully:
+  // 'when' clause returned successfully. Here's a copy of the test above that makes use of all
+  // of those to prettify things a bit:
   public static Test ProcessingOfCollaborator_ButPrettier => TestThat
     .Given(() => new
     {
