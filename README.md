@@ -4,6 +4,7 @@
 
 [![NuGet version (FlUnit)](https://img.shields.io/nuget/v/FlUnit.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit/) 
 [![NuGet downloads (FlUnit)](https://img.shields.io/nuget/dt/FlUnit.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit/) 
+[![Commits since latest release](https://img.shields.io/github/commits-since/sdcondon/FlUnit/latest?style=flat-square)](https://github.com/sdcondon/FlUnit/compare/1.2.0...main) 
 [![Validation build](https://img.shields.io/github/actions/workflow/status/sdcondon/FlUnit/onPush.yml?label=validation%20build&style=flat-square)](https://github.com/sdcondon/FlUnit/actions/workflows/onPush.yml) 
 
 This repo contains the source code for the FlUnit NuGet package - as well as its tests, documentation website, and an example test project.
