@@ -12,6 +12,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: | 
+          5.0.x
+          6.0.x
+
     - name: Build
       working-directory: ./src
       run: dotnet build
