@@ -15,13 +15,14 @@ For documentation of the package itself, see https://sdcondon.net/FlUnit/.
 ## Source Documentation
 
 I have not written up any documentation of the source (e.g. repo summary, design discussion, build guidance…) - and likely won't unless someone else expresses an interest in contributing.
-I use Visual Studio, and once cloned, it should "just work" as far as compiling is concerned.
+Once cloned, it should "just work" as far as compilation is concerned.
 There are no esoteric third-party dependencies here, and aside from [T4](https://learn.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2022#design-time-t4-text-templates), no particularly unusual aspects of the solution.
 
 ## Issues and Contributions
 
 I'm not expecting anyone to want to get involved given the relatively low download figures on NuGet, but please feel free to do so.
 I do keep an eye on the issues tab, and will add a CONTRIBUTING.md if anyone drops me a message expressing interest.
+See the [roadmap](https://sdcondon.net/FlUnit/roadmap.md) for current development plans.
 
 ## See Also
 
