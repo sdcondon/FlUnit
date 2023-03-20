@@ -2,6 +2,29 @@
 
 Here are a few patterns that may prove useful when using FlUnit.
 
+## Test Cases as Records
+
+Where you are testing the behaviour of some process with different inputs and expected outputs, consider creating a record encapsulating a test case and using `GivenEachOf`, like this:
+
+```csharp
+public static class MyTests
+{
+    private record TestCase(char Char, int Count, string Expected);
+    
+    public static Test CtorBehaviour => TestThat
+        .GivenEachOf(() => new TestCase[]
+        {
+            new(Char: 'A', Count: 0, Expected: ""),
+            new(Char: 'A', Count: 1, Expected: "A"),
+            new(Char: 'A', Count: 2, Expected: "AA"),
+        })
+        .When(tc => new string(tc.Char, tc.Count))
+        .ThenReturns((tc, retVal) => retVal.ShouldBe(tc.Expected));
+}
+```
+
+A real example of this can be found [here](https://github.com/sdcondon/SCGraphTheory.Search/blob/master/src/Search.Tests/Classic/AStarSearchTests.cs).
+
 ## Affected Object Graph as Prerequisite
 
 It is entirely understandable when getting to grips with FlUnit to become stuck when trying to assert on something that is neither the return value of the `When` clause nor any of the objects referenced by it.
@@ -40,29 +63,6 @@ public static Test NodeRemoval => TestThat
     .And((given, _) => given.node1.Edges.Should().BeEquivalentTo(new[] { given.edge1 }))
     .And((given, _) => given.node2.Edges.Should().BeEmpty());
 ```
-
-## Test Cases as Records
-
-Where you are testing the behaviour of some process with different inputs and expected outputs, consider creating a record encapsulating a test case and using `GivenEachOf`, like this:
-
-```csharp
-public static class MyTests
-{
-    private record TestCase(char Char, int Count, string Expected);
-    
-    public static Test RepeatBehaviour => TestThat
-        .GivenEachOf(() => new TestCase[]
-        {
-            new(Char: 'A', Count: 0, Expected: ""),
-            new(Char: 'A', Count: 1, Expected: "A"),
-            new(Char: 'A', Count: 2, Expected: "AA"),
-        })
-        .When(tc => new string(tc.Char, tc.Count))
-        .ThenReturns((tc, retVal) => retVal.ShouldBe(tc.Expected));
-}
-```
-
-A real example of this can be found [here](https://github.com/sdcondon/SCGraphTheory.Search/blob/master/src/Search.Tests/Classic/AStarSearchTests.cs).
 
 ## Prerequisite Builder Re-Use
 
