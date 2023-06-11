@@ -2,7 +2,7 @@
 
 Proper issue tracking would be overkill, so just a bullet list to organise my thoughts:
 
-- I'm starting to (gradually) work on **v1.3** now, driven purely by things that annoy me in my own usage of this framework. v1.3 is likely to include:
+- v1.3 is likely to include:
   - Configurability:
     - Test case labelling is still annoying after the minor improvement made in v1.2. Better support for custom test case labelling, and perhaps further improved default labelling. Currently mulling over some options, including:
 	  - in default labelling, spot and eliminate *all* type names (even ones contained *within* prereq tostrings..).

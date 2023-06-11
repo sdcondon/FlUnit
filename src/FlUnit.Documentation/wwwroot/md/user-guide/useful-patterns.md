@@ -23,7 +23,9 @@ public static class MyTests
 }
 ```
 
-A real example of this can be found [here](https://github.com/sdcondon/SCGraphTheory.Search/blob/master/src/Search.Tests/Classic/AStarSearchTests.cs).
+Some notes on this approach:
+* A real example of this can be found [here](https://github.com/sdcondon/SCGraphTheory.Search/blob/master/src/Search.Tests/Classic/AStarSearchTests.cs).
+* Also note how this approach gives you a graceful way to get exactly the labels you want for your test cases - by overriding `ToString` in the record.
 
 ## Affected Object Graph as Prerequisite
 
