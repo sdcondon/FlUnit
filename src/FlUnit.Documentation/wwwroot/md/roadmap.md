@@ -5,13 +5,13 @@ Proper issue tracking would be overkill, so just a bullet list to organise my th
 - v1.3 is likely to include:
   - Configurability:
     - Test case labelling is still annoying after the minor improvement made in v1.2. Better support for custom test case labelling, and perhaps further improved default labelling. Currently mulling over some options, including:
-	  - in default labelling, spot and eliminate *all* type names (even ones contained *within* prereq tostrings..).
+	  - ~~in default labelling, spot and eliminate *all* type names (even ones contained *within* prereq tostrings..).
 	  not trivial, it seems - cant e.g. verify anon type names with gettype.
-	  would probably require reflection - which id really rather avoid in a default behaviour.
-	  - in default labelling, eliminate common result suffixes.
+	  would probably require reflection - which id really rather avoid in a default behaviour.~~
+	  - ~~in default labelling, eliminate common result suffixes.
 	  would require creating all results before submitting any.
 	  would also rather avoid - hacky and the results look awkward anyway.
-	  Rejected idea included only for completeness.
+	  Rejected idea included only for completeness.~~
 	  - Add LabelledAs(delegate) builder method to override prereq labelling in a strongly-typed manner.
 	  Not too tough, but overlaps/overrides other behaviours in a perhaps confusing way..?
 	  i.e. would need to play nice with labelling strategy.
@@ -26,7 +26,6 @@ Proper issue tracking would be overkill, so just a bullet list to organise my th
 	  useless on its own - requires the labelling strategy to use it.
 	  Con: seems most useful for particular values for particular test cases, but config really for stuff across a whole test suite.
 	  when its for a particular test, `LabelledAs` feels more powerful?
-	  - In docs, add recommendation to override ToString when using the "Test Cases as Records" pattern
     - Expand on parallel partitioning control by allowing for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
 - On the to-do list for later:
   - Configurability:
