@@ -1,6 +1,14 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href=""><img src="FlUnit-32.png" alt="FlUnit icon" /> FlUnit</a>
+﻿<div class="top-row ps-1 navbar navbar-dark">
+  <div class="container-fluid ps-2 dropdown">
+    <a class="navbar-brand dropdown-toggle" href="" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false"><img src="img/FlUnit-32.png" alt="FlUnit icon" /> FlUnit</a>
+    <ul class="dropdown-menu" aria-labelledby="dropdown01">
+        <li><a class="dropdown-item" href="https://sdcondon.net/SCClassicalPlanning">SCClassicalPlanning</a></li>
+        <li><a class="dropdown-item" href="https://sdcondon.net/SCFirstOrderLogic">SCFirstOrderLogic</a></li>
+        <li><a class="dropdown-item" href="https://sdcondon.net/SCGraphTheory">SCGraphTheory</a></li>
+        <li><a class="dropdown-item" href="https://sdcondon.net/SCSetTrie">SCSetTrie</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="https://sdcondon.net/">Personal Homepage</a></li>
+    </ul>
     <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -9,33 +17,33 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
   <nav class="flex-column">
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+      <div class="nav-item px-1">
+      <NavLink class="nav-link px-2" href="" Match="NavLinkMatch.All">
         <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
       </NavLink>
     </div>
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href="user-guide/getting-started.md">
+      <div class="nav-item px-1">
+      <NavLink class="nav-link px-2" href="user-guide/getting-started.md">
         <span class="bi bi-info-circle" aria-hidden="true"></span> Getting Started
       </NavLink>
     </div>
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href="user-guide/useful-patterns.md">
+      <div class="nav-item px-1">
+      <NavLink class="nav-link px-2" href="user-guide/useful-patterns.md">
         <span class="bi bi-info-circle" aria-hidden="true"></span> Useful Patterns
       </NavLink>
     </div>
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href="user-guide/advanced-functionality.md">
+      <div class="nav-item px-1">
+      <NavLink class="nav-link px-2" href="user-guide/advanced-functionality.md">
         <span class="bi bi-info-circle" aria-hidden="true"></span> Advanced Functionality
       </NavLink>
     </div>
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href="user-guide/other-notes.md">
+      <div class="nav-item px-1">
+      <NavLink class="nav-link px-2" href="user-guide/other-notes.md">
         <span class="bi bi-info-circle" aria-hidden="true"></span> Other Notes
       </NavLink>
     </div>
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href="roadmap.md">
+      <div class="nav-item px-1">
+      <NavLink class="nav-link px-2" href="roadmap.md">
         <span class="bi bi-signpost-split-fill" aria-hidden="true"></span> Roadmap
       </NavLink>
     </div>
