@@ -38,12 +38,16 @@ This index info would need to be included in VSTest case serialization (see VSTe
 TestRun would need to then act accordingly (TBD whether it could/should execute once but split the results, or rerun) based on the metadata.
 Of course a gotcha here is that GivenEach.. doesn't have to return the same number of cases each time (which I maintain is good behaviour - allows for storage of cases in external media). Would need to handle that gracefully.*
   - Basic test tidy-up support. Open questions here about if/when we should consider objects (prerequisites, test function return values) to be "owned" by the test, and thus its responsibility to dispose of. What is the ideal default behaviour, and by what mechanisms should we support deviation from that.
-  - Support for async tests (given and when clauses should defo be allowed to be async - and probably also assertions)
+  - Support for async tests:
+	- First and foremost, need to allow async then clauses - assertion delegates should be allowed to return Tasks,
+	  framework should await them appropriately.
+    - Currently, there's nothing stopping "Given" and "When" clauses from returning tasks - but it might be nice to
+	  allow the framework to await them so that the following logic doesn't *have* to do so itself (thus potentially
+	  simplifying test logic). `WhenAwait`? `GivenAwait`/`GivenAwaitEachOf` (careful with that second one..)?
   - Test attachment support
   - VSTest platform adapter internal improvements
     - Improvement of stack traces on test failure (eliminate FlUnit stack frames completely)
     - Get rid of some aspects of the core execution logic that are too influenced by VSTest
-
 
 Not going to do, at least in the near future:
 - QoL: Perhaps `Then/AndOfReturnValue(rv => rv.ShouldBe..)` and `Then/AndOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? No - Lambda discards work pretty well (to my eyes at least), and `OfGiven1`, `OfGiven2` is better dealt with via complex prereq objects
