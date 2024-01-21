@@ -44,6 +44,8 @@ Of course a gotcha here is that GivenEach.. doesn't have to return the same numb
     - Currently, there's nothing stopping "Given" and "When" clauses from returning tasks - but it might be nice to
 	  allow the framework to await them so that the following logic doesn't *have* to do so itself (thus potentially
 	  simplifying test logic). `WhenAwait`? `GivenAwait`/`GivenAwaitEachOf` (careful with that second one..)?
+  - Should at some point allow for instantiable test fixtures rather than just static test properties, with an abstract
+    factory to allow for extensions that hook into various DI frameworks.
   - Test attachment support
   - VSTest platform adapter internal improvements
     - Improvement of stack traces on test failure (eliminate FlUnit stack frames completely)
