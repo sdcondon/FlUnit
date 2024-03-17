@@ -57,6 +57,7 @@ This index info would need to be included in VSTest case serialization (see VSTe
 TestRun would need to then act accordingly (TBD whether it could/should execute once but split the results, or rerun) based on the metadata.
 Of course a gotcha here is that GivenEach.. doesn't have to return the same number of cases each time (which I maintain is good behaviour - allows for storage of cases in external media). Would need to handle that gracefully.
 Problems here: simply can't if target bitness differs, and presumably need to isolate so can unload/reload - AppDomain usage might suffice?*
+
 Not going to do, at least in the near future:
 - QoL: Perhaps `Then/AndOfReturnValue(rv => rv.ShouldBe..)` and `Then/AndOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? No - Lambda discards work pretty well (to my eyes at least), and `OfGiven1`, `OfGiven2` is better dealt with via complex prereq objects
 - QoL: dependent assertions - some assertions only make sense if a prior assertion has succeeded (easy for method-based test frameworks, but not for us..). Such assertions should probably give an inconclusive result? Assertions that return a value (assert a value is of a particular type, cast and return it) also a possibility - though thats probably inviting unacceptable complexity. A basic version of this could be useful though - perhaps an `AndAlso` (echoing C# operator name) - which will make all following assertions inconclusive if any prior assertion failed? No - this is best left to assertion frameworks (e.g. FluentAssertions `Which`)
