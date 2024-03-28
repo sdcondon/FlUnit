@@ -5,10 +5,10 @@ Proper issue tracking would be overkill, so just a bullet list to organise my th
 - Next up:
   - Support for async tests:
 	- First and foremost, need to allow async then clauses - assertion delegates should be allowed to return Tasks,
-	  framework should await them appropriately.
+	  test execution should await them appropriately.
     - Currently, there's nothing stopping "Given" and "When" clauses from returning tasks - but it might be nice to
 	  allow the framework to await them so that the following logic doesn't *have* to do so itself (thus potentially
-	  simplifying test logic). `WhenAwait`? `GivenAwait`/`GivenEachOfAwait`)?
+	  simplifying test logic). `WhenAwait`? `GivenAwait`/`GivenEachOfAwait`?
 
 - On the to-do list for soon-ish:
   - Fix VSTest adapter so that the test assembly is loaded in a reflection-only context when discovering tests.
