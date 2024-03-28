@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace FlUnit
 {
@@ -12,7 +13,11 @@ namespace FlUnit
     public sealed class ActionTest : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Action act;
+#if NET6_0_OR_GREATER
+        private readonly Func<ValueTask> act;
+#else
+        private readonly Func<Task> act;
+#endif
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
@@ -24,7 +29,11 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Action act,
+#if NET6_0_OR_GREATER
+            Func<ValueTask> act,
+#else
+            Func<Task> act,
+#endif
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
@@ -32,9 +41,7 @@ namespace FlUnit
             this.makeAssertions = makeAssertions;
         }
 
-        /// <summary>
-        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
-        /// </summary>
+        /// <inheritdoc />
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
@@ -50,7 +57,11 @@ namespace FlUnit
         }
 
         /// <inheritdoc />
-        public override void Arrange(ITestContext testContext)
+#if NET6_0_OR_GREATER
+        public override async ValueTask ArrangeAsync(ITestContext testContext)
+#else
+        public override async Task ArrangeAsync(ITestContext testContext)
+#endif
         {
             try
             {
@@ -75,12 +86,20 @@ namespace FlUnit
         public class Case : ITestCase
         {
             private readonly Test test;
-            private readonly Action act;
+#if NET6_0_OR_GREATER
+            private readonly Func<ValueTask> act;
+#else
+            private readonly Func<Task> act;
+#endif
             internal TestActionOutcome invocationOutcome;
 
             internal Case(
                 Test test,
-                Action act,
+#if NET6_0_OR_GREATER
+                Func<ValueTask> act,
+#else
+                Func<Task> act,
+#endif
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.test = test;
@@ -92,7 +111,11 @@ namespace FlUnit
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
-            public void Act()
+#if NET6_0_OR_GREATER
+            public async ValueTask ActAsync()
+#else
+            public async Task ActAsync()
+#endif
             {
                 if (invocationOutcome != null)
                 {
@@ -101,7 +124,7 @@ namespace FlUnit
 
                 try
                 {
-                    act();
+                    await act();
                     invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
@@ -131,12 +154,20 @@ namespace FlUnit
         public class Assertion : ITestAssertion
         {
             private readonly Case testCase;
-            private readonly Action<TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<TestActionOutcome, ValueTask> assert;
+#else
+            private readonly Func<TestActionOutcome, Task> assert;
+#endif
             private readonly string description;
 
             internal Assertion(
                 Case testCase,
-                Action<TestActionOutcome> assert,
+#if NET6_0_OR_GREATER
+                Func<TestActionOutcome, ValueTask> assert,
+#else
+                Func<TestActionOutcome, Task> assert,
+#endif
                 string description)
             {
                 this.testCase = testCase;
@@ -145,7 +176,11 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public void Assert()
+#if NET6_0_OR_GREATER
+            public async ValueTask AssertAsync()
+#else
+            public async Task AssertAsync()
+#endif
             {
                 if (testCase.invocationOutcome == null)
                 {
@@ -154,7 +189,7 @@ namespace FlUnit
 
                 try
                 {
-                    assert(testCase.invocationOutcome);
+                    await assert(testCase.invocationOutcome);
                 }
                 catch (Exception e) when (!(e is ITestFailureDetails))
                 {
@@ -183,8 +218,13 @@ namespace FlUnit
     public sealed class ActionTest<T1> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Func<ITestContext, IEnumerable<T1>> arrange;
-        private readonly Action<T1> act;
+#if NET6_0_OR_GREATER
+        private readonly Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange;
+        private readonly Func<T1, ValueTask> act;
+#else
+        private readonly Func<ITestContext, Task<IEnumerable<T1>>> arrange;
+        private readonly Func<T1, Task> act;
+#endif
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
@@ -197,8 +237,13 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Func<ITestContext, IEnumerable<T1>> arrange,
-            Action<T1> act,
+#if NET6_0_OR_GREATER
+            Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange,
+            Func<T1, ValueTask> act,
+#else
+            Func<ITestContext, Task<IEnumerable<T1>>> arrange,
+            Func<T1, Task> act,
+#endif
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
@@ -207,9 +252,7 @@ namespace FlUnit
             this.makeAssertions = makeAssertions;
         }
 
-        /// <summary>
-        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
-        /// </summary>
+        /// <inheritdoc />
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
@@ -225,11 +268,15 @@ namespace FlUnit
         }
 
         /// <inheritdoc />
-        public override void Arrange(ITestContext testContext)
+#if NET6_0_OR_GREATER
+        public override async ValueTask ArrangeAsync(ITestContext testContext)
+#else
+        public override async Task ArrangeAsync(ITestContext testContext)
+#endif
         {
             try
             {
-                cases = arrange(testContext).Select(p => new Case(this, p, act, makeAssertions)).ToArray();
+                cases = (await arrange(testContext)).Select(p => new Case(this, p, act, makeAssertions)).ToArray();
             }
             catch (Exception e)
             {
@@ -250,14 +297,22 @@ namespace FlUnit
         public class Case : ITestCase
         {
             private readonly Test test;
-            private readonly Action<T1> act;
             internal readonly T1 prereqs;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, ValueTask> act;
+#else
+            private readonly Func<T1, Task> act;
+#endif
             internal TestActionOutcome invocationOutcome;
 
             internal Case(
                 Test test,
                 T1 prereqs,
-                Action<T1> act,
+#if NET6_0_OR_GREATER
+                Func<T1, ValueTask> act,
+#else
+                Func<T1, Task> act,
+#endif
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.test = test;
@@ -270,7 +325,11 @@ namespace FlUnit
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
-            public void Act()
+#if NET6_0_OR_GREATER
+            public async ValueTask ActAsync()
+#else
+            public async Task ActAsync()
+#endif
             {
                 if (invocationOutcome != null)
                 {
@@ -279,7 +338,7 @@ namespace FlUnit
 
                 try
                 {
-                    act(prereqs);
+                    await act(prereqs);
                     invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
@@ -318,12 +377,20 @@ namespace FlUnit
         public class Assertion : ITestAssertion
         {
             private readonly Case testCase;
-            private readonly Action<T1, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, TestActionOutcome, ValueTask> assert;
+#else
+            private readonly Func<T1, TestActionOutcome, Task> assert;
+#endif
             private readonly string description;
 
             internal Assertion(
                 Case testCase,
-                Action<T1, TestActionOutcome> assert,
+#if NET6_0_OR_GREATER
+                Func<T1, TestActionOutcome, ValueTask> assert,
+#else
+                Func<T1, TestActionOutcome, Task> assert,
+#endif
                 string description)
             {
                 this.testCase = testCase;
@@ -332,7 +399,11 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public void Assert()
+#if NET6_0_OR_GREATER
+            public async ValueTask AssertAsync()
+#else
+            public async Task AssertAsync()
+#endif
             {
                 if (testCase.invocationOutcome == null)
                 {
@@ -341,7 +412,7 @@ namespace FlUnit
 
                 try
                 {
-                    assert(testCase.prereqs, testCase.invocationOutcome);
+                    await assert(testCase.prereqs, testCase.invocationOutcome);
                 }
                 catch (Exception e) when (!(e is ITestFailureDetails))
                 {
@@ -371,8 +442,13 @@ namespace FlUnit
     public sealed class ActionTest<T1, T2> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange;
-        private readonly Action<T1, T2> act;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange;
+        private readonly Func<T1, T2, ValueTask> act;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange;
+        private readonly Func<T1, T2, Task> act;
+#endif
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
@@ -385,8 +461,13 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange,
-            Action<T1, T2> act,
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange,
+            Func<T1, T2, ValueTask> act,
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange,
+            Func<T1, T2, Task> act,
+#endif
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
@@ -395,9 +476,7 @@ namespace FlUnit
             this.makeAssertions = makeAssertions;
         }
 
-        /// <summary>
-        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
-        /// </summary>
+        /// <inheritdoc />
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
@@ -413,13 +492,20 @@ namespace FlUnit
         }
 
         /// <inheritdoc />
-        public override void Arrange(ITestContext testContext)
+#if NET6_0_OR_GREATER
+        public override async ValueTask ArrangeAsync(ITestContext testContext)
+#else
+        public override async Task ArrangeAsync(ITestContext testContext)
+#endif
         {
             try
             {
+                // TODO: can probably assume these are safe to execute in parallel?
+                var p1s = await arrange.Item1(testContext);
+                var p2s = await arrange.Item2(testContext);
                 cases = (
-                    from p1 in arrange.Item1(testContext)
-                    from p2 in arrange.Item2(testContext)
+                    from p1 in p1s
+                    from p2 in p2s
                     select new Case(this, (p1, p2), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
@@ -441,14 +527,22 @@ namespace FlUnit
         public class Case : ITestCase
         {
             private readonly Test test;
-            private readonly Action<T1, T2> act;
             internal readonly (T1, T2) prereqs;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, ValueTask> act;
+#else
+            private readonly Func<T1, T2, Task> act;
+#endif
             internal TestActionOutcome invocationOutcome;
 
             internal Case(
                 Test test,
                 (T1, T2) prereqs,
-                Action<T1, T2> act,
+#if NET6_0_OR_GREATER
+                Func<T1, T2, ValueTask> act,
+#else
+                Func<T1, T2, Task> act,
+#endif
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.test = test;
@@ -461,7 +555,11 @@ namespace FlUnit
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
-            public void Act()
+#if NET6_0_OR_GREATER
+            public async ValueTask ActAsync()
+#else
+            public async Task ActAsync()
+#endif
             {
                 if (invocationOutcome != null)
                 {
@@ -470,7 +568,7 @@ namespace FlUnit
 
                 try
                 {
-                    act(prereqs.Item1, prereqs.Item2);
+                    await act(prereqs.Item1, prereqs.Item2);
                     invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
@@ -538,12 +636,20 @@ namespace FlUnit
         public class Assertion : ITestAssertion
         {
             private readonly Case testCase;
-            private readonly Action<T1, T2, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, TestActionOutcome, ValueTask> assert;
+#else
+            private readonly Func<T1, T2, TestActionOutcome, Task> assert;
+#endif
             private readonly string description;
 
             internal Assertion(
                 Case testCase,
-                Action<T1, T2, TestActionOutcome> assert,
+#if NET6_0_OR_GREATER
+                Func<T1, T2, TestActionOutcome, ValueTask> assert,
+#else
+                Func<T1, T2, TestActionOutcome, Task> assert,
+#endif
                 string description)
             {
                 this.testCase = testCase;
@@ -552,7 +658,11 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public void Assert()
+#if NET6_0_OR_GREATER
+            public async ValueTask AssertAsync()
+#else
+            public async Task AssertAsync()
+#endif
             {
                 if (testCase.invocationOutcome == null)
                 {
@@ -561,7 +671,7 @@ namespace FlUnit
 
                 try
                 {
-                    assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
+                    await assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
                 }
                 catch (Exception e) when (!(e is ITestFailureDetails))
                 {
@@ -592,8 +702,13 @@ namespace FlUnit
     public sealed class ActionTest<T1, T2, T3> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange;
-        private readonly Action<T1, T2, T3> act;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange;
+        private readonly Func<T1, T2, T3, ValueTask> act;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange;
+        private readonly Func<T1, T2, T3, Task> act;
+#endif
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
@@ -606,8 +721,13 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange,
-            Action<T1, T2, T3> act,
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange,
+            Func<T1, T2, T3, ValueTask> act,
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange,
+            Func<T1, T2, T3, Task> act,
+#endif
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
@@ -616,9 +736,7 @@ namespace FlUnit
             this.makeAssertions = makeAssertions;
         }
 
-        /// <summary>
-        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
-        /// </summary>
+        /// <inheritdoc />
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
@@ -634,14 +752,22 @@ namespace FlUnit
         }
 
         /// <inheritdoc />
-        public override void Arrange(ITestContext testContext)
+#if NET6_0_OR_GREATER
+        public override async ValueTask ArrangeAsync(ITestContext testContext)
+#else
+        public override async Task ArrangeAsync(ITestContext testContext)
+#endif
         {
             try
             {
+                // TODO: can probably assume these are safe to execute in parallel?
+                var p1s = await arrange.Item1(testContext);
+                var p2s = await arrange.Item2(testContext);
+                var p3s = await arrange.Item3(testContext);
                 cases = (
-                    from p1 in arrange.Item1(testContext)
-                    from p2 in arrange.Item2(testContext)
-                    from p3 in arrange.Item3(testContext)
+                    from p1 in p1s
+                    from p2 in p2s
+                    from p3 in p3s
                     select new Case(this, (p1, p2, p3), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
@@ -663,14 +789,22 @@ namespace FlUnit
         public class Case : ITestCase
         {
             private readonly Test test;
-            private readonly Action<T1, T2, T3> act;
             internal readonly (T1, T2, T3) prereqs;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, T3, ValueTask> act;
+#else
+            private readonly Func<T1, T2, T3, Task> act;
+#endif
             internal TestActionOutcome invocationOutcome;
 
             internal Case(
                 Test test,
                 (T1, T2, T3) prereqs,
-                Action<T1, T2, T3> act,
+#if NET6_0_OR_GREATER
+                Func<T1, T2, T3, ValueTask> act,
+#else
+                Func<T1, T2, T3, Task> act,
+#endif
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.test = test;
@@ -683,7 +817,11 @@ namespace FlUnit
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
-            public void Act()
+#if NET6_0_OR_GREATER
+            public async ValueTask ActAsync()
+#else
+            public async Task ActAsync()
+#endif
             {
                 if (invocationOutcome != null)
                 {
@@ -692,7 +830,7 @@ namespace FlUnit
 
                 try
                 {
-                    act(prereqs.Item1, prereqs.Item2, prereqs.Item3);
+                    await act(prereqs.Item1, prereqs.Item2, prereqs.Item3);
                     invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
@@ -761,12 +899,20 @@ namespace FlUnit
         public class Assertion : ITestAssertion
         {
             private readonly Case testCase;
-            private readonly Action<T1, T2, T3, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, T3, TestActionOutcome, ValueTask> assert;
+#else
+            private readonly Func<T1, T2, T3, TestActionOutcome, Task> assert;
+#endif
             private readonly string description;
 
             internal Assertion(
                 Case testCase,
-                Action<T1, T2, T3, TestActionOutcome> assert,
+#if NET6_0_OR_GREATER
+                Func<T1, T2, T3, TestActionOutcome, ValueTask> assert,
+#else
+                Func<T1, T2, T3, TestActionOutcome, Task> assert,
+#endif
                 string description)
             {
                 this.testCase = testCase;
@@ -775,7 +921,11 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public void Assert()
+#if NET6_0_OR_GREATER
+            public async ValueTask AssertAsync()
+#else
+            public async Task AssertAsync()
+#endif
             {
                 if (testCase.invocationOutcome == null)
                 {
@@ -784,7 +934,7 @@ namespace FlUnit
 
                 try
                 {
-                    assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
+                    await assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
                 }
                 catch (Exception e) when (!(e is ITestFailureDetails))
                 {
@@ -816,8 +966,13 @@ namespace FlUnit
     public sealed class ActionTest<T1, T2, T3, T4> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange;
-        private readonly Action<T1, T2, T3, T4> act;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, ValueTask> act;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, Task> act;
+#endif
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
@@ -830,8 +985,13 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange,
-            Action<T1, T2, T3, T4> act,
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange,
+            Func<T1, T2, T3, T4, ValueTask> act,
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange,
+            Func<T1, T2, T3, T4, Task> act,
+#endif
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
@@ -840,9 +1000,7 @@ namespace FlUnit
             this.makeAssertions = makeAssertions;
         }
 
-        /// <summary>
-        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
-        /// </summary>
+        /// <inheritdoc />
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
@@ -858,15 +1016,24 @@ namespace FlUnit
         }
 
         /// <inheritdoc />
-        public override void Arrange(ITestContext testContext)
+#if NET6_0_OR_GREATER
+        public override async ValueTask ArrangeAsync(ITestContext testContext)
+#else
+        public override async Task ArrangeAsync(ITestContext testContext)
+#endif
         {
             try
             {
+                // TODO: can probably assume these are safe to execute in parallel?
+                var p1s = await arrange.Item1(testContext);
+                var p2s = await arrange.Item2(testContext);
+                var p3s = await arrange.Item3(testContext);
+                var p4s = await arrange.Item4(testContext);
                 cases = (
-                    from p1 in arrange.Item1(testContext)
-                    from p2 in arrange.Item2(testContext)
-                    from p3 in arrange.Item3(testContext)
-                    from p4 in arrange.Item4(testContext)
+                    from p1 in p1s
+                    from p2 in p2s
+                    from p3 in p3s
+                    from p4 in p4s
                     select new Case(this, (p1, p2, p3, p4), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
@@ -888,14 +1055,22 @@ namespace FlUnit
         public class Case : ITestCase
         {
             private readonly Test test;
-            private readonly Action<T1, T2, T3, T4> act;
             internal readonly (T1, T2, T3, T4) prereqs;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, T3, T4, ValueTask> act;
+#else
+            private readonly Func<T1, T2, T3, T4, Task> act;
+#endif
             internal TestActionOutcome invocationOutcome;
 
             internal Case(
                 Test test,
                 (T1, T2, T3, T4) prereqs,
-                Action<T1, T2, T3, T4> act,
+#if NET6_0_OR_GREATER
+                Func<T1, T2, T3, T4, ValueTask> act,
+#else
+                Func<T1, T2, T3, T4, Task> act,
+#endif
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.test = test;
@@ -908,7 +1083,11 @@ namespace FlUnit
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
-            public void Act()
+#if NET6_0_OR_GREATER
+            public async ValueTask ActAsync()
+#else
+            public async Task ActAsync()
+#endif
             {
                 if (invocationOutcome != null)
                 {
@@ -917,7 +1096,7 @@ namespace FlUnit
 
                 try
                 {
-                    act(prereqs.Item1, prereqs.Item2, prereqs.Item3, prereqs.Item4);
+                    await act(prereqs.Item1, prereqs.Item2, prereqs.Item3, prereqs.Item4);
                     invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
@@ -987,12 +1166,20 @@ namespace FlUnit
         public class Assertion : ITestAssertion
         {
             private readonly Case testCase;
-            private readonly Action<T1, T2, T3, T4, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, T3, T4, TestActionOutcome, ValueTask> assert;
+#else
+            private readonly Func<T1, T2, T3, T4, TestActionOutcome, Task> assert;
+#endif
             private readonly string description;
 
             internal Assertion(
                 Case testCase,
-                Action<T1, T2, T3, T4, TestActionOutcome> assert,
+#if NET6_0_OR_GREATER
+                Func<T1, T2, T3, T4, TestActionOutcome, ValueTask> assert,
+#else
+                Func<T1, T2, T3, T4, TestActionOutcome, Task> assert,
+#endif
                 string description)
             {
                 this.testCase = testCase;
@@ -1001,7 +1188,11 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public void Assert()
+#if NET6_0_OR_GREATER
+            public async ValueTask AssertAsync()
+#else
+            public async Task AssertAsync()
+#endif
             {
                 if (testCase.invocationOutcome == null)
                 {
@@ -1010,7 +1201,7 @@ namespace FlUnit
 
                 try
                 {
-                    assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.prereqs.Item4, testCase.invocationOutcome);
+                    await assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.prereqs.Item4, testCase.invocationOutcome);
                 }
                 catch (Exception e) when (!(e is ITestFailureDetails))
                 {
@@ -1043,8 +1234,13 @@ namespace FlUnit
     public sealed class ActionTest<T1, T2, T3, T4, T5> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange;
-        private readonly Action<T1, T2, T3, T4, T5> act;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, T5, ValueTask> act;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, T5, Task> act;
+#endif
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
@@ -1057,8 +1253,13 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange,
-            Action<T1, T2, T3, T4, T5> act,
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange,
+            Func<T1, T2, T3, T4, T5, ValueTask> act,
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange,
+            Func<T1, T2, T3, T4, T5, Task> act,
+#endif
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
@@ -1067,9 +1268,7 @@ namespace FlUnit
             this.makeAssertions = makeAssertions;
         }
 
-        /// <summary>
-        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
-        /// </summary>
+        /// <inheritdoc />
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
@@ -1085,16 +1284,26 @@ namespace FlUnit
         }
 
         /// <inheritdoc />
-        public override void Arrange(ITestContext testContext)
+#if NET6_0_OR_GREATER
+        public override async ValueTask ArrangeAsync(ITestContext testContext)
+#else
+        public override async Task ArrangeAsync(ITestContext testContext)
+#endif
         {
             try
             {
+                // TODO: can probably assume these are safe to execute in parallel?
+                var p1s = await arrange.Item1(testContext);
+                var p2s = await arrange.Item2(testContext);
+                var p3s = await arrange.Item3(testContext);
+                var p4s = await arrange.Item4(testContext);
+                var p5s = await arrange.Item5(testContext);
                 cases = (
-                    from p1 in arrange.Item1(testContext)
-                    from p2 in arrange.Item2(testContext)
-                    from p3 in arrange.Item3(testContext)
-                    from p4 in arrange.Item4(testContext)
-                    from p5 in arrange.Item5(testContext)
+                    from p1 in p1s
+                    from p2 in p2s
+                    from p3 in p3s
+                    from p4 in p4s
+                    from p5 in p5s
                     select new Case(this, (p1, p2, p3, p4, p5), act, makeAssertions)).ToArray();
             }
             catch (Exception e)
@@ -1116,14 +1325,22 @@ namespace FlUnit
         public class Case : ITestCase
         {
             private readonly Test test;
-            private readonly Action<T1, T2, T3, T4, T5> act;
             internal readonly (T1, T2, T3, T4, T5) prereqs;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, T3, T4, T5, ValueTask> act;
+#else
+            private readonly Func<T1, T2, T3, T4, T5, Task> act;
+#endif
             internal TestActionOutcome invocationOutcome;
 
             internal Case(
                 Test test,
                 (T1, T2, T3, T4, T5) prereqs,
-                Action<T1, T2, T3, T4, T5> act,
+#if NET6_0_OR_GREATER
+                Func<T1, T2, T3, T4, T5, ValueTask> act,
+#else
+                Func<T1, T2, T3, T4, T5, Task> act,
+#endif
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.test = test;
@@ -1136,7 +1353,11 @@ namespace FlUnit
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
-            public void Act()
+#if NET6_0_OR_GREATER
+            public async ValueTask ActAsync()
+#else
+            public async Task ActAsync()
+#endif
             {
                 if (invocationOutcome != null)
                 {
@@ -1145,7 +1366,7 @@ namespace FlUnit
 
                 try
                 {
-                    act(prereqs.Item1, prereqs.Item2, prereqs.Item3, prereqs.Item4, prereqs.Item5);
+                    await act(prereqs.Item1, prereqs.Item2, prereqs.Item3, prereqs.Item4, prereqs.Item5);
                     invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
@@ -1216,12 +1437,20 @@ namespace FlUnit
         public class Assertion : ITestAssertion
         {
             private readonly Case testCase;
-            private readonly Action<T1, T2, T3, T4, T5, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, T3, T4, T5, TestActionOutcome, ValueTask> assert;
+#else
+            private readonly Func<T1, T2, T3, T4, T5, TestActionOutcome, Task> assert;
+#endif
             private readonly string description;
 
             internal Assertion(
                 Case testCase,
-                Action<T1, T2, T3, T4, T5, TestActionOutcome> assert,
+#if NET6_0_OR_GREATER
+                Func<T1, T2, T3, T4, T5, TestActionOutcome, ValueTask> assert,
+#else
+                Func<T1, T2, T3, T4, T5, TestActionOutcome, Task> assert,
+#endif
                 string description)
             {
                 this.testCase = testCase;
@@ -1230,7 +1459,11 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public void Assert()
+#if NET6_0_OR_GREATER
+            public async ValueTask AssertAsync()
+#else
+            public async Task AssertAsync()
+#endif
             {
                 if (testCase.invocationOutcome == null)
                 {
@@ -1239,7 +1472,7 @@ namespace FlUnit
 
                 try
                 {
-                    assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.prereqs.Item4, testCase.prereqs.Item5, testCase.invocationOutcome);
+                    await assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.prereqs.Item4, testCase.prereqs.Item5, testCase.invocationOutcome);
                 }
                 catch (Exception e) when (!(e is ITestFailureDetails))
                 {

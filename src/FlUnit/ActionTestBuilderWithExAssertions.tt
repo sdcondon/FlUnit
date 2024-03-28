@@ -27,14 +27,24 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
-        private readonly Action<#= TList(i, "<", ">") #> testAction;
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>ValueTask> testAction;
+#else
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>Task> testAction;
+#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
-            Action<#= TList(i, "<", ">") #> testAction,
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>ValueTask> testAction,
+#else
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>Task> testAction,
+#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -102,9 +112,9 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<<#= TList(i, "", ", ") #>Exception> assert;
+            private readonly Func<<#= TList(i, "", ", ") #>Exception, ValueTask> assert;
 
-            internal AssertionImpl(Action<<#= TList(i, "", ", ") #>Exception> assert, string description)
+            internal AssertionImpl(Func<<#= TList(i, "", ", ") #>Exception, ValueTask> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
@@ -125,10 +135,14 @@ namespace FlUnit
 
             public string Description { get; }
 
-            internal void Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestActionOutcome outcome)
+#if NET6_0_OR_GREATER
+            internal ValueTask Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestActionOutcome outcome)
+#else
+            internal Task Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestActionOutcome outcome)
+#endif
             {
                 outcome.ThrowIfNoException();
-                assert?.Invoke(<#= List(i, i => $"a{i}", "", ", ") #>outcome.Exception);
+                return assert?.Invoke(<#= List(i, i => $"a{i}", "", ", ") #>outcome.Exception);
             }
         }
     }

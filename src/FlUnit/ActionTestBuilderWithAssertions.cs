@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-#if NET6_0
+#if NET6_0_OR_GREATER
 using System.Runtime.CompilerServices;
 #else
 using System.Linq.Expressions;
 #endif
+using System.Threading.Tasks;
 
 namespace FlUnit
 {
@@ -17,12 +18,20 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithAssertions
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Action testAction;
+#if NET6_0_OR_GREATER
+        private readonly Func<ValueTask> testAction;
+#else
+        private readonly Func<Task> testAction;
+#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Action testAction,
+#if NET6_0_OR_GREATER
+            Func<ValueTask> testAction,
+#else
+            Func<Task> testAction,
+#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -42,7 +51,7 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -88,25 +97,65 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<TestActionOutcome, ValueTask> assert;
 
-            internal AssertionImpl(Action<TestActionOutcome> assert, string description)
+            internal AssertionImpl(Func<TestActionOutcome, ValueTask> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
-#if !NET6_0
+            internal AssertionImpl(Action<TestActionOutcome> assert, string description)
+            {
+                this.assert = (to) => 
+                {
+                    assert(to);
+                    return ValueTask.CompletedTask;
+                };
+
+                Description = description;
+            }
+#else
+            private readonly Func<TestActionOutcome, Task> assert;
+
+            internal AssertionImpl(Func<TestActionOutcome, Task> assert, string description)
+            {
+                this.assert = assert;
+                Description = description;
+            }
+
+            internal AssertionImpl(Action<TestActionOutcome> assert, string description)
+            {
+                this.assert = (to) =>
+                {
+                    assert(to);
+                    return Task.CompletedTask;
+                };
+
+                Description = description;
+            }
+
             internal AssertionImpl(Expression<Action<TestActionOutcome>> expression)
             {
-                assert = expression.Compile();
+                var compiledAssertion = expression.Compile();
+                assert = (to) =>
+                {
+                    compiledAssertion.Invoke(to);
+                    return Task.CompletedTask;
+                };
                 Description = expression.Body.ToString();
             }
 #endif
 
-            internal void Invoke(TestActionOutcome outcome) => assert(outcome);
-
             public string Description { get; }
+
+#if NET6_0_OR_GREATER
+            internal ValueTask Invoke(TestActionOutcome outcome) => assert(outcome);
+#else
+
+            internal Task Invoke(TestActionOutcome outcome) => assert(outcome);
+#endif
         }
     }
 
@@ -118,14 +167,24 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithAssertions<T1>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Func<ITestContext, IEnumerable<T1>> arrange;
-        private readonly Action<T1> testAction;
+#if NET6_0_OR_GREATER
+        private readonly Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange;
+        private readonly Func<T1, ValueTask> testAction;
+#else
+        private readonly Func<ITestContext, Task<IEnumerable<T1>>> arrange;
+        private readonly Func<T1, Task> testAction;
+#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Func<ITestContext, IEnumerable<T1>> arrange,
-            Action<T1> testAction,
+#if NET6_0_OR_GREATER
+            Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange,
+            Func<T1, ValueTask> testAction,
+#else
+            Func<ITestContext, Task<IEnumerable<T1>>> arrange,
+            Func<T1, Task> testAction,
+#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -147,7 +206,7 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -193,25 +252,65 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<T1, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, TestActionOutcome, ValueTask> assert;
 
-            internal AssertionImpl(Action<T1, TestActionOutcome> assert, string description)
+            internal AssertionImpl(Func<T1, TestActionOutcome, ValueTask> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
-#if !NET6_0
+            internal AssertionImpl(Action<T1, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, to) => 
+                {
+                    assert(a1, to);
+                    return ValueTask.CompletedTask;
+                };
+
+                Description = description;
+            }
+#else
+            private readonly Func<T1, TestActionOutcome, Task> assert;
+
+            internal AssertionImpl(Func<T1, TestActionOutcome, Task> assert, string description)
+            {
+                this.assert = assert;
+                Description = description;
+            }
+
+            internal AssertionImpl(Action<T1, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, to) =>
+                {
+                    assert(a1, to);
+                    return Task.CompletedTask;
+                };
+
+                Description = description;
+            }
+
             internal AssertionImpl(Expression<Action<T1, TestActionOutcome>> expression)
             {
-                assert = expression.Compile();
+                var compiledAssertion = expression.Compile();
+                assert = (a1, to) =>
+                {
+                    compiledAssertion.Invoke(a1, to);
+                    return Task.CompletedTask;
+                };
                 Description = expression.Body.ToString();
             }
 #endif
 
-            internal void Invoke(T1 a1, TestActionOutcome outcome) => assert(a1, outcome);
-
             public string Description { get; }
+
+#if NET6_0_OR_GREATER
+            internal ValueTask Invoke(T1 a1, TestActionOutcome outcome) => assert(a1, outcome);
+#else
+
+            internal Task Invoke(T1 a1, TestActionOutcome outcome) => assert(a1, outcome);
+#endif
         }
     }
 
@@ -224,14 +323,24 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithAssertions<T1, T2>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange;
-        private readonly Action<T1, T2> testAction;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange;
+        private readonly Func<T1, T2, ValueTask> testAction;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange;
+        private readonly Func<T1, T2, Task> testAction;
+#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange,
-            Action<T1, T2> testAction,
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange,
+            Func<T1, T2, ValueTask> testAction,
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange,
+            Func<T1, T2, Task> testAction,
+#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -253,7 +362,7 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1, T2>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -299,25 +408,65 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<T1, T2, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, TestActionOutcome, ValueTask> assert;
 
-            internal AssertionImpl(Action<T1, T2, TestActionOutcome> assert, string description)
+            internal AssertionImpl(Func<T1, T2, TestActionOutcome, ValueTask> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
-#if !NET6_0
+            internal AssertionImpl(Action<T1, T2, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, a2, to) => 
+                {
+                    assert(a1, a2, to);
+                    return ValueTask.CompletedTask;
+                };
+
+                Description = description;
+            }
+#else
+            private readonly Func<T1, T2, TestActionOutcome, Task> assert;
+
+            internal AssertionImpl(Func<T1, T2, TestActionOutcome, Task> assert, string description)
+            {
+                this.assert = assert;
+                Description = description;
+            }
+
+            internal AssertionImpl(Action<T1, T2, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, a2, to) =>
+                {
+                    assert(a1, a2, to);
+                    return Task.CompletedTask;
+                };
+
+                Description = description;
+            }
+
             internal AssertionImpl(Expression<Action<T1, T2, TestActionOutcome>> expression)
             {
-                assert = expression.Compile();
+                var compiledAssertion = expression.Compile();
+                assert = (a1, a2, to) =>
+                {
+                    compiledAssertion.Invoke(a1, a2, to);
+                    return Task.CompletedTask;
+                };
                 Description = expression.Body.ToString();
             }
 #endif
 
-            internal void Invoke(T1 a1, T2 a2, TestActionOutcome outcome) => assert(a1, a2, outcome);
-
             public string Description { get; }
+
+#if NET6_0_OR_GREATER
+            internal ValueTask Invoke(T1 a1, T2 a2, TestActionOutcome outcome) => assert(a1, a2, outcome);
+#else
+
+            internal Task Invoke(T1 a1, T2 a2, TestActionOutcome outcome) => assert(a1, a2, outcome);
+#endif
         }
     }
 
@@ -331,14 +480,24 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithAssertions<T1, T2, T3>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange;
-        private readonly Action<T1, T2, T3> testAction;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange;
+        private readonly Func<T1, T2, T3, ValueTask> testAction;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange;
+        private readonly Func<T1, T2, T3, Task> testAction;
+#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange,
-            Action<T1, T2, T3> testAction,
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange,
+            Func<T1, T2, T3, ValueTask> testAction,
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange,
+            Func<T1, T2, T3, Task> testAction,
+#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -360,7 +519,7 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1, T2, T3>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -406,25 +565,65 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<T1, T2, T3, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, T3, TestActionOutcome, ValueTask> assert;
 
-            internal AssertionImpl(Action<T1, T2, T3, TestActionOutcome> assert, string description)
+            internal AssertionImpl(Func<T1, T2, T3, TestActionOutcome, ValueTask> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
-#if !NET6_0
+            internal AssertionImpl(Action<T1, T2, T3, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, a2, a3, to) => 
+                {
+                    assert(a1, a2, a3, to);
+                    return ValueTask.CompletedTask;
+                };
+
+                Description = description;
+            }
+#else
+            private readonly Func<T1, T2, T3, TestActionOutcome, Task> assert;
+
+            internal AssertionImpl(Func<T1, T2, T3, TestActionOutcome, Task> assert, string description)
+            {
+                this.assert = assert;
+                Description = description;
+            }
+
+            internal AssertionImpl(Action<T1, T2, T3, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, a2, a3, to) =>
+                {
+                    assert(a1, a2, a3, to);
+                    return Task.CompletedTask;
+                };
+
+                Description = description;
+            }
+
             internal AssertionImpl(Expression<Action<T1, T2, T3, TestActionOutcome>> expression)
             {
-                assert = expression.Compile();
+                var compiledAssertion = expression.Compile();
+                assert = (a1, a2, a3, to) =>
+                {
+                    compiledAssertion.Invoke(a1, a2, a3, to);
+                    return Task.CompletedTask;
+                };
                 Description = expression.Body.ToString();
             }
 #endif
 
-            internal void Invoke(T1 a1, T2 a2, T3 a3, TestActionOutcome outcome) => assert(a1, a2, a3, outcome);
-
             public string Description { get; }
+
+#if NET6_0_OR_GREATER
+            internal ValueTask Invoke(T1 a1, T2 a2, T3 a3, TestActionOutcome outcome) => assert(a1, a2, a3, outcome);
+#else
+
+            internal Task Invoke(T1 a1, T2 a2, T3 a3, TestActionOutcome outcome) => assert(a1, a2, a3, outcome);
+#endif
         }
     }
 
@@ -439,14 +638,24 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithAssertions<T1, T2, T3, T4>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange;
-        private readonly Action<T1, T2, T3, T4> testAction;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, ValueTask> testAction;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, Task> testAction;
+#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange,
-            Action<T1, T2, T3, T4> testAction,
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange,
+            Func<T1, T2, T3, T4, ValueTask> testAction,
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange,
+            Func<T1, T2, T3, T4, Task> testAction,
+#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -468,7 +677,7 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1, T2, T3, T4>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -514,25 +723,65 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<T1, T2, T3, T4, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, T3, T4, TestActionOutcome, ValueTask> assert;
 
-            internal AssertionImpl(Action<T1, T2, T3, T4, TestActionOutcome> assert, string description)
+            internal AssertionImpl(Func<T1, T2, T3, T4, TestActionOutcome, ValueTask> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
-#if !NET6_0
+            internal AssertionImpl(Action<T1, T2, T3, T4, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, a2, a3, a4, to) => 
+                {
+                    assert(a1, a2, a3, a4, to);
+                    return ValueTask.CompletedTask;
+                };
+
+                Description = description;
+            }
+#else
+            private readonly Func<T1, T2, T3, T4, TestActionOutcome, Task> assert;
+
+            internal AssertionImpl(Func<T1, T2, T3, T4, TestActionOutcome, Task> assert, string description)
+            {
+                this.assert = assert;
+                Description = description;
+            }
+
+            internal AssertionImpl(Action<T1, T2, T3, T4, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, a2, a3, a4, to) =>
+                {
+                    assert(a1, a2, a3, a4, to);
+                    return Task.CompletedTask;
+                };
+
+                Description = description;
+            }
+
             internal AssertionImpl(Expression<Action<T1, T2, T3, T4, TestActionOutcome>> expression)
             {
-                assert = expression.Compile();
+                var compiledAssertion = expression.Compile();
+                assert = (a1, a2, a3, a4, to) =>
+                {
+                    compiledAssertion.Invoke(a1, a2, a3, a4, to);
+                    return Task.CompletedTask;
+                };
                 Description = expression.Body.ToString();
             }
 #endif
 
-            internal void Invoke(T1 a1, T2 a2, T3 a3, T4 a4, TestActionOutcome outcome) => assert(a1, a2, a3, a4, outcome);
-
             public string Description { get; }
+
+#if NET6_0_OR_GREATER
+            internal ValueTask Invoke(T1 a1, T2 a2, T3 a3, T4 a4, TestActionOutcome outcome) => assert(a1, a2, a3, a4, outcome);
+#else
+
+            internal Task Invoke(T1 a1, T2 a2, T3 a3, T4 a4, TestActionOutcome outcome) => assert(a1, a2, a3, a4, outcome);
+#endif
         }
     }
 
@@ -548,14 +797,24 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange;
-        private readonly Action<T1, T2, T3, T4, T5> testAction;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, T5, ValueTask> testAction;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, T5, Task> testAction;
+#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange,
-            Action<T1, T2, T3, T4, T5> testAction,
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange,
+            Func<T1, T2, T3, T4, T5, ValueTask> testAction,
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange,
+            Func<T1, T2, T3, T4, T5, Task> testAction,
+#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -577,7 +836,7 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1, T2, T3, T4, T5>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -623,25 +882,65 @@ namespace FlUnit
 
         internal class AssertionImpl
         {
-            private readonly Action<T1, T2, T3, T4, T5, TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<T1, T2, T3, T4, T5, TestActionOutcome, ValueTask> assert;
 
-            internal AssertionImpl(Action<T1, T2, T3, T4, T5, TestActionOutcome> assert, string description)
+            internal AssertionImpl(Func<T1, T2, T3, T4, T5, TestActionOutcome, ValueTask> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
-#if !NET6_0
+            internal AssertionImpl(Action<T1, T2, T3, T4, T5, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, a2, a3, a4, a5, to) => 
+                {
+                    assert(a1, a2, a3, a4, a5, to);
+                    return ValueTask.CompletedTask;
+                };
+
+                Description = description;
+            }
+#else
+            private readonly Func<T1, T2, T3, T4, T5, TestActionOutcome, Task> assert;
+
+            internal AssertionImpl(Func<T1, T2, T3, T4, T5, TestActionOutcome, Task> assert, string description)
+            {
+                this.assert = assert;
+                Description = description;
+            }
+
+            internal AssertionImpl(Action<T1, T2, T3, T4, T5, TestActionOutcome> assert, string description)
+            {
+                this.assert = (a1, a2, a3, a4, a5, to) =>
+                {
+                    assert(a1, a2, a3, a4, a5, to);
+                    return Task.CompletedTask;
+                };
+
+                Description = description;
+            }
+
             internal AssertionImpl(Expression<Action<T1, T2, T3, T4, T5, TestActionOutcome>> expression)
             {
-                assert = expression.Compile();
+                var compiledAssertion = expression.Compile();
+                assert = (a1, a2, a3, a4, a5, to) =>
+                {
+                    compiledAssertion.Invoke(a1, a2, a3, a4, a5, to);
+                    return Task.CompletedTask;
+                };
                 Description = expression.Body.ToString();
             }
 #endif
 
-            internal void Invoke(T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, TestActionOutcome outcome) => assert(a1, a2, a3, a4, a5, outcome);
-
             public string Description { get; }
+
+#if NET6_0_OR_GREATER
+            internal ValueTask Invoke(T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, TestActionOutcome outcome) => assert(a1, a2, a3, a4, a5, outcome);
+#else
+
+            internal Task Invoke(T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, TestActionOutcome outcome) => assert(a1, a2, a3, a4, a5, outcome);
+#endif
         }
     }
 }

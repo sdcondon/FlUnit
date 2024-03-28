@@ -22,7 +22,9 @@ void WriteTypeParamDocs(int count, Func<int, string> desc, int indent = 1)
 
 IEnumerable<string> TypeParamNames(int i) => Enumerable.Range(1, i).Select(i => $"T{i}");
 
-string ArrangeFieldType(int i) => i == 1 ? "Func<ITestContext, IEnumerable<T1>>" : $"({string.Join(", ", TypeParamNames(i).Select(t => $"Func<ITestContext, IEnumerable<{t}>>"))})";
+string ArrangeFieldType_ValueTask(int i) => i == 1 ? "Func<ITestContext, ValueTask<IEnumerable<T1>>>" : $"({string.Join(", ", TypeParamNames(i).Select(t => $"Func<ITestContext, ValueTask<IEnumerable<{t}>>>"))})";
+
+string ArrangeFieldType_Task(int i) => i == 1 ? "Func<ITestContext, Task<IEnumerable<T1>>>" : $"({string.Join(", ", TypeParamNames(i).Select(t => $"Func<ITestContext, Task<IEnumerable<{t}>>>"))})";
 
 string PrereqsFieldType(int i) => i == 1 ? "T1" : $"({string.Join(", ", TypeParamNames(i).Select(t => $"{t}"))})";
 

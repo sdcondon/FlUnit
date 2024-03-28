@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 #else
 using System.Linq.Expressions;
 #endif
+using System.Threading.Tasks;
 
 namespace FlUnit
 {
@@ -25,13 +26,23 @@ namespace FlUnit
     public sealed class ActionTestBuilder<#= TList(i, "<", ">") #>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
-        private readonly Action<#= TList(i, "<", ">") #> testAction;
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>ValueTask> testAction;
+#else
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>Task> testAction;
+#endif
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
-            Action<#= TList(i, "<", ">") #> testAction)
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>ValueTask> testAction)
+#else
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>Task> testAction)
+#endif
         {
             this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
