@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 #else
 using System.Linq.Expressions;
 #endif
+using System.Threading.Tasks;
 
 namespace FlUnit
 {
@@ -28,14 +29,24 @@ namespace FlUnit
     public sealed class FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
-        private readonly Func<<#= TList(i, "", ", ") #>TResult> testFunction;
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> testFunction;
+#else
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>Task<TResult>> testFunction;
+#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal FunctionTestBuilderWithAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
-            Func<<#= TList(i, "", ", ") #>TResult> testFunction,
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> testFunction,
+#else
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>Task<TResult>> testFunction,
+#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -73,7 +84,26 @@ namespace FlUnit
             string description = null,
             [CallerArgumentExpression("assertion")] string assertionExpression = null)
         {
-            assertions.Add(new AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            assertions.Add(new AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult> AndAsync(
+            Func<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>, Task> asyncAssertion,
+            string description = null,
+            [CallerArgumentExpression("asyncAssertion")] string assertionExpression = null)
+        {
+            assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
 #else
@@ -99,32 +129,58 @@ namespace FlUnit
             Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assertion,
             string description)
         {
-            assertions.Add(new AssertionImpl(assertion, description));
+            assertions.Add(new AssertionImpl(assertion.ToAsyncWrapper(), description));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an additional assertion for the test.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult> AndAsync(
+            Func<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>, Task> asyncAssertion,
+            string description)
+        {
+            assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
             return this;
         }
 #endif
 
         internal class AssertionImpl
         {
-            private readonly Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>, ValueTask> assert;
 
-            internal AssertionImpl(Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assert, string description)
+            internal AssertionImpl(Func<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>, ValueTask> assert, string description)
+            {
+                this.assert = assert;
+                Description = description;
+            }
+#else
+            private readonly Func<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>, Task> assert;
+
+            internal AssertionImpl(Func<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>, Task> assert, string description)
             {
                 this.assert = assert;
                 Description = description;
             }
 
-#if !NET6_0
             internal AssertionImpl(Expression<Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>>> expression)
             {
-                assert = expression.Compile();
+                assert = expression.Compile().ToAsyncWrapper();
                 Description = expression.Body.ToString();
             }
 #endif
 
-            internal void Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestFunctionOutcome<TResult> outcome) => assert(<#= List(i, i => $"a{i}", "", ", ") #>outcome);
-
             public string Description { get; }
+
+#if NET6_0_OR_GREATER
+            internal ValueTask Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestFunctionOutcome<TResult> outcome) => assert(<#= List(i, i => $"a{i}", "", ", ") #>outcome);
+#else
+            internal Task Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestFunctionOutcome<TResult> outcome) => assert(<#= List(i, i => $"a{i}", "", ", ") #>outcome);
+#endif
         }
     }
 <# } #>

@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 #else
 using System.Linq.Expressions;
 #endif
+using System.Threading.Tasks;
 
 namespace FlUnit
 {
@@ -16,11 +17,19 @@ namespace FlUnit
     public sealed class ActionTestBuilder
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Action testAction;
+#if NET6_0_OR_GREATER
+        private readonly Func<ValueTask> testAction;
+#else
+        private readonly Func<Task> testAction;
+#endif
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Action testAction)
+#if NET6_0_OR_GREATER
+            Func<ValueTask> testAction)
+#else
+            Func<Task> testAction)
+#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.testAction = testAction;
@@ -48,7 +57,31 @@ namespace FlUnit
             return new ActionTestBuilderWithAssertions(
                 configurationOverrides,
                 testAction,
-                new ActionTestBuilderWithAssertions.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithAssertions.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions ThenAsync(
+            Func<TestActionOutcome, Task> asyncAssertion,
+            string description = null,
+            [CallerArgumentExpression("asyncAssertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithAssertions(
+                configurationOverrides,
+                testAction,
+                new ActionTestBuilderWithAssertions.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -81,7 +114,24 @@ namespace FlUnit
             return new ActionTestBuilderWithAssertions(
                 configurationOverrides,
                 testAction,
-                new ActionTestBuilderWithAssertions.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithAssertions.AssertionImpl(assertion.ToAsyncWrapper(), description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions ThenAsync(Action<TestActionOutcome> asyncAssertion, string description)
+        {
+            return new ActionTestBuilderWithAssertions(
+                configurationOverrides,
+                testAction,
+                new ActionTestBuilderWithAssertions.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -129,7 +179,7 @@ namespace FlUnit
             return new ActionTestBuilderWithRVAssertions(
                 configurationOverrides,
                 testAction,
-                new ActionTestBuilderWithRVAssertions.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithRVAssertions.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -156,7 +206,7 @@ namespace FlUnit
             return new ActionTestBuilderWithRVAssertions(
                 configurationOverrides,
                 testAction,
-                new ActionTestBuilderWithRVAssertions.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithRVAssertions.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -204,7 +254,7 @@ namespace FlUnit
             return new ActionTestBuilderWithExAssertions(
                 configurationOverrides,
                 testAction,
-                new ActionTestBuilderWithExAssertions.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithExAssertions.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -231,7 +281,7 @@ namespace FlUnit
             return new ActionTestBuilderWithExAssertions(
                 configurationOverrides,
                 testAction,
-                new ActionTestBuilderWithExAssertions.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithExAssertions.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
     }
@@ -244,13 +294,23 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly Func<ITestContext, IEnumerable<T1>> arrange;
-        private readonly Action<T1> testAction;
+#if NET6_0_OR_GREATER
+        private readonly Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange;
+        private readonly Func<T1, ValueTask> testAction;
+#else
+        private readonly Func<ITestContext, Task<IEnumerable<T1>>> arrange;
+        private readonly Func<T1, Task> testAction;
+#endif
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            Func<ITestContext, IEnumerable<T1>> arrange,
-            Action<T1> testAction)
+#if NET6_0_OR_GREATER
+            Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange,
+            Func<T1, ValueTask> testAction)
+#else
+            Func<ITestContext, Task<IEnumerable<T1>>> arrange,
+            Func<T1, Task> testAction)
+#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -280,7 +340,32 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithAssertions<T1>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1> ThenAsync(
+            Func<T1, TestActionOutcome, Task> asyncAssertion,
+            string description = null,
+            [CallerArgumentExpression("asyncAssertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithAssertions<T1>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -315,7 +400,25 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithAssertions<T1>.AssertionImpl(assertion.ToAsyncWrapper(), description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1> ThenAsync(Action<T1, TestActionOutcome> asyncAssertion, string description)
+        {
+            return new ActionTestBuilderWithAssertions<T1>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -366,7 +469,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithRVAssertions<T1>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -395,7 +498,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithRVAssertions<T1>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -446,7 +549,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithExAssertions<T1>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -475,7 +578,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithExAssertions<T1>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
     }
@@ -489,13 +592,23 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1, T2>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange;
-        private readonly Action<T1, T2> testAction;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange;
+        private readonly Func<T1, T2, ValueTask> testAction;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange;
+        private readonly Func<T1, T2, Task> testAction;
+#endif
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>) arrange,
-            Action<T1, T2> testAction)
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange,
+            Func<T1, T2, ValueTask> testAction)
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange,
+            Func<T1, T2, Task> testAction)
+#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -525,7 +638,32 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1, T2>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithAssertions<T1, T2>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2> ThenAsync(
+            Func<T1, T2, TestActionOutcome, Task> asyncAssertion,
+            string description = null,
+            [CallerArgumentExpression("asyncAssertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -560,7 +698,25 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1, T2>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithAssertions<T1, T2>.AssertionImpl(assertion.ToAsyncWrapper(), description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2> ThenAsync(Action<T1, T2, TestActionOutcome> asyncAssertion, string description)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -611,7 +767,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1, T2>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithRVAssertions<T1, T2>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -640,7 +796,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1, T2>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithRVAssertions<T1, T2>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -691,7 +847,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1, T2>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithExAssertions<T1, T2>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -720,7 +876,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1, T2>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithExAssertions<T1, T2>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
     }
@@ -735,13 +891,23 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1, T2, T3>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange;
-        private readonly Action<T1, T2, T3> testAction;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange;
+        private readonly Func<T1, T2, T3, ValueTask> testAction;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange;
+        private readonly Func<T1, T2, T3, Task> testAction;
+#endif
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>) arrange,
-            Action<T1, T2, T3> testAction)
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange,
+            Func<T1, T2, T3, ValueTask> testAction)
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange,
+            Func<T1, T2, T3, Task> testAction)
+#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -771,7 +937,32 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1, T2, T3>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithAssertions<T1, T2, T3>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3> ThenAsync(
+            Func<T1, T2, T3, TestActionOutcome, Task> asyncAssertion,
+            string description = null,
+            [CallerArgumentExpression("asyncAssertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -806,7 +997,25 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1, T2, T3>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithAssertions<T1, T2, T3>.AssertionImpl(assertion.ToAsyncWrapper(), description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3> ThenAsync(Action<T1, T2, T3, TestActionOutcome> asyncAssertion, string description)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -857,7 +1066,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1, T2, T3>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -886,7 +1095,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1, T2, T3>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -937,7 +1146,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1, T2, T3>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithExAssertions<T1, T2, T3>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -966,7 +1175,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1, T2, T3>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithExAssertions<T1, T2, T3>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
     }
@@ -982,13 +1191,23 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1, T2, T3, T4>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange;
-        private readonly Action<T1, T2, T3, T4> testAction;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, ValueTask> testAction;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, Task> testAction;
+#endif
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>) arrange,
-            Action<T1, T2, T3, T4> testAction)
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange,
+            Func<T1, T2, T3, T4, ValueTask> testAction)
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange,
+            Func<T1, T2, T3, T4, Task> testAction)
+#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -1018,7 +1237,32 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4> ThenAsync(
+            Func<T1, T2, T3, T4, TestActionOutcome, Task> asyncAssertion,
+            string description = null,
+            [CallerArgumentExpression("asyncAssertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -1053,7 +1297,25 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4>.AssertionImpl(assertion.ToAsyncWrapper(), description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4> ThenAsync(Action<T1, T2, T3, T4, TestActionOutcome> asyncAssertion, string description)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -1104,7 +1366,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -1133,7 +1395,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -1184,7 +1446,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -1213,7 +1475,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
     }
@@ -1230,13 +1492,23 @@ namespace FlUnit
     public sealed class ActionTestBuilder<T1, T2, T3, T4, T5>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-        private readonly (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange;
-        private readonly Action<T1, T2, T3, T4, T5> testAction;
+#if NET6_0_OR_GREATER
+        private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, T5, ValueTask> testAction;
+#else
+        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange;
+        private readonly Func<T1, T2, T3, T4, T5, Task> testAction;
+#endif
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-            (Func<ITestContext, IEnumerable<T1>>, Func<ITestContext, IEnumerable<T2>>, Func<ITestContext, IEnumerable<T3>>, Func<ITestContext, IEnumerable<T4>>, Func<ITestContext, IEnumerable<T5>>) arrange,
-            Action<T1, T2, T3, T4, T5> testAction)
+#if NET6_0_OR_GREATER
+            (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange,
+            Func<T1, T2, T3, T4, T5, ValueTask> testAction)
+#else
+            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange,
+            Func<T1, T2, T3, T4, T5, Task> testAction)
+#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -1266,7 +1538,32 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5> ThenAsync(
+            Func<T1, T2, T3, T4, T5, TestActionOutcome, Task> asyncAssertion,
+            string description = null,
+            [CallerArgumentExpression("asyncAssertion")] string assertionExpression = null)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -1301,7 +1598,25 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion.ToAsyncWrapper(), description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5> ThenAsync(Action<T1, T2, T3, T4, T5, TestActionOutcome> asyncAssertion, string description)
+        {
+            return new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>(
+                configurationOverrides,
+                arrange,
+                testAction,
+                new ActionTestBuilderWithAssertions<T1, T2, T3, T4, T5>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -1352,7 +1667,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -1381,7 +1696,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -1432,7 +1747,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
         /// <summary>
@@ -1461,7 +1776,7 @@ namespace FlUnit
                 configurationOverrides,
                 arrange,
                 testAction,
-                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion, description));
+                new ActionTestBuilderWithExAssertions<T1, T2, T3, T4, T5>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
     }

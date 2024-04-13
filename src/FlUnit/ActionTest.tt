@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace FlUnit
 {
@@ -22,8 +23,13 @@ namespace FlUnit
     public sealed class ActionTest<#= TList(i, "<", ">") #> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
-        private readonly Action<#= TList(i, "<", ">") #> act;
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>ValueTask> act;
+#else
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>Task> act;
+#endif
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
 
@@ -36,8 +42,13 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal ActionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
-            Action<#= TList(i, "<", ">") #> act,
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>ValueTask> act,
+#else
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>Task> act,
+#endif
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
             this.configurationOverrides = configurationOverrides;
@@ -46,9 +57,7 @@ namespace FlUnit
             this.makeAssertions = makeAssertions;
         }
 
-        /// <summary>
-        /// A collection of test cases that should be populated once <see cref="Arrange"/> is called.
-        /// </summary>
+        /// <inheritdoc />
         public override IReadOnlyCollection<ITestCase> Cases => cases ?? throw new InvalidOperationException("Test not yet arranged");
 
         /// <inheritdoc />
@@ -64,18 +73,26 @@ namespace FlUnit
         }
 
         /// <inheritdoc />
-        public override void Arrange(ITestContext testContext)
+#if NET6_0_OR_GREATER
+        public override async ValueTask ArrangeAsync(ITestContext testContext)
+#else
+        public override async Task ArrangeAsync(ITestContext testContext)
+#endif
         {
             try
             {
 <# if (i == 0) { #>
                 cases = new[] { new Case(this, act, makeAssertions) };
 <# } else if (i == 1) { #>
-                cases = arrange(testContext).Select(p => new Case(this, p, act, makeAssertions)).ToArray();
+                cases = (await arrange(testContext)).Select(p => new Case(this, p, act, makeAssertions)).ToArray();
 <# } else if (i > 1) { #>
+                // TODO: can probably assume these are safe to execute in parallel?
+<# for (int j = 0; j < i; j++) { #>
+                var p<#= j + 1 #>s = await arrange.Item<#= j + 1 #>(testContext);
+<# } #>
                 cases = (
 <# for (int j = 0; j < i; j++) { #>
-                    from p<#= j + 1 #> in arrange.Item<#= j + 1 #>(testContext)
+                    from p<#= j + 1 #> in p<#= j + 1 #>s
 <# } #>
                     select new Case(this, (<#= List(i, i => $"p{i}") #>), act, makeAssertions)).ToArray();
 <# } #>
@@ -99,14 +116,22 @@ namespace FlUnit
         public class Case : ITestCase
         {
             private readonly Test test;
-            private readonly Action<#= TList(i, "<", ">") #> act;
 <# WriteLineIf(i > 0, $"internal readonly {PrereqsFieldType(i)} prereqs;", 3); #>
+#if NET6_0_OR_GREATER
+            private readonly Func<<#= TList(i, "", ", ") #>ValueTask> act;
+#else
+            private readonly Func<<#= TList(i, "", ", ") #>Task> act;
+#endif
             internal TestActionOutcome invocationOutcome;
 
             internal Case(
                 Test test,
 <# WriteLineIf(i > 0, $"{PrereqsFieldType(i)} prereqs,", 4); #>
-                Action<#= TList(i, "<", ">") #> act,
+#if NET6_0_OR_GREATER
+                Func<<#= TList(i, "", ", ") #>ValueTask> act,
+#else
+                Func<<#= TList(i, "", ", ") #>Task> act,
+#endif
                 Func<Case, IEnumerable<Assertion>> makeAssertions)
             {
                 this.test = test;
@@ -119,7 +144,11 @@ namespace FlUnit
             public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
             /// <inheritdoc />
-            public void Act()
+#if NET6_0_OR_GREATER
+            public async ValueTask ActAsync()
+#else
+            public async Task ActAsync()
+#endif
             {
                 if (invocationOutcome != null)
                 {
@@ -128,7 +157,7 @@ namespace FlUnit
 
                 try
                 {
-                    act(<#= i == 1 ? "prereqs" : List(i, i => $"prereqs.Item{i}") #>);
+                    await act(<#= i == 1 ? "prereqs" : List(i, i => $"prereqs.Item{i}") #>);
                     invocationOutcome = new TestActionOutcome();
                 }
                 catch (Exception e)
@@ -212,12 +241,20 @@ namespace FlUnit
         public class Assertion : ITestAssertion
         {
             private readonly Case testCase;
-            private readonly Action<<#= TList(i, "", ", ") #>TestActionOutcome> assert;
+#if NET6_0_OR_GREATER
+            private readonly Func<<#= TList(i, "", ", ") #>TestActionOutcome, ValueTask> assert;
+#else
+            private readonly Func<<#= TList(i, "", ", ") #>TestActionOutcome, Task> assert;
+#endif
             private readonly string description;
 
             internal Assertion(
                 Case testCase,
-                Action<<#= TList(i, "", ", ") #>TestActionOutcome> assert,
+#if NET6_0_OR_GREATER
+                Func<<#= TList(i, "", ", ") #>TestActionOutcome, ValueTask> assert,
+#else
+                Func<<#= TList(i, "", ", ") #>TestActionOutcome, Task> assert,
+#endif
                 string description)
             {
                 this.testCase = testCase;
@@ -226,7 +263,11 @@ namespace FlUnit
             }
 
             /// <inheritdoc />
-            public void Assert()
+#if NET6_0_OR_GREATER
+            public async ValueTask AssertAsync()
+#else
+            public async Task AssertAsync()
+#endif
             {
                 if (testCase.invocationOutcome == null)
                 {
@@ -235,7 +276,7 @@ namespace FlUnit
 
                 try
                 {
-                    assert(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
+                    await assert(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
                 }
                 catch (Exception e) when (!(e is ITestFailureDetails))
                 {

@@ -4,7 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FlUnit.Tests
 {
@@ -13,7 +15,7 @@ namespace FlUnit.Tests
     public class ActionTestTests
     {
         [TestMethod]
-        public void MinimalTest()
+        public async Task MinimalTest()
         {
             // Arrange
             Test test = TestThat
@@ -21,19 +23,19 @@ namespace FlUnit.Tests
                 .ThenReturns();
 
             // Act & Assert
-            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(1);
 
-            ((Action)test.Cases.Single().Act).Should().NotThrow();
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
             test.Cases.Single().Assertions.Count.Should().Be(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.ToString().Should().Be("Test action should return successfully");
-            ((Action)assertion.Assert).Should().NotThrow();
+            await new Func<Task>(async () => await assertion.AssertAsync()).Should().NotThrowAsync();
         }
 
         [TestMethod]
-        public void SimpleTest()
+        public async Task SimpleTest()
         {
             // Arrange
             Test test = TestThat
@@ -46,19 +48,45 @@ namespace FlUnit.Tests
 #endif
 
             // Act & Assert
-            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(1);
 
-            ((Action)test.Cases.Single().Act).Should().NotThrow();
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
             test.Cases.Single().Assertions.Count.Should().Be(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.ToString().Should().Be("sb.Length.Should().Be(1)");
-            ((Action)assertion.Assert).Should().NotThrow();
+            await new Func<Task>(async () => await assertion.AssertAsync()).Should().NotThrowAsync();
         }
 
         [TestMethod]
-        public void ComplexTest()
+        public async Task SimpleTestWithAsyncClauses()
+        {
+            // Arrange
+            Test test = TestThat
+                .GivenAsync(async () => { await Task.Yield(); return new StringBuilder(); })
+                .WhenAsync(async sb => { await Task.Yield(); sb.Append('A'); })
+                .ThenReturns()
+                .AndAsync(async sb => { await Task.Yield(); sb.Length.Should().Be(1); }, "sb.Length.Should().Be(1)");
+
+            // Act & Assert
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
+            test.Cases.Count.Should().Be(1);
+
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
+            test.Cases.Single().Assertions.Count.Should().Be(2);
+
+            var assertion1 = test.Cases.Single().Assertions.First();
+            assertion1.ToString().Should().Be("Test action should return successfully");
+            await new Func<Task>(async () => await assertion1.AssertAsync()).Should().NotThrowAsync();
+
+            var assertion2 = test.Cases.Single().Assertions.Skip(1).First();
+            assertion2.ToString().Should().Be("sb.Length.Should().Be(1)");
+            await new Func<Task>(async () => await assertion2.AssertAsync()).Should().NotThrowAsync();
+        }
+
+        [TestMethod]
+        public async Task ComplexTest()
         {
             // Arrange: multiple prerequisites and assertions; also explicit assertion labels
             Test test = TestThat
@@ -69,23 +97,23 @@ namespace FlUnit.Tests
                 .And((sb, str) => sb.Capacity.Should().BeGreaterThanOrEqualTo(sb.Length), "Capacity should be consistent");
 
             // Act & Assert
-            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(1);
 
-            ((Action)test.Cases.Single().Act).Should().NotThrow();
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
             test.Cases.Single().Assertions.Count.Should().Be(2);
 
             var assertion1 = test.Cases.Single().Assertions.First();
             assertion1.ToString().Should().Be("Length should be correct");
-            ((Action)assertion1.Assert).Should().NotThrow();
+            await new Func<Task>(async () => await assertion1.AssertAsync()).Should().NotThrowAsync();
 
             var assertion2 = test.Cases.Single().Assertions.Skip(1).First();
             assertion2.ToString().Should().Be("Capacity should be consistent");
-            ((Action)assertion2.Assert).Should().NotThrow();
+            await new Func<Task>(async () => await assertion2.AssertAsync()).Should().NotThrowAsync();
         }
 
         [TestMethod]
-        public void MultipleCases_SomeExpectedToThrow()
+        public async Task MultipleCases_SomeExpectedToThrow()
         {
             // Arrange
             // This is a horrible test - and I suspect that all tests where 
@@ -110,30 +138,30 @@ namespace FlUnit.Tests
                 }, "Outcome should be as expected");
 
             // Act & Assert
-            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(3);
 
             var case1 = test.Cases.First();
-            ((Action)case1.Act).Should().NotThrow();
+            await new Func<Task>(async () => await case1.ActAsync()).Should().NotThrowAsync();
             case1.Assertions.Count.Should().Be(1);
             case1.Assertions.Single().ToString().Should().Be("Outcome should be as expected");
-            ((Action)case1.Assertions.Single().Assert).Should().NotThrow();
+            await new Func<Task>(async () => await case1.Assertions.Single().AssertAsync()).Should().NotThrowAsync();
 
             var case2 = test.Cases.Skip(1).First();
-            ((Action)case2.Act).Should().NotThrow();
+            await new Func<Task>(async () => await case2.ActAsync()).Should().NotThrowAsync();
             case2.Assertions.Count.Should().Be(1);
             case2.Assertions.Single().ToString().Should().Be("Outcome should be as expected");
-            ((Action)case2.Assertions.Single().Assert).Should().NotThrow();
+            await new Func<Task>(async () => await case2.Assertions.Single().AssertAsync()).Should().NotThrowAsync();
 
             var case3 = test.Cases.Skip(2).First();
-            ((Action)case3.Act).Should().NotThrow();
+            await new Func<Task>(async () => await case3.ActAsync()).Should().NotThrowAsync();
             case3.Assertions.Count.Should().Be(1);
             case3.Assertions.Single().ToString().Should().Be("Outcome should be as expected");
-            ((Action)case3.Assertions.Single().Assert).Should().NotThrow();
+            await new Func<Task>(async () => await case3.Assertions.Single().AssertAsync()).Should().NotThrowAsync();
         }
 
         [TestMethod]
-        public void ExpectedExceptionThrown()
+        public async Task ExpectedExceptionThrown()
         {
             // Arrange
             Test test = TestThat
@@ -146,20 +174,20 @@ namespace FlUnit.Tests
 #endif
 
             // Act & Assert
-            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(1);
 
-            ((Action)test.Cases.Single().Act).Should().NotThrow();
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
             test.Cases.Single().Assertions.Count.Should().Be(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.ToString().Should().Be("exception.Should().BeOfType<ArgumentOutOfRangeException>()");
 
-            ((Action)assertion.Assert).Should().NotThrow();
+            await new Func<Task>(async () => await assertion.AssertAsync()).Should().NotThrowAsync();
         }
 
         [TestMethod]
-        public void ExpectedExceptionThrown_Shorthand()
+        public async Task ExpectedExceptionThrown_Shorthand()
         {
             // Arrange
             Test test = TestThat
@@ -168,19 +196,19 @@ namespace FlUnit.Tests
                 .ThenThrows();
 
             // Act & Assert
-            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(1);
 
-            ((Action)test.Cases.Single().Act).Should().NotThrow();
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
             test.Cases.Single().Assertions.Count.Should().Be(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.ToString().Should().Be("Test action should throw an exception");
-            ((Action)assertion.Assert).Should().NotThrow();
+            await new Func<Task>(async () => await assertion.AssertAsync()).Should().NotThrowAsync();
         }
 
         [TestMethod]
-        public void FailingAssertion()
+        public async Task FailingAssertion()
         {
             // Arrange
             Test test = TestThat
@@ -193,29 +221,29 @@ namespace FlUnit.Tests
 #endif
 
             // Act & Assert
-            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(1);
 
-            ((Action)test.Cases.Single().Act).Should().NotThrow();
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
             test.Cases.Single().Assertions.Count.Should().Be(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.ToString().Should().Be("sb.Length.Should().Be(2)");
-            ((Action)assertion.Assert).Should().Throw<TestFailureException>();
+            await new Func<Task>(async () => await assertion.AssertAsync()).Should().ThrowAsync<TestFailureException>();
         }
 
         [TestMethod]
-        public void MultipleInvocations()
+        public async Task MultipleInvocations()
         {
             Test test = TestThat
                 .When(() => { })
                 .ThenReturns(() => { }, "Empty assertion");
 
-            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(1);
 
-            test.Cases.Single().Act();
-            Assert.ThrowsException<InvalidOperationException>(test.Cases.Single().Act);
+            await test.Cases.Single().ActAsync();
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().ThrowAsync<InvalidOperationException>();
         }
 
         [TestMethod]
@@ -243,7 +271,7 @@ namespace FlUnit.Tests
         }
 
         [TestMethod]
-        public void TestOutput()
+        public async Task TestOutput()
         {
             Test test = TestThat
                 .GivenTestContext()
@@ -256,17 +284,17 @@ namespace FlUnit.Tests
 
             var testContext = new TestContext();
 
-            ((Action)(() => test.Arrange(testContext))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(testContext)).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(1);
 
-            ((Action)test.Cases.Single().Act).Should().NotThrow();
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
             testContext.OutputMessages.Should().BeEquivalentTo(new[] { "Hello world" });
             testContext.ErrorMessages.Should().BeEquivalentTo(new[] { "Argh!" });
         }
 
 #if !NET6_0
         [TestMethod]
-        public void LinqAssertions()
+        public async Task LinqAssertions()
         {
             // Arrange
             Test test = TestThat
@@ -274,17 +302,22 @@ namespace FlUnit.Tests
                 .Then(o => Assert.Fail());
 
             // Act & Assert
-            ((Action)(() => test.Arrange(new TestContext()))).Should().NotThrow();
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
             test.Cases.Count.Should().Be(1);
 
-            ((Action)test.Cases.Single().Act).Should().NotThrow();
+            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
             test.Cases.Single().Assertions.Count.Should().Be(1);
 
             var assertion = test.Cases.Single().Assertions.Single();
             assertion.ToString().Should().Be("Fail()");
-            ((Action)assertion.Assert).Should().Throw<TestFailureException>();
+            await new Func<Task>(async () => await assertion.AssertAsync()).Should().ThrowAsync<TestFailureException>();
         }
 #endif
+
+        private async Task ArrangeAsyncShouldNotThrow(Test test)
+        {
+            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
+        }
 
         private class Configuration : ITestConfiguration
         {

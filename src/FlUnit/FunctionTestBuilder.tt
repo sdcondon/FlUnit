@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 #else
 using System.Linq.Expressions;
 #endif
+using System.Threading.Tasks;
 
 namespace FlUnit
 {
@@ -26,13 +27,23 @@ namespace FlUnit
     public sealed class FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
-        private readonly Func<<#= TList(i, "", ", ") #>TResult> testFunction;
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> testFunction;
+#else
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
+        private readonly Func<<#= TList(i, "", ", ") #>Task<TResult>> testFunction;
+#endif
 
         internal FunctionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
-            Func<<#= TList(i, "", ", ") #>TResult> testFunction)
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> testFunction)
+#else
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange,", 3); #>
+            Func<<#= TList(i, "", ", ") #>Task<TResult>> testFunction)
+#endif
         {
             this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, $"this.arrange = arrange;", 3); #>
@@ -63,7 +74,34 @@ namespace FlUnit
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(
-                    assertion,
+                    assertion.ToAsyncWrapper(),
+                    description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion. Optional.</param>
+        /// <param name="assertionExpression">
+        /// Automatically populated by the compiler - takes the value of the argument expression passed to the assertion parameter.
+        /// Used as the description of the assertion if no description is provided - after a little processing (namely, lambda expressions are trimmed so that only their body remains).
+        /// </param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult> ThenAsync(
+            Func<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>, Task> asyncAssertion,
+            string description = null,
+            [CallerArgumentExpression("asyncAssertion")] string assertionExpression = null)
+        {
+            return new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
+<# WriteLineIf(i > 0, "arrange,", 4); #>
+                testFunction,
+                new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(
+                    asyncAssertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
@@ -102,7 +140,27 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
-                new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion, description));
+                new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
+        }
+
+        /// <summary>
+        /// Adds the first assertion for the test.
+        /// <para/>
+        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
+        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
+        /// </summary>
+        /// <param name="asyncAssertion">The assertion.</param>
+        /// <param name="description">The description of the assertion.</param>
+        /// <returns>A builder for providing additional assertions for the test.</returns>
+        public FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult> ThenAsync(
+            Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> asyncAssertion,
+            string description)
+        {
+            return new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>(
+                configurationOverrides,
+<# WriteLineIf(i > 0, "arrange,", 4); #>
+                testFunction,
+                new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -154,7 +212,7 @@ namespace FlUnit
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(
-                    assertion,
+                    assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
@@ -187,7 +245,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
-                new FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion, description));
+                new FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
 
@@ -239,7 +297,7 @@ namespace FlUnit
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
                 new FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(
-                    assertion,
+                    assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
 #else
@@ -272,7 +330,7 @@ namespace FlUnit
                 configurationOverrides,
 <# WriteLineIf(i > 0, "arrange,", 4); #>
                 testFunction,
-                new FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion, description));
+                new FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
         }
 #endif
     }

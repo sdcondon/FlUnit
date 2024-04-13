@@ -65,17 +65,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FlUnit.Abstractions" Version="2.0.1" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+    <PackageReference Include="FlUnit.Abstractions" Version="3.0.0-pre.2" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="FunctionExtensions.tt">
+      <LastGenOutput>FunctionExtensions.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="ActionTest.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ActionTest.cs</LastGenOutput>
+    </None>
+    <None Update="ActionExtensions.tt">
+      <LastGenOutput>ActionExtensions.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="ActionTestBuilder.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -121,10 +129,20 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Compile Update="FunctionExtensions.cs">
+      <DependentUpon>FunctionExtensions.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="ActionTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ActionTest.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ActionExtensions.cs">
+      <DependentUpon>ActionExtensions.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="ActionTestBuilder.cs">
       <DesignTime>True</DesignTime>

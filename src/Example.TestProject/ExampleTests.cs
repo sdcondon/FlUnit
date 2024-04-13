@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using FlUnit;
 using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Example.TestProject
 {
@@ -67,6 +69,14 @@ namespace Example.TestProject
             .Given(() => new TestSubject(shouldThrow: true))
             .When(sut => sut.Process(null))
             .ThenReturns((_, retVal) => retVal.Should().BeTrue());
+
+        // Async clauses
+        public static Test AsyncTestClauses => TestThat
+            .Given(() => new TestSubject())
+            .AndAsync(() => Task.FromResult(new Collaborator()))
+            .WhenAsync(async (ts, c) => await ts.ProcessAsync(c))
+            .ThenReturns()
+            .AndAsync(async (_, c, rv) => { await Task.Yield(); rv.Should().BeTrue(); });
 
         // Test with no prerequisites
         public static Test CtorDoesntThrow => TestThat
@@ -147,6 +157,14 @@ namespace Example.TestProject
                 HasProcessed = true;
                 collaborator.HasBeenProcessed = true;
                 return true;
+            }
+
+            public Task<bool> ProcessAsync(Collaborator collaborator)
+            {
+                if (collaborator == null) throw new ArgumentNullException(nameof(collaborator));
+                HasProcessed = true;
+                collaborator.HasBeenProcessed = true;
+                return Task.FromResult(true);
             }
         }
 

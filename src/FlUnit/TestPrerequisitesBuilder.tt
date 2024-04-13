@@ -22,34 +22,40 @@ string PrerequisiteBuilderPrereqArg(int i)
     }
 }
 
-string NextPrerequisiteBuilderPrereqArg(int i, bool isEachOf, bool isUsingTestContext)
+string NextPrerequisiteBuilderPrereqArg_Sync(int i, bool isEachOf, bool isUsingTestContext)
 {
     var nextPrereq = (isEachOf, isUsingTestContext) switch
     {
-         (false, false) => $"new SinglePrerequisiteClosure<T{i + 1}>(tc => prereq{i + 1}()).Arrange",
-         (false, true) => $"new SinglePrerequisiteClosure<T{i + 1}>(prereq{i + 1}).Arrange",
-         (true, false) => $"tc => prereqs{i + 1}()", // ugly stack frames!
-         (true, true) => $"prereqs{i + 1}",
+         (false, false) => $"new SinglePrerequisiteClosure<T{i + 1}>(tc => prereqGetter{i + 1}.ToAsyncWrapper()()).Arrange",
+         (false, true) => $"new SinglePrerequisiteClosure<T{i + 1}>(prereqGetter{i + 1}.ToAsyncWrapper()).Arrange",
+         (true, false) => $"tc => prereqsGetter{i + 1}.ToAsyncWrapper()()", // ugly stack frames!
+         (true, true) => $"prereqsGetter{i + 1}.ToAsyncWrapper()",
     };
 
-    if (i == 0)
+    return NextPrerequisiteBuilderPrereqArg(i, nextPrereq);
+}
+
+string NextPrerequisiteBuilderPrereqArg_Async(int i, bool isEachOf, bool isUsingTestContext)
+{
+    var nextPrereq = (isEachOf, isUsingTestContext) switch
     {
-        return nextPrereq;
-    }
-    else if (i == 1)
-    {
-        return $"(arrange, {nextPrereq})";
-    }
-    else
-    {
-        return $"({ List(i, i => $"arrange.Item{i}") }, {nextPrereq})";
-    }
+         (false, false) => $"new SinglePrerequisiteClosure<T{i + 1}>(tc => prereqGetter{i + 1}.ToAsyncWrapper()()).Arrange",
+         (false, true) => $"new SinglePrerequisiteClosure<T{i + 1}>(prereqGetter{i + 1}.ToAsyncWrapper()).Arrange",
+         (true, false) => $"tc => prereqsGetter{i + 1}.ToAsyncWrapper()()", // ugly stack frames!
+         (true, true) => $"prereqsGetter{i + 1}.ToAsyncWrapper()",
+    };
+
+    return NextPrerequisiteBuilderPrereqArg(i, nextPrereq);
 }
 
 string NextPrerequisiteBuilderPrereqArg_TestContext(int i)
 {
-    var nextPrereq = $"new SinglePrerequisiteClosure<ITestContext>(ctx => ctx).Arrange";
+    var nextPrereq = $"new SinglePrerequisiteClosure<ITestContext>(new Func<ITestContext, ITestContext>(ctx => ctx).ToAsyncWrapper()).Arrange";
+    return NextPrerequisiteBuilderPrereqArg(i, nextPrereq);
+}
 
+string NextPrerequisiteBuilderPrereqArg(int i, string nextPrereq)
+{
     if (i == 0)
     {
         return nextPrereq;
@@ -69,6 +75,7 @@ using FlUnit.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FlUnit
 {
@@ -82,11 +89,19 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<#= TList(i, "<", ">") #>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
+#else
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
+#endif
 
 		internal TestPrerequisitesBuilder(
-            IEnumerable<Action<ITestConfiguration>> configurationOverrides<#= i == 0 ? ")" : "," #>          
-<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange)", 3); #>
+            IEnumerable<Action<ITestConfiguration>> configurationOverrides<#= i == 0 ? ")" : "," #>
+#if NET6_0_OR_GREATER
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange)", 3); #>
+#else
+<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange)", 3); #>
+#endif
         {
             this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
@@ -111,28 +126,106 @@ namespace FlUnit
         /// Adds the first "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
-        /// <param name="prereq<#= i + 1 #>">A delegate for obtaining the prerequisite.</param>
+        /// <param name="prereqGetter<#= i + 1 #>">A delegate for obtaining the prerequisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> Given<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> Given<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereqGetter<#= i + 1 #>)
         {
-            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false, false) #>);
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Sync(i, false, false) #>);
         }
 
         /// <summary>
         /// Adds the first "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
-        /// <param name="prereq<#= i + 1 #>">
+        /// <param name="prereqGetter<#= i + 1 #>">
         /// A delegate for obtaining the prerequisite.
         /// It will be passed an object representing the test context by the test runner.
         /// This can be used to write output, register test result attachments and so on.
         /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> Given<T<#= i + 1 #>>(Func<ITestContext, T<#= i + 1 #>> prereq<#= i + 1 #>)
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> Given<T<#= i + 1 #>>(Func<ITestContext, T<#= i + 1 #>> prereqGetter<#= i + 1 #>)
         {
-            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false, true) #>);
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Sync(i, false, true) #>);
         }
-                
+
+        /// <summary>
+        /// Adds the first "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqGetter<#= i + 1 #>">A delegate for obtaining the prerequisite asynchronously.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenAsync<T<#= i + 1 #>>(Func<Task<T<#= i + 1 #>>> prereqGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Async(i, false, false) #>);
+        }
+
+        /// <summary>
+        /// Adds the first "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqGetter<#= i + 1 #>">
+        /// A delegate for obtaining the prerequisite asynchronously.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to observe test cancellation, write output, register test result attachments and so on.
+        /// </param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenAsync<T<#= i + 1 #>>(Func<ITestContext, Task<T<#= i + 1 #>>> prereqGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Async(i, false, true) #>);
+        }
+
+        /// <summary>
+        /// Adds the first "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqsGetter<#= i + 1 #>">A delegate for obtaining the prerequisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqsGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Sync(i, true, false) #>);
+        }
+
+        /// <summary>
+        /// Adds the first "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqsGetter<#= i + 1 #>">
+        /// A delegate for obtaining the prerequisites, one for each test case.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenEachOf<T<#= i + 1 #>>(Func<ITestContext, IEnumerable<T<#= i + 1 #>>> prereqsGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Sync(i, true, true) #>);
+        }
+
+        /// <summary>
+        /// Adds the first "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqsGetter<#= i + 1 #>">A delegate for obtaining the prerequisites, one for each test case, asynchronously.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenEachOfAsync<T<#= i + 1 #>>(Func<Task<IEnumerable<T<#= i + 1 #>>>> prereqsGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Async(i, true, false) #>);
+        }
+
+        /// <summary>
+        /// Adds the first "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqsGetter<#= i + 1 #>">
+        /// A delegate for obtaining the prerequisites, one for each test case, asynchronously.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to observe test cancellation, write output, register test result attachments and so on.
+        /// </param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenEachOfAsync<T<#= i + 1 #>>(Func<ITestContext, Task<IEnumerable<T<#= i + 1 #>>>> prereqsGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Async(i, true, true) #>);
+        }
+
         /// <summary>
         /// Adds the first "Given" clause for the test - that defines the test context as the prerequisite. This is just a more readable alias of:
         /// <code>
@@ -144,60 +237,112 @@ namespace FlUnit
         {
             return new TestPrerequisitesBuilder<ITestContext>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_TestContext(i) #>);
         }
-
-        /// <summary>
-        /// Adds the first "Given" clause for the test.
-        /// </summary>
-        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
-        /// <param name="prereqs<#= i + 1 #>">A delegate for obtaining the prerequisites, one for each test case.</param>
-        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
-        {
-            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true, false) #>);
-        }
-
-        /// <summary>
-        /// Adds the first "Given" clause for the test, making use of the test context.
-        /// </summary>
-        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
-        /// <param name="prereqs<#= i + 1 #>">
-        /// A delegate for obtaining the prerequisites, one for each test case.
-        /// It will be passed an object representing the test context by the test runner.
-        /// This can be used to write output, register test result attachments and so on.
-        /// </param>
-        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> GivenEachOf<T<#= i + 1 #>>(Func<ITestContext, IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
-        {
-            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true, true) #>);
-        }
 <# } else if (i < MaxPrerequisiteCount) { #>
 
         /// <summary>
         /// Adds another "Given" clause for the test.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
-        /// <param name="prereq<#= i + 1 #>">A delegate for obtaining the prerequisite.</param>
+        /// <param name="prereqGetter<#= i + 1 #>">A delegate for obtaining the prerequisite.</param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereq<#= i + 1 #>)
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<T<#= i + 1 #>> prereqGetter<#= i + 1 #>)
         {
-            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false, false) #>);
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Sync(i, false, false) #>);
         }
         
         /// <summary>
         /// Adds another "Given" clause for the test, making use of the test context.
         /// </summary>
         /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
-        /// <param name="prereq<#= i + 1 #>">
+        /// <param name="prereqGetter<#= i + 1 #>">
         /// A delegate for obtaining the prerequisite.
         /// It will be passed an object representing the test context by the test runner.
         /// This can be used to write output, register test result attachments and so on.
         /// </param>
         /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<ITestContext, T<#= i + 1 #>> prereq<#= i + 1 #>)
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> And<T<#= i + 1 #>>(Func<ITestContext, T<#= i + 1 #>> prereqGetter<#= i + 1 #>)
         {
-            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, false, true) #>);
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Sync(i, false, true) #>);
+        }
+
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqGetter<#= i + 1 #>">A delegate for obtaining the prerequisite asynchronously.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndAsync<T<#= i + 1 #>>(Func<Task<T<#= i + 1 #>>> prereqGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Async(i, false, false) #>);
         }
         
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqGetter<#= i + 1 #>">
+        /// A delegate for obtaining the prerequisite asynchronously.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to observe test cancellation, write output, register test result attachments and so on.
+        /// </param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndAsync<T<#= i + 1 #>>(Func<ITestContext, Task<T<#= i + 1 #>>> prereqGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Async(i, false, true) #>);
+        }
+
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqsGetter<#= i + 1 #>">A delegate for obtaining the prerequisites, one for each test case.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqsGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Sync(i, true, false) #>);
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqsGetter<#= i + 1 #>">
+        /// A delegate for obtaining the prerequisites, one for each test case.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to write output, register test result attachments and so on.
+        /// </param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<ITestContext, IEnumerable<T<#= i + 1 #>>> prereqsGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Sync(i, true, true) #>);
+        }
+
+        /// <summary>
+        /// Adds another "Given" clause for the test.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqsGetter<#= i + 1 #>">A delegate for obtaining the prerequisites, one for each test case, asynchronously.</param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndEachOfAsync<T<#= i + 1 #>>(Func<Task<IEnumerable<T<#= i + 1 #>>>> prereqsGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Async(i, true, false) #>);
+        }
+        
+        /// <summary>
+        /// Adds another "Given" clause for the test, making use of the test context.
+        /// </summary>
+        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
+        /// <param name="prereqsGetter<#= i + 1 #>">
+        /// A delegate for obtaining the prerequisites, one for each test case, asynchronously.
+        /// It will be passed an object representing the test context by the test runner.
+        /// This can be used to observe test cancellation, write output, register test result attachments and so on.
+        /// </param>
+        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
+        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndEachOfAsync<T<#= i + 1 #>>(Func<ITestContext, Task<IEnumerable<T<#= i + 1 #>>>> prereqsGetter<#= i + 1 #>)
+        {
+            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_Async(i, true, true) #>);
+        }
+
         /// <summary>
         /// Adds a "Given" clause for the test that defines the test context as a prerequisite. This is just a more readable alias of:
         /// <code>
@@ -209,32 +354,6 @@ namespace FlUnit
         {
             return new TestPrerequisitesBuilder<<#= TList(i) #>, ITestContext>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg_TestContext(i) #>);
         }
-
-        /// <summary>
-        /// Adds another "Given" clause for the test.
-        /// </summary>
-        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
-        /// <param name="prereqs<#= i + 1 #>">A delegate for obtaining the prerequisites, one for each test case.</param>
-        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
-        {
-            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true, false) #>);
-        }
-        
-        /// <summary>
-        /// Adds another "Given" clause for the test, making use of the test context.
-        /// </summary>
-        /// <typeparam name="T<#= i + 1 #>">The type of the prerequisite.</typeparam>
-        /// <param name="prereqs<#= i + 1 #>">
-        /// A delegate for obtaining the prerequisites, one for each test case.
-        /// It will be passed an object representing the test context by the test runner.
-        /// This can be used to write output, register test result attachments and so on.
-        /// </param>
-        /// <returns>A builder for providing more "Given" clauses or the "When" clause for the test.</returns>
-        public TestPrerequisitesBuilder<<#= TList(i + 1) #>> AndEachOf<T<#= i + 1 #>>(Func<ITestContext, IEnumerable<T<#= i + 1 #>>> prereqs<#= i + 1 #>)
-        {
-            return new TestPrerequisitesBuilder<<#= TList(i + 1) #>>(configurationOverrides, <#= NextPrerequisiteBuilderPrereqArg(i, true, true) #>);
-        }
 <# } #>
 
         /// <summary>
@@ -244,7 +363,7 @@ namespace FlUnit
         /// <returns>A builder for providing "Then" clauses.</returns>
         public ActionTestBuilder<#= TList(i, "<", ">") #> When(Action<#= TList(i, "<", ">") #> testAction)
         {
-            return new ActionTestBuilder<#= TList(i, "<", ">") #>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testAction);
+            return new ActionTestBuilder<#= TList(i, "<", ">") #>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testAction.ToAsyncWrapper());
         }
 
         /// <summary>
@@ -254,7 +373,27 @@ namespace FlUnit
         /// <returns>A builder for providing "Then" clauses.</returns>
         public FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult> When<TResult>(Func<<#= TList(i, "", ", ") #>TResult> testFunction)
         {
-            return new FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testFunction);
+            return new FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>testFunction.ToAsyncWrapper());
+        }
+
+        /// <summary>
+        /// Adds a "When" clause that does not return a value.
+        /// </summary>
+        /// <param name="asyncTestAction">The action that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
+        /// <returns>A builder for providing "Then" clauses.</returns>
+        public ActionTestBuilder<#= TList(i, "<", ">") #> WhenAsync(Func<<#= TList(i, "", ", ") #>Task> asyncTestAction)
+        {
+            return new ActionTestBuilder<#= TList(i, "<", ">") #>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>asyncTestAction.ToAsyncWrapper());
+        }
+
+        /// <summary>
+        /// Adds a "When" clause that returns a value.
+        /// </summary>
+        /// <param name="asyncTestFunction">The function that is the "When" clause of the test. It should have one parameter for each defined "Given" clause (if any).</param>
+        /// <returns>A builder for providing "Then" clauses.</returns>
+        public FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult> WhenAsync<TResult>(Func<<#= TList(i, "", ", ") #>Task<TResult>> asyncTestFunction)
+        {
+            return new FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult>(configurationOverrides, <# WriteIf(i > 0, "arrange, "); #>asyncTestFunction.ToAsyncWrapper());
         }
 	}
 <# } #>}

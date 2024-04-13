@@ -1,0 +1,37 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="_Common.t4" #>
+using System;
+using System.Threading.Tasks;
+
+namespace FlUnit
+{
+    internal static class ActionExtensions
+    {
+<# for(int i = 0; i <= MaxPrerequisiteCount + 1; i++) { #>
+<# WriteLineIf(i > 0); #>
+#if NET6_0
+        public static Func<<#= TList(i, "", ", ") #>ValueTask> ToAsyncWrapper<#= TList(i, "<", ">") #>(this Action<#= TList(i, "<", ">") #> action)
+        {
+            return (<#= List(i, i => $"a{i}") #>) =>
+            {
+                action.Invoke(<#= List(i, i => $"a{i}") #>);
+                return ValueTask.CompletedTask;
+            };
+        }
+#else
+        public static Func<<#= TList(i, "", ", ") #>Task> ToAsyncWrapper<#= TList(i, "<", ">") #>(this Action<#= TList(i, "<", ">") #> action)
+        {
+            return (<#= List(i, i => $"a{i}") #>) =>
+            {
+                action.Invoke(<#= List(i, i => $"a{i}") #>);
+                return Task.CompletedTask;
+            };
+        }
+#endif
+<# } #>
+   }
+}
