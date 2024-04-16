@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FlUnit.Tests
@@ -326,6 +327,8 @@ namespace FlUnit.Tests
             public List<string> ErrorMessages { get; } = new List<string>();
 
             public List<string> OutputMessages { get; } = new List<string>();
+
+            public CancellationToken TestCancellation => throw new NotImplementedException();
 
             public void WriteError(string error) => ErrorMessages.Add(error);
 
