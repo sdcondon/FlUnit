@@ -85,6 +85,16 @@ public static class MyTests
     .ThenReturns()
     .And((_, _, sum) => (sum % 2).Should().Be(1))
     .And((x, _, sum) => sum.Should().BeGreaterThan(x));
+
+  // Test clauses can be asynchronous - the test runner will await the result.
+  // Note that ITestContext (see "advanced functionality" for more about test context) includes
+  // a CancellationToken property for communicating test cancellation to the test.
+  public static Test AsyncTestClauses => TestThat
+     .GivenTestContext()
+     .AndEachOfAsync(cxt => MyRemoteTestCaseSource.GetTestCasesAsync(cxt.TestCancellation))
+	 .WhenAsync((cxt, tc) => tc.DoAsyncThing(cxt.TestCancellation))
+	 .ThenReturns()
+	 .AndAsync((cxt, tc) => tc.AssertSomethingAsync(cxt.TestCancellation))
 }
 ```
 

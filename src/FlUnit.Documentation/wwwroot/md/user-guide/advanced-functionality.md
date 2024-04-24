@@ -10,7 +10,7 @@ See the [annotated example](https://github.com/sdcondon/FlUnit/blob/main/src/Exa
 Configuration that applies to individual tests can be overridden by individual tests through the use of the `UsingConfiguration` builder method.
 Configuration overrides can be specified at any point up until the `When` clause is specified.
 
-## Test Context (v1.1 and later)
+## Test Context
 
 Optionally, when specifying test prerequisites with `Given` and `GivenEachOf`, you can use an overload with a `Func<ITestContext, T>` parameter rather than a `Func<T>`.
 That is, you can provide a delegate that accepts an `ITestContext` object. This context object is provided by the test runner and can be used to write test output and error messages, like this:
