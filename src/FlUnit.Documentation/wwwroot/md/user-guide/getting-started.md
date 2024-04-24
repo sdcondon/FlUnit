@@ -76,8 +76,8 @@ public static class MyTests
     .ThenThrows((_, exception) => exception.Should().BeOfType(typeof(ArgumentNullException)));
 
   // Parameterised tests are supported without awkward attribute-based
-  // argument retrieval. This is my favourite aspect of FlUnit - and I suspect
-  // that anyone who tends toward parameterised tests will enjoy this.
+  // argument retrieval. Multiple "each of" clauses can be used to assemble
+  // test cases from a Cartesian product.
   public static Test SumOfEvenAndOdd => TestThat
     .GivenEachOf(() => new[] { 1, 3, 5 })
     .AndEachOf(() => new[] { 2, 4, 6 })
