@@ -92,9 +92,9 @@ public static class MyTests
   public static Test AsyncTestClauses => TestThat
      .GivenTestContext()
      .AndEachOfAsync(cxt => MyRemoteTestCaseSource.GetTestCasesAsync(cxt.TestCancellation))
-	 .WhenAsync((cxt, tc) => tc.DoAsyncThing(cxt.TestCancellation))
-	 .ThenReturns()
-	 .AndAsync((cxt, tc) => tc.AssertSomethingAsync(cxt.TestCancellation))
+     .WhenAsync((cxt, tc) => tc.DoAsyncThing(cxt.TestCancellation))
+     .ThenReturns()
+     .AndAsync((cxt, tc) => tc.AssertSomethingAsync(cxt.TestCancellation))
 }
 ```
 
