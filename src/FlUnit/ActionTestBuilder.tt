@@ -26,30 +26,19 @@ namespace FlUnit
     public sealed class ActionTestBuilder<#= TList(i, "<", ">") #>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>ValueTask> testAction;
-#else
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
-        private readonly Func<<#= TList(i, "", ", ") #>Task> testAction;
-#endif
 
         internal ActionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
 <# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>ValueTask> testAction)
-#else
-<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange,", 3); #>
-            Func<<#= TList(i, "", ", ") #>Task> testAction)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>
             this.testAction = testAction;
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
         /// <para/>
@@ -99,60 +88,6 @@ namespace FlUnit
                 testAction,
                 new ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #> Then(Expression<Action<<#= TList(i, "", ", ") #>TestActionOutcome>> assertion)
-        {
-            return new ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testAction,
-                new ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #> Then(Action<<#= TList(i, "", ", ") #>TestActionOutcome> assertion, string description)
-        {
-            return new ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testAction,
-                new ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #> ThenAsync(Action<<#= TList(i, "", ", ") #>TestActionOutcome> asyncAssertion, string description)
-        {
-            return new ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testAction,
-                new ActionTestBuilderWithAssertions<#= TList(i, "<", ">") #>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully. Specifically, adds an assertion that simply verifies that the test action returned successfully.
@@ -181,7 +116,6 @@ namespace FlUnit
                 new ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to return successfully.
         /// </summary>
@@ -203,36 +137,6 @@ namespace FlUnit
                 testAction,
                 new ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test action is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #> ThenReturns(Expression<Action<#= TList(i, "<", ">") #>> assertion)
-        {
-            return new ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testAction,
-                new ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test action is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #> ThenReturns(Action<#= TList(i, "<", ">") #> assertion, string description)
-        {
-            return new ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testAction,
-                new ActionTestBuilderWithRVAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test action threw an exception.
@@ -261,7 +165,6 @@ namespace FlUnit
                 new ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test action is expected to throw an exception.
         /// </summary>
@@ -283,36 +186,6 @@ namespace FlUnit
                 testAction,
                 new ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test action is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #> ThenThrows(Expression<Action<<#= TList(i, "", ", ") #>Exception>> assertion)
-        {
-            return new ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testAction,
-                new ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test action is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #> ThenThrows(Action<<#= TList(i, "", ", ") #>Exception> assertion, string description)
-        {
-            return new ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testAction,
-                new ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
     }
 <# } #>
 }

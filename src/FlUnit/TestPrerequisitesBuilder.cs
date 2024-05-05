@@ -13,15 +13,9 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
-#else
-#endif
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides)
-#if NET6_0_OR_GREATER
-#else
-#endif
         {
             this.configurationOverrides = configurationOverrides;
         }
@@ -205,19 +199,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange;
-#else
-        private readonly Func<ITestContext, Task<IEnumerable<T1>>> arrange;
-#endif
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange)
-#else
-            Func<ITestContext, Task<IEnumerable<T1>>> arrange)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -403,19 +389,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1, T2>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange;
-#endif
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange)
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -602,19 +580,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1, T2, T3>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange;
-#endif
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange)
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -802,19 +772,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1, T2, T3, T4>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange;
-#endif
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange)
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
@@ -1003,19 +965,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<T1, T2, T3, T4, T5>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange;
-#endif
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange)
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;

@@ -11,18 +11,10 @@ namespace FlUnit
     /// <typeparam name="T">The type of the prerequisite.</typeparam>
     internal class SinglePrerequisiteClosure<T>
     {
-#if NET6_0_OR_GREATER
         private readonly Func<ITestContext, ValueTask<T>> prerequisite;
 
         public SinglePrerequisiteClosure(Func<ITestContext, ValueTask<T>> prerequisite) => this.prerequisite = prerequisite;
 
         public async ValueTask<IEnumerable<T>> Arrange(ITestContext testContext) => new[] { await prerequisite(testContext) };
-#else
-        private readonly Func<ITestContext, Task<T>> prerequisite;
-
-        public SinglePrerequisiteClosure(Func<ITestContext, Task<T>> prerequisite) => this.prerequisite = prerequisite;
-
-        public async Task<IEnumerable<T>> Arrange(ITestContext testContext) => new[] { await prerequisite(testContext) };
-#endif
     }
 }

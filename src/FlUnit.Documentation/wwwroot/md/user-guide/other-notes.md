@@ -21,16 +21,6 @@ Note how, by allowing for individual named assertions as part of the test model 
 
 I view this as a positive - because being able to see at a glance what I'm asserting without that assertion failing is a powerful thing. Others may disagree..
 
-### Caveats When Targeting .NET 5 or Earlier
-
-While a version of the framework that targets .NET Standard 2.0 exists, and should work properly, there is one thing in particular to note:
-
-**The .NET Standard version uses LINQ for automatic assertion naming, which has some limitations:** In .NET 6, the automatic naming of assertion results is achieved via the [CallerArgumentExpression](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-10#callerargumentexpression-attribute-diagnostics) attribute and the C# 10 compiler's knowledge thereof.
-This of course isn't available in earlier versions, so in the .NET standard version of the framework, automatic naming is facilitated by allowing you to specify assertions as LINQ expressions. These have some limitations and caveats.
-For example, LINQ expressions can't represent method calls with optional arguments (which are pretty common in assertion frameworks). 
-Also, the round trip from expression tree back to string representation may result in some unexpected output. 
-Finally, building expression trees comes at a performance cost.
-
 ### Test Lifetime - Test Property Getter vs Initializer
 
 Test object lifetime is something you don't really need to worry about when writing tests (since its the test adapter that manages this).

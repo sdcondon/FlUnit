@@ -89,19 +89,11 @@ namespace FlUnit
 	public sealed class TestPrerequisitesBuilder<#= TList(i, "<", ">") #>
 	{
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
-#else
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
-#endif
 
 		internal TestPrerequisitesBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides<#= i == 0 ? ")" : "," #>
-#if NET6_0_OR_GREATER
 <# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange)", 3); #>
-#else
-<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange)", 3); #>
-#endif
         {
             this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, "this.arrange = arrange;", 3); #>

@@ -19,20 +19,12 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithRVAssertions
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly Func<ValueTask> testAction;
-#else
-        private readonly Func<Task> testAction;
-#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithRVAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             Func<ValueTask> testAction,
-#else
-            Func<Task> testAction,
-#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -52,7 +44,6 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -90,46 +81,9 @@ namespace FlUnit
             assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
-#else
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions And(Expression<Action> assertion)
-        {
-            assertions.Add(new AssertionImpl(assertion));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions And(Action assertion, string description)
-        {
-            assertions.Add(new AssertionImpl(assertion.ToAsyncWrapper(), description));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions AndAsync(Func<Task> asyncAssertion, string description)
-        {
-            assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-            return this;
-        }
-#endif
 
         internal class AssertionImpl
         {
-#if NET6_0_OR_GREATER
             private readonly Func<ValueTask> assert;
 
             internal AssertionImpl(Func<ValueTask> assert, string description)
@@ -137,21 +91,6 @@ namespace FlUnit
                 this.assert = assert;
                 Description = description;
             }
-#else
-            private readonly Func<Task> assert;
-
-            internal AssertionImpl(Func<Task> assert, string description)
-            {
-                this.assert = assert;
-                Description = description;
-            }
-
-            internal AssertionImpl(Expression<Action> expression)
-            {
-                assert = expression.Compile().ToAsyncWrapper();
-                Description = expression.Body.ToString();
-            }
-#endif
 
             internal AssertionImpl(string description)
             {
@@ -160,19 +99,11 @@ namespace FlUnit
 
             public string Description { get; }
 
-#if NET6_0_OR_GREATER
             internal ValueTask Invoke(TestActionOutcome outcome)
             {
                 outcome.ThrowIfException();
                 return assert?.Invoke() ?? ValueTask.CompletedTask;
             }
-#else
-            internal Task Invoke(TestActionOutcome outcome)
-            {
-                outcome.ThrowIfException();
-                return assert?.Invoke() ?? Task.CompletedTask;
-            }
-#endif
         }
     }
 
@@ -184,24 +115,14 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithRVAssertions<T1>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange;
         private readonly Func<T1, ValueTask> testAction;
-#else
-        private readonly Func<ITestContext, Task<IEnumerable<T1>>> arrange;
-        private readonly Func<T1, Task> testAction;
-#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithRVAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange,
             Func<T1, ValueTask> testAction,
-#else
-            Func<ITestContext, Task<IEnumerable<T1>>> arrange,
-            Func<T1, Task> testAction,
-#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -223,7 +144,6 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -261,46 +181,9 @@ namespace FlUnit
             assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
-#else
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1> And(Expression<Action<T1>> assertion)
-        {
-            assertions.Add(new AssertionImpl(assertion));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1> And(Action<T1> assertion, string description)
-        {
-            assertions.Add(new AssertionImpl(assertion.ToAsyncWrapper(), description));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1> AndAsync(Func<T1, Task> asyncAssertion, string description)
-        {
-            assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-            return this;
-        }
-#endif
 
         internal class AssertionImpl
         {
-#if NET6_0_OR_GREATER
             private readonly Func<T1, ValueTask> assert;
 
             internal AssertionImpl(Func<T1, ValueTask> assert, string description)
@@ -308,21 +191,6 @@ namespace FlUnit
                 this.assert = assert;
                 Description = description;
             }
-#else
-            private readonly Func<T1, Task> assert;
-
-            internal AssertionImpl(Func<T1, Task> assert, string description)
-            {
-                this.assert = assert;
-                Description = description;
-            }
-
-            internal AssertionImpl(Expression<Action<T1>> expression)
-            {
-                assert = expression.Compile().ToAsyncWrapper();
-                Description = expression.Body.ToString();
-            }
-#endif
 
             internal AssertionImpl(string description)
             {
@@ -331,19 +199,11 @@ namespace FlUnit
 
             public string Description { get; }
 
-#if NET6_0_OR_GREATER
             internal ValueTask Invoke(T1 a1, TestActionOutcome outcome)
             {
                 outcome.ThrowIfException();
                 return assert?.Invoke(a1) ?? ValueTask.CompletedTask;
             }
-#else
-            internal Task Invoke(T1 a1, TestActionOutcome outcome)
-            {
-                outcome.ThrowIfException();
-                return assert?.Invoke(a1) ?? Task.CompletedTask;
-            }
-#endif
         }
     }
 
@@ -356,24 +216,14 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithRVAssertions<T1, T2>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange;
         private readonly Func<T1, T2, ValueTask> testAction;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange;
-        private readonly Func<T1, T2, Task> testAction;
-#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithRVAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange,
             Func<T1, T2, ValueTask> testAction,
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange,
-            Func<T1, T2, Task> testAction,
-#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -395,7 +245,6 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1, T2>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -433,46 +282,9 @@ namespace FlUnit
             assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
-#else
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2> And(Expression<Action<T1, T2>> assertion)
-        {
-            assertions.Add(new AssertionImpl(assertion));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2> And(Action<T1, T2> assertion, string description)
-        {
-            assertions.Add(new AssertionImpl(assertion.ToAsyncWrapper(), description));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2> AndAsync(Func<T1, T2, Task> asyncAssertion, string description)
-        {
-            assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-            return this;
-        }
-#endif
 
         internal class AssertionImpl
         {
-#if NET6_0_OR_GREATER
             private readonly Func<T1, T2, ValueTask> assert;
 
             internal AssertionImpl(Func<T1, T2, ValueTask> assert, string description)
@@ -480,21 +292,6 @@ namespace FlUnit
                 this.assert = assert;
                 Description = description;
             }
-#else
-            private readonly Func<T1, T2, Task> assert;
-
-            internal AssertionImpl(Func<T1, T2, Task> assert, string description)
-            {
-                this.assert = assert;
-                Description = description;
-            }
-
-            internal AssertionImpl(Expression<Action<T1, T2>> expression)
-            {
-                assert = expression.Compile().ToAsyncWrapper();
-                Description = expression.Body.ToString();
-            }
-#endif
 
             internal AssertionImpl(string description)
             {
@@ -503,19 +300,11 @@ namespace FlUnit
 
             public string Description { get; }
 
-#if NET6_0_OR_GREATER
             internal ValueTask Invoke(T1 a1, T2 a2, TestActionOutcome outcome)
             {
                 outcome.ThrowIfException();
                 return assert?.Invoke(a1, a2) ?? ValueTask.CompletedTask;
             }
-#else
-            internal Task Invoke(T1 a1, T2 a2, TestActionOutcome outcome)
-            {
-                outcome.ThrowIfException();
-                return assert?.Invoke(a1, a2) ?? Task.CompletedTask;
-            }
-#endif
         }
     }
 
@@ -529,24 +318,14 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithRVAssertions<T1, T2, T3>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange;
         private readonly Func<T1, T2, T3, ValueTask> testAction;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange;
-        private readonly Func<T1, T2, T3, Task> testAction;
-#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithRVAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange,
             Func<T1, T2, T3, ValueTask> testAction,
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange,
-            Func<T1, T2, T3, Task> testAction,
-#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -568,7 +347,6 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1, T2, T3>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -606,46 +384,9 @@ namespace FlUnit
             assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
-#else
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2, T3> And(Expression<Action<T1, T2, T3>> assertion)
-        {
-            assertions.Add(new AssertionImpl(assertion));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2, T3> And(Action<T1, T2, T3> assertion, string description)
-        {
-            assertions.Add(new AssertionImpl(assertion.ToAsyncWrapper(), description));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2, T3> AndAsync(Func<T1, T2, T3, Task> asyncAssertion, string description)
-        {
-            assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-            return this;
-        }
-#endif
 
         internal class AssertionImpl
         {
-#if NET6_0_OR_GREATER
             private readonly Func<T1, T2, T3, ValueTask> assert;
 
             internal AssertionImpl(Func<T1, T2, T3, ValueTask> assert, string description)
@@ -653,21 +394,6 @@ namespace FlUnit
                 this.assert = assert;
                 Description = description;
             }
-#else
-            private readonly Func<T1, T2, T3, Task> assert;
-
-            internal AssertionImpl(Func<T1, T2, T3, Task> assert, string description)
-            {
-                this.assert = assert;
-                Description = description;
-            }
-
-            internal AssertionImpl(Expression<Action<T1, T2, T3>> expression)
-            {
-                assert = expression.Compile().ToAsyncWrapper();
-                Description = expression.Body.ToString();
-            }
-#endif
 
             internal AssertionImpl(string description)
             {
@@ -676,19 +402,11 @@ namespace FlUnit
 
             public string Description { get; }
 
-#if NET6_0_OR_GREATER
             internal ValueTask Invoke(T1 a1, T2 a2, T3 a3, TestActionOutcome outcome)
             {
                 outcome.ThrowIfException();
                 return assert?.Invoke(a1, a2, a3) ?? ValueTask.CompletedTask;
             }
-#else
-            internal Task Invoke(T1 a1, T2 a2, T3 a3, TestActionOutcome outcome)
-            {
-                outcome.ThrowIfException();
-                return assert?.Invoke(a1, a2, a3) ?? Task.CompletedTask;
-            }
-#endif
         }
     }
 
@@ -703,24 +421,14 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithRVAssertions<T1, T2, T3, T4>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange;
         private readonly Func<T1, T2, T3, T4, ValueTask> testAction;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange;
-        private readonly Func<T1, T2, T3, T4, Task> testAction;
-#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithRVAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange,
             Func<T1, T2, T3, T4, ValueTask> testAction,
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange,
-            Func<T1, T2, T3, T4, Task> testAction,
-#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -742,7 +450,6 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1, T2, T3, T4>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -780,46 +487,9 @@ namespace FlUnit
             assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
-#else
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> And(Expression<Action<T1, T2, T3, T4>> assertion)
-        {
-            assertions.Add(new AssertionImpl(assertion));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> And(Action<T1, T2, T3, T4> assertion, string description)
-        {
-            assertions.Add(new AssertionImpl(assertion.ToAsyncWrapper(), description));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4> AndAsync(Func<T1, T2, T3, T4, Task> asyncAssertion, string description)
-        {
-            assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-            return this;
-        }
-#endif
 
         internal class AssertionImpl
         {
-#if NET6_0_OR_GREATER
             private readonly Func<T1, T2, T3, T4, ValueTask> assert;
 
             internal AssertionImpl(Func<T1, T2, T3, T4, ValueTask> assert, string description)
@@ -827,21 +497,6 @@ namespace FlUnit
                 this.assert = assert;
                 Description = description;
             }
-#else
-            private readonly Func<T1, T2, T3, T4, Task> assert;
-
-            internal AssertionImpl(Func<T1, T2, T3, T4, Task> assert, string description)
-            {
-                this.assert = assert;
-                Description = description;
-            }
-
-            internal AssertionImpl(Expression<Action<T1, T2, T3, T4>> expression)
-            {
-                assert = expression.Compile().ToAsyncWrapper();
-                Description = expression.Body.ToString();
-            }
-#endif
 
             internal AssertionImpl(string description)
             {
@@ -850,19 +505,11 @@ namespace FlUnit
 
             public string Description { get; }
 
-#if NET6_0_OR_GREATER
             internal ValueTask Invoke(T1 a1, T2 a2, T3 a3, T4 a4, TestActionOutcome outcome)
             {
                 outcome.ThrowIfException();
                 return assert?.Invoke(a1, a2, a3, a4) ?? ValueTask.CompletedTask;
             }
-#else
-            internal Task Invoke(T1 a1, T2 a2, T3 a3, T4 a4, TestActionOutcome outcome)
-            {
-                outcome.ThrowIfException();
-                return assert?.Invoke(a1, a2, a3, a4) ?? Task.CompletedTask;
-            }
-#endif
         }
     }
 
@@ -878,24 +525,14 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange;
         private readonly Func<T1, T2, T3, T4, T5, ValueTask> testAction;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange;
-        private readonly Func<T1, T2, T3, T4, T5, Task> testAction;
-#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithRVAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange,
             Func<T1, T2, T3, T4, T5, ValueTask> testAction,
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange,
-            Func<T1, T2, T3, T4, T5, Task> testAction,
-#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -917,7 +554,6 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<T1, T2, T3, T4, T5>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -955,46 +591,9 @@ namespace FlUnit
             assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
-#else
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> And(Expression<Action<T1, T2, T3, T4, T5>> assertion)
-        {
-            assertions.Add(new AssertionImpl(assertion));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> And(Action<T1, T2, T3, T4, T5> assertion, string description)
-        {
-            assertions.Add(new AssertionImpl(assertion.ToAsyncWrapper(), description));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion. It should have one parameter for each "Given" clause (if any).</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5> AndAsync(Func<T1, T2, T3, T4, T5, Task> asyncAssertion, string description)
-        {
-            assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-            return this;
-        }
-#endif
 
         internal class AssertionImpl
         {
-#if NET6_0_OR_GREATER
             private readonly Func<T1, T2, T3, T4, T5, ValueTask> assert;
 
             internal AssertionImpl(Func<T1, T2, T3, T4, T5, ValueTask> assert, string description)
@@ -1002,21 +601,6 @@ namespace FlUnit
                 this.assert = assert;
                 Description = description;
             }
-#else
-            private readonly Func<T1, T2, T3, T4, T5, Task> assert;
-
-            internal AssertionImpl(Func<T1, T2, T3, T4, T5, Task> assert, string description)
-            {
-                this.assert = assert;
-                Description = description;
-            }
-
-            internal AssertionImpl(Expression<Action<T1, T2, T3, T4, T5>> expression)
-            {
-                assert = expression.Compile().ToAsyncWrapper();
-                Description = expression.Body.ToString();
-            }
-#endif
 
             internal AssertionImpl(string description)
             {
@@ -1025,19 +609,11 @@ namespace FlUnit
 
             public string Description { get; }
 
-#if NET6_0_OR_GREATER
             internal ValueTask Invoke(T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, TestActionOutcome outcome)
             {
                 outcome.ThrowIfException();
                 return assert?.Invoke(a1, a2, a3, a4, a5) ?? ValueTask.CompletedTask;
             }
-#else
-            internal Task Invoke(T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, TestActionOutcome outcome)
-            {
-                outcome.ThrowIfException();
-                return assert?.Invoke(a1, a2, a3, a4, a5) ?? Task.CompletedTask;
-            }
-#endif
         }
     }
 }

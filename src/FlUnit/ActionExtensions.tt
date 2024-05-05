@@ -13,7 +13,6 @@ namespace FlUnit
     {
 <# for(int i = 0; i <= MaxPrerequisiteCount + 1; i++) { #>
 <# WriteLineIf(i > 0); #>
-#if NET6_0
         public static Func<<#= TList(i, "", ", ") #>ValueTask> ToAsyncWrapper<#= TList(i, "<", ">") #>(this Action<#= TList(i, "<", ">") #> action)
         {
             return (<#= List(i, i => $"a{i}") #>) =>
@@ -22,16 +21,6 @@ namespace FlUnit
                 return ValueTask.CompletedTask;
             };
         }
-#else
-        public static Func<<#= TList(i, "", ", ") #>Task> ToAsyncWrapper<#= TList(i, "<", ">") #>(this Action<#= TList(i, "<", ">") #> action)
-        {
-            return (<#= List(i, i => $"a{i}") #>) =>
-            {
-                action.Invoke(<#= List(i, i => $"a{i}") #>);
-                return Task.CompletedTask;
-            };
-        }
-#endif
 <# } #>
    }
 }

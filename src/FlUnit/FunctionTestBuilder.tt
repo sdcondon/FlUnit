@@ -27,30 +27,19 @@ namespace FlUnit
     public sealed class FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> testFunction;
-#else
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
-        private readonly Func<<#= TList(i, "", ", ") #>Task<TResult>> testFunction;
-#endif
 
         internal FunctionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
 <# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> testFunction)
-#else
-<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange,", 3); #>
-            Func<<#= TList(i, "", ", ") #>Task<TResult>> testFunction)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
 <# WriteLineIf(i > 0, $"this.arrange = arrange;", 3); #>
             this.testFunction = testFunction;
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
         /// <para/>
@@ -104,65 +93,6 @@ namespace FlUnit
                     asyncAssertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult> Then(
-            Expression<Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>>> assertion)
-        {
-            return new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testFunction,
-                new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult> Then(
-            Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testFunction,
-                new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult> ThenAsync(
-            Action<<#= TList(i, "", ", ") #>TestFunctionOutcome<TResult>> asyncAssertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testFunction,
-                new FunctionTestBuilderWithAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully. Specifically, adds an assertion that simply verifies that the test function returned successfully.
@@ -191,7 +121,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
@@ -215,39 +144,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns(
-            Expression<Action<<#= TList(i, "", ", ") #>TResult>> assertion)
-        {
-            return new FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult> ThenReturns(
-            Action<<#= TList(i, "", ", ") #>TResult> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test function threw an exception.
@@ -276,7 +172,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
@@ -300,39 +195,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult> ThenThrows(
-            Expression<Action<<#= TList(i, "", ", ") #>Exception>> assertion)
-        {
-            return new FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult> ThenThrows(
-            Action<<#= TList(i, "", ", ") #>Exception> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult>(
-                configurationOverrides,
-<# WriteLineIf(i > 0, "arrange,", 4); #>
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<<#= TList(i, "", ", ") #>TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
     }
 <# } #>
 }

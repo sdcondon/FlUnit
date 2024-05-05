@@ -11,7 +11,7 @@ On the to-do list for soon-ish:
 - Basic test tidy-up support. Open questions here about if/when we should consider objects (prerequisites,
   test function return values) to be "owned" by the test, and thus its responsibility to dispose of. What
   is the ideal default behaviour, and by what mechanisms should we support deviation from that.
-- Test attachment support
+- Test run parameter support, attachment support
 - Allow for instantiable test fixtures rather than just static test properties.
   Of course, test prerequisites and builder reusability perhaps offers an alternative way to approach this kind of thing, but there's
   almost certainly still value in this.
@@ -55,7 +55,7 @@ Then return testmetadata that now optionally include case/assertion index.
 This index info would need to be included in VSTest case serialization (see VSTest.TestDiscoverer and TestContainer).
 TestRun would need to then act accordingly (TBD whether it could/should execute once but split the results, or rerun) based on the metadata.
 Of course a gotcha here is that GivenEach.. doesn't have to return the same number of cases each time (which I maintain is good behaviour - allows for storage of cases in external media). Would need to handle that gracefully.
-Problems here: simply can't if target bitness differs. Test code execution on test discovery probably not something to pursue, all things considered*
+Problems here: simply can't if e.g. target bitness differs. Test code execution on test discovery probably not something to pursue, all things considered*
 
 Not going to do:
 - QoL: Perhaps `Then/AndOfReturnValue(rv => rv.ShouldBe..)` and `Then/AndOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? No - Lambda discards work pretty well (to my eyes at least), and `OfGiven1`, `OfGiven2` is better dealt with via complex prereq objects

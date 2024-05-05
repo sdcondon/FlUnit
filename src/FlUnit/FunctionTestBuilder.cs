@@ -18,25 +18,16 @@ namespace FlUnit
     public sealed class FunctionTestBuilder<TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly Func<ValueTask<TResult>> testFunction;
-#else
-        private readonly Func<Task<TResult>> testFunction;
-#endif
 
         internal FunctionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             Func<ValueTask<TResult>> testFunction)
-#else
-            Func<Task<TResult>> testFunction)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.testFunction = testFunction;
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
         /// <para/>
@@ -88,62 +79,6 @@ namespace FlUnit
                     asyncAssertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<TResult> Then(
-            Expression<Action<TestFunctionOutcome<TResult>>> assertion)
-        {
-            return new FunctionTestBuilderWithAssertions<TResult>(
-                configurationOverrides,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<TResult> Then(
-            Action<TestFunctionOutcome<TResult>> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<TResult>(
-                configurationOverrides,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<TResult> ThenAsync(
-            Action<TestFunctionOutcome<TResult>> asyncAssertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<TResult>(
-                configurationOverrides,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<TResult>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully. Specifically, adds an assertion that simply verifies that the test function returned successfully.
@@ -170,7 +105,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithRVAssertions<TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
@@ -193,37 +127,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<TResult> ThenReturns(
-            Expression<Action<TResult>> assertion)
-        {
-            return new FunctionTestBuilderWithRVAssertions<TResult>(
-                configurationOverrides,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<TResult> ThenReturns(
-            Action<TResult> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithRVAssertions<TResult>(
-                configurationOverrides,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test function threw an exception.
@@ -250,7 +153,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithExAssertions<TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
@@ -273,37 +175,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<TResult> ThenThrows(
-            Expression<Action<Exception>> assertion)
-        {
-            return new FunctionTestBuilderWithExAssertions<TResult>(
-                configurationOverrides,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<TResult> ThenThrows(
-            Action<Exception> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithExAssertions<TResult>(
-                configurationOverrides,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
     }
 
     /// <summary>
@@ -315,30 +186,19 @@ namespace FlUnit
     public sealed class FunctionTestBuilder<T1, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange;
         private readonly Func<T1, ValueTask<TResult>> testFunction;
-#else
-        private readonly Func<ITestContext, Task<IEnumerable<T1>>> arrange;
-        private readonly Func<T1, Task<TResult>> testFunction;
-#endif
 
         internal FunctionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             Func<ITestContext, ValueTask<IEnumerable<T1>>> arrange,
             Func<T1, ValueTask<TResult>> testFunction)
-#else
-            Func<ITestContext, Task<IEnumerable<T1>>> arrange,
-            Func<T1, Task<TResult>> testFunction)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testFunction = testFunction;
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
         /// <para/>
@@ -392,65 +252,6 @@ namespace FlUnit
                     asyncAssertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, TResult> Then(
-            Expression<Action<T1, TestFunctionOutcome<TResult>>> assertion)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, TResult> Then(
-            Action<T1, TestFunctionOutcome<TResult>> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, TResult> ThenAsync(
-            Action<T1, TestFunctionOutcome<TResult>> asyncAssertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, TResult>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully. Specifically, adds an assertion that simply verifies that the test function returned successfully.
@@ -479,7 +280,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithRVAssertions<T1, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
@@ -503,39 +303,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, TResult> ThenReturns(
-            Expression<Action<T1, TResult>> assertion)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, TResult> ThenReturns(
-            Action<T1, TResult> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test function threw an exception.
@@ -564,7 +331,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithExAssertions<T1, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
@@ -588,39 +354,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, TResult> ThenThrows(
-            Expression<Action<T1, Exception>> assertion)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, TResult> ThenThrows(
-            Action<T1, Exception> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
     }
 
     /// <summary>
@@ -633,30 +366,19 @@ namespace FlUnit
     public sealed class FunctionTestBuilder<T1, T2, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange;
         private readonly Func<T1, T2, ValueTask<TResult>> testFunction;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange;
-        private readonly Func<T1, T2, Task<TResult>> testFunction;
-#endif
 
         internal FunctionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>) arrange,
             Func<T1, T2, ValueTask<TResult>> testFunction)
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>) arrange,
-            Func<T1, T2, Task<TResult>> testFunction)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testFunction = testFunction;
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
         /// <para/>
@@ -710,65 +432,6 @@ namespace FlUnit
                     asyncAssertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, TResult> Then(
-            Expression<Action<T1, T2, TestFunctionOutcome<TResult>>> assertion)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, TResult> Then(
-            Action<T1, T2, TestFunctionOutcome<TResult>> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, TResult> ThenAsync(
-            Action<T1, T2, TestFunctionOutcome<TResult>> asyncAssertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, TResult>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully. Specifically, adds an assertion that simply verifies that the test function returned successfully.
@@ -797,7 +460,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithRVAssertions<T1, T2, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
@@ -821,39 +483,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, T2, TResult> ThenReturns(
-            Expression<Action<T1, T2, TResult>> assertion)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, T2, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, T2, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, T2, TResult> ThenReturns(
-            Action<T1, T2, TResult> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, T2, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, T2, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test function threw an exception.
@@ -882,7 +511,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithExAssertions<T1, T2, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
@@ -906,39 +534,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, T2, TResult> ThenThrows(
-            Expression<Action<T1, T2, Exception>> assertion)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, T2, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, T2, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, T2, TResult> ThenThrows(
-            Action<T1, T2, Exception> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, T2, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, T2, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
     }
 
     /// <summary>
@@ -952,30 +547,19 @@ namespace FlUnit
     public sealed class FunctionTestBuilder<T1, T2, T3, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange;
         private readonly Func<T1, T2, T3, ValueTask<TResult>> testFunction;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange;
-        private readonly Func<T1, T2, T3, Task<TResult>> testFunction;
-#endif
 
         internal FunctionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>) arrange,
             Func<T1, T2, T3, ValueTask<TResult>> testFunction)
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>) arrange,
-            Func<T1, T2, T3, Task<TResult>> testFunction)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testFunction = testFunction;
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
         /// <para/>
@@ -1029,65 +613,6 @@ namespace FlUnit
                     asyncAssertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, T3, TResult> Then(
-            Expression<Action<T1, T2, T3, TestFunctionOutcome<TResult>>> assertion)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, T3, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, T3, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, T3, TResult> Then(
-            Action<T1, T2, T3, TestFunctionOutcome<TResult>> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, T3, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, T3, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, T3, TResult> ThenAsync(
-            Action<T1, T2, T3, TestFunctionOutcome<TResult>> asyncAssertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, T3, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, T3, TResult>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully. Specifically, adds an assertion that simply verifies that the test function returned successfully.
@@ -1116,7 +641,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithRVAssertions<T1, T2, T3, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
@@ -1140,39 +664,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, T2, T3, TResult> ThenReturns(
-            Expression<Action<T1, T2, T3, TResult>> assertion)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, T2, T3, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, T2, T3, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, T2, T3, TResult> ThenReturns(
-            Action<T1, T2, T3, TResult> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, T2, T3, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, T2, T3, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test function threw an exception.
@@ -1201,7 +692,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
@@ -1225,39 +715,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult> ThenThrows(
-            Expression<Action<T1, T2, T3, Exception>> assertion)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult> ThenThrows(
-            Action<T1, T2, T3, Exception> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, T2, T3, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
     }
 
     /// <summary>
@@ -1272,30 +729,19 @@ namespace FlUnit
     public sealed class FunctionTestBuilder<T1, T2, T3, T4, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange;
         private readonly Func<T1, T2, T3, T4, ValueTask<TResult>> testFunction;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange;
-        private readonly Func<T1, T2, T3, T4, Task<TResult>> testFunction;
-#endif
 
         internal FunctionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>) arrange,
             Func<T1, T2, T3, T4, ValueTask<TResult>> testFunction)
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>) arrange,
-            Func<T1, T2, T3, T4, Task<TResult>> testFunction)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testFunction = testFunction;
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
         /// <para/>
@@ -1349,65 +795,6 @@ namespace FlUnit
                     asyncAssertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, T3, T4, TResult> Then(
-            Expression<Action<T1, T2, T3, T4, TestFunctionOutcome<TResult>>> assertion)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, T3, T4, TResult> Then(
-            Action<T1, T2, T3, T4, TestFunctionOutcome<TResult>> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, T3, T4, TResult> ThenAsync(
-            Action<T1, T2, T3, T4, TestFunctionOutcome<TResult>> asyncAssertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, TResult>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully. Specifically, adds an assertion that simply verifies that the test function returned successfully.
@@ -1436,7 +823,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
@@ -1460,39 +846,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, TResult> ThenReturns(
-            Expression<Action<T1, T2, T3, T4, TResult>> assertion)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, TResult> ThenReturns(
-            Action<T1, T2, T3, T4, TResult> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test function threw an exception.
@@ -1521,7 +874,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
@@ -1545,39 +897,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult> ThenThrows(
-            Expression<Action<T1, T2, T3, T4, Exception>> assertion)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult> ThenThrows(
-            Action<T1, T2, T3, T4, Exception> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
     }
 
     /// <summary>
@@ -1593,30 +912,19 @@ namespace FlUnit
     public sealed class FunctionTestBuilder<T1, T2, T3, T4, T5, TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
         private readonly (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange;
         private readonly Func<T1, T2, T3, T4, T5, ValueTask<TResult>> testFunction;
-#else
-        private readonly (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange;
-        private readonly Func<T1, T2, T3, T4, T5, Task<TResult>> testFunction;
-#endif
 
         internal FunctionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
             (Func<ITestContext, ValueTask<IEnumerable<T1>>>, Func<ITestContext, ValueTask<IEnumerable<T2>>>, Func<ITestContext, ValueTask<IEnumerable<T3>>>, Func<ITestContext, ValueTask<IEnumerable<T4>>>, Func<ITestContext, ValueTask<IEnumerable<T5>>>) arrange,
             Func<T1, T2, T3, T4, T5, ValueTask<TResult>> testFunction)
-#else
-            (Func<ITestContext, Task<IEnumerable<T1>>>, Func<ITestContext, Task<IEnumerable<T2>>>, Func<ITestContext, Task<IEnumerable<T3>>>, Func<ITestContext, Task<IEnumerable<T4>>>, Func<ITestContext, Task<IEnumerable<T5>>>) arrange,
-            Func<T1, T2, T3, T4, T5, Task<TResult>> testFunction)
-#endif
         {
             this.configurationOverrides = configurationOverrides;
             this.arrange = arrange;
             this.testFunction = testFunction;
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test.
         /// <para/>
@@ -1670,65 +978,6 @@ namespace FlUnit
                     asyncAssertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, T3, T4, T5, TResult> Then(
-            Expression<Action<T1, T2, T3, T4, T5, TestFunctionOutcome<TResult>>> assertion)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, T5, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, T5, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="assertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, T3, T4, T5, TResult> Then(
-            Action<T1, T2, T3, T4, T5, TestFunctionOutcome<TResult>> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, T5, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, T5, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test.
-        /// <para/>
-        /// NB: Most of the time <see cref="ThenReturns()"/> or <see cref="ThenThrows()"/> (or overloads thereof) are better choices.
-        /// This method exists only to facilitate tests with multiple cases; some of which are expected to return successfully, others not.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithAssertions<T1, T2, T3, T4, T5, TResult> ThenAsync(
-            Action<T1, T2, T3, T4, T5, TestFunctionOutcome<TResult>> asyncAssertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, T5, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithAssertions<T1, T2, T3, T4, T5, TResult>.AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully. Specifically, adds an assertion that simply verifies that the test function returned successfully.
@@ -1757,7 +1006,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to return successfully.
         /// </summary>
@@ -1781,39 +1029,6 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5, TResult> ThenReturns(
-            Expression<Action<T1, T2, T3, T4, T5, TResult>> assertion)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to return successfully.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the return value of the "When" clause.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5, TResult> ThenReturns(
-            Action<T1, T2, T3, T4, T5, TResult> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithRVAssertions<T1, T2, T3, T4, T5, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
 
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception. Specifically, adds an assertion that simply verifies that the test function threw an exception.
@@ -1842,7 +1057,6 @@ namespace FlUnit
                 new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult>.AssertionImpl(description));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds the first assertion for the test if the test function is expected to throw an exception.
         /// </summary>
@@ -1866,38 +1080,5 @@ namespace FlUnit
                     assertion.ToAsyncWrapper(),
                     description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
         }
-#else
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult> ThenThrows(
-            Expression<Action<T1, T2, T3, T4, T5, Exception>> assertion)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult>.AssertionImpl(assertion));
-        }
-
-        /// <summary>
-        /// Adds the first assertion for the test if the test function is expected to throw an exception.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult> ThenThrows(
-            Action<T1, T2, T3, T4, T5, Exception> assertion,
-            string description)
-        {
-            return new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult>(
-                configurationOverrides,
-                arrange,
-                testFunction,
-                new FunctionTestBuilderWithExAssertions<T1, T2, T3, T4, T5, TResult>.AssertionImpl(assertion.ToAsyncWrapper(), description));
-        }
-#endif
     }
 }

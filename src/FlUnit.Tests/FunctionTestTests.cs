@@ -40,11 +40,7 @@ namespace FlUnit.Tests
             Test test = TestThat
                 .Given(() => new { x = 1, y = 1 })
                 .When(given => given.x + given.y)
-#if NET6_0
                 .ThenReturns((_, sum) => sum.Should().Be(2));
-#else
-                .ThenReturns((_, sum) => sum.Should().Be(2), "sum.Should().Be(2)"); // An example of LINQ limitations..
-#endif
 
             // Act & Assert
             await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
@@ -168,11 +164,7 @@ namespace FlUnit.Tests
             Test test = TestThat
                 .Given(() => new { x = 1, y = 0 })
                 .When(given => given.x / given.y)
-#if NET6_0
                 .ThenThrows((_, exception) => exception.Should().BeOfType<DivideByZeroException>());
-#else
-                .ThenThrows((_, exception) => exception.Should().BeOfType<DivideByZeroException>(), "exception.Should().BeOfType<DivideByZeroException>()"); // An example of LINQ limitations..
-#endif
 
             // Act & Assert
             await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
@@ -215,11 +207,7 @@ namespace FlUnit.Tests
             Test test = TestThat
                 .Given(() => new { x = 1, y = 1 })
                 .When(given => given.x + given.y)
-#if NET6_0
                 .ThenReturns((_, sum) => sum.Should().Be(3));
-#else
-                .ThenReturns((_, sum) => sum.Should().Be(3), "sum.Should().Be(3)"); // An example of LINQ limitations..
-#endif
 
             // Act & Assert
             await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
@@ -293,28 +281,6 @@ namespace FlUnit.Tests
             testContext.OutputMessages.Should().BeEquivalentTo(new[] { "Hello world" });
             testContext.ErrorMessages.Should().BeEquivalentTo(new[] { "Argh!" });
         }
-
-#if !NET6_0
-        [TestMethod]
-        public async Task LinqAssertions()
-        {
-            // Arrange
-            Test test = TestThat
-                .When(() => 0)
-                .Then(o => Assert.Fail());
-
-            // Act & Assert
-            await new Func<Task>(async () => await test.ArrangeAsync(new TestContext())).Should().NotThrowAsync();
-            test.Cases.Count.Should().Be(1);
-
-            await new Func<Task>(async () => await test.Cases.Single().ActAsync()).Should().NotThrowAsync();
-            test.Cases.Single().Assertions.Count.Should().Be(1);
-
-            var assertion = test.Cases.Single().Assertions.Single();
-            assertion.ToString().Should().Be("Fail()");
-            await new Func<Task>(async () => await assertion.AssertAsync()).Should().ThrowAsync<TestFailureException>();
-        }
-#endif
 
         private class Configuration : ITestConfiguration
         {

@@ -28,24 +28,14 @@ namespace FlUnit
     public sealed class ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-#if NET6_0_OR_GREATER
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>ValueTask> testAction;
-#else
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_Task(i)} arrange;", 2); #>
-        private readonly Func<<#= TList(i, "", ", ") #>Task> testAction;
-#endif
         private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
 
         internal ActionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-#if NET6_0_OR_GREATER
 <# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>ValueTask> testAction,
-#else
-<# WriteLineIf(i > 0, $"{ArrangeFieldType_Task(i)} arrange,", 3); #>
-            Func<<#= TList(i, "", ", ") #>Task> testAction,
-#endif
             AssertionImpl assertion)
         {
             this.configurationOverrides = configurationOverrides;
@@ -67,7 +57,6 @@ namespace FlUnit
                 tc => builder.assertions.Select(a => new ActionTest<#= TList(i, "<", ">") #>.Assertion(tc, a.Invoke, a.Description)));
         }
 
-#if NET6_0
         /// <summary>
         /// Adds an additional assertion for the test.
         /// </summary>
@@ -105,46 +94,9 @@ namespace FlUnit
             assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description ?? AssertionExpressionHelpers.ToAssertionDescription(assertionExpression)));
             return this;
         }
-#else
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #> And(Expression<Action<<#= TList(i, "", ", ") #>Exception>> assertion)
-        {
-            assertions.Add(new AssertionImpl(assertion));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="assertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #> And(Action<<#= TList(i, "", ", ") #>Exception> assertion, string description)
-        {
-            assertions.Add(new AssertionImpl(assertion.ToAsyncWrapper(), description));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an additional assertion for the test.
-        /// </summary>
-        /// <param name="asyncAssertion">The assertion. It should have one parameter for each "Given" clause (if any), and a final one for the thrown exception.</param>
-        /// <param name="description">The description of the assertion.</param>
-        /// <returns>A builder for providing additional assertions for the test.</returns>
-        public ActionTestBuilderWithExAssertions<#= TList(i, "<", ">") #> AndAsync(Func<<#= TList(i, "", ", ") #>Exception, Task> asyncAssertion, string description)
-        {
-            assertions.Add(new AssertionImpl(asyncAssertion.ToAsyncWrapper(), description));
-            return this;
-        }
-#endif
 
         internal class AssertionImpl
         {
-#if NET6_0_OR_GREATER
             private readonly Func<<#= TList(i, "", ", ") #>Exception, ValueTask> assert;
 
             internal AssertionImpl(Func<<#= TList(i, "", ", ") #>Exception, ValueTask> assert, string description)
@@ -152,21 +104,6 @@ namespace FlUnit
                 this.assert = assert;
                 Description = description;
             }
-#else
-            private readonly Func<<#= TList(i, "", ", ") #>Exception, Task> assert;
-
-            internal AssertionImpl(Func<<#= TList(i, "", ", ") #>Exception, Task> assert, string description)
-            {
-                this.assert = assert;
-                Description = description;
-            }
-
-            internal AssertionImpl(Expression<Action<<#= TList(i, "", ", ") #>Exception>> expression)
-            {
-                assert = expression.Compile().ToAsyncWrapper();
-                Description = expression.Body.ToString();
-            }
-#endif
 
             internal AssertionImpl(string description)
             {
@@ -175,19 +112,11 @@ namespace FlUnit
 
             public string Description { get; }
 
-#if NET6_0_OR_GREATER
             internal ValueTask Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestActionOutcome outcome)
             {
                 outcome.ThrowIfNoException();
                 return assert?.Invoke(<#= List(i, i => $"a{i}", "", ", ") #>outcome.Exception) ?? ValueTask.CompletedTask;
             }
-#else
-            internal Task Invoke(<#= List(i, i => $"T{i} a{i}", "", ", ") #>TestActionOutcome outcome)
-            {
-                outcome.ThrowIfNoException();
-                return assert?.Invoke(<#= List(i, i => $"a{i}", "", ", ") #>outcome.Exception) ?? Task.CompletedTask;
-            }
-#endif
         }
     }
 <# } #>
