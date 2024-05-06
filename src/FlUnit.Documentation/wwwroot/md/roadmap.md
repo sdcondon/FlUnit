@@ -2,9 +2,9 @@
 
 Proper issue tracking and a formal plan would be overkill, so the "roadmap" consists of just a bullet list to organise my thoughts:
 
-Next up:
+At the moment:
 
-- Fix VSTest adapter so that the test assembly is loaded in a MetadataLoadContext when discovering tests.
+- *Nothing at the moment - working on other projects*.
 
 On the to-do list for soon-ish:
 
