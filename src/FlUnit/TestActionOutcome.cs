@@ -5,8 +5,6 @@ namespace FlUnit
     /// <summary>
     /// Container for the outcome of the invoking the "When" clause of a test.
     /// </summary>
-    // TODO-BREAKING-V2: is this still needed now that When clauses are async by default (so have a ValueTask/Task)?
-    // ThrowIfEx/NoEx become static methods on TestFailureException? Changes the args of Then(..) - breaking change.
     public sealed class TestActionOutcome
     {
         internal TestActionOutcome() { }
