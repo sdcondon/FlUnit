@@ -27,12 +27,12 @@ namespace FlUnit
     public sealed class FunctionTestBuilder<<#= TList(i, "", ", ") #>TResult>
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> testFunction;
 
         internal FunctionTestBuilder(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-<# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
+<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> testFunction)
         {
             this.configurationOverrides = configurationOverrides;

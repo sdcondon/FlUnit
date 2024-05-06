@@ -24,7 +24,7 @@ namespace FlUnit
     public sealed class FunctionTest<<#= TList(i, "", ", ") #>TResult> : Test
     {
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
-<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
+<# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> act;
         private readonly Func<Case, IEnumerable<Assertion>> makeAssertions;
         private IReadOnlyCollection<ITestCase> cases;
@@ -38,7 +38,7 @@ namespace FlUnit
         /// <param name="makeAssertions">The callback to create all of the assertions for a particular test case.</param>
         internal FunctionTest(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
-<# WriteLineIf(i > 0, $"{ArrangeFieldType_ValueTask(i)} arrange,", 3); #>
+<# WriteLineIf(i > 0, $"{ArrangeFieldType(i)} arrange,", 3); #>
             Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> act,
             Func<Case, IEnumerable<Assertion>> makeAssertions)
         {
