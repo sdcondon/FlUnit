@@ -17,7 +17,7 @@
             var lambdaIndex = assertionExpression.IndexOf("=>");
             if (lambdaIndex > -1 && assertionExpression.Length > lambdaIndex + 3)
             {
-                assertionExpression = assertionExpression.Substring(lambdaIndex + 3).Trim();
+                assertionExpression = assertionExpression[(lambdaIndex + 3)..].Trim();
             }
 
             return assertionExpression;

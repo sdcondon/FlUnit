@@ -159,7 +159,7 @@ namespace FlUnit
                     return prereqToString;
                 }
 <# } else { #>
-                List<string> nonTypeNames = new List<string>();
+                List<string> nonTypeNames = new();
 
                 var tuple = prereqs as ITuple;
                 for (var i = 0; i < tuple.Length; i++)
@@ -225,7 +225,7 @@ namespace FlUnit
                 {
                     await assert(<#= i == 1 ? "testCase.prereqs, " : List(i, i => $"testCase.prereqs.Item{i}", "", ", ") #>testCase.invocationOutcome);
                 }
-                catch (Exception e) when (!(e is ITestFailureDetails))
+                catch (Exception e) when (e is not ITestFailureDetails)
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }

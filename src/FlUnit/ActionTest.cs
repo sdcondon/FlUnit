@@ -155,7 +155,7 @@ namespace FlUnit
                 {
                     await assert(testCase.invocationOutcome);
                 }
-                catch (Exception e) when (!(e is ITestFailureDetails))
+                catch (Exception e) when (e is not ITestFailureDetails)
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
@@ -340,7 +340,7 @@ namespace FlUnit
                 {
                     await assert(testCase.prereqs, testCase.invocationOutcome);
                 }
-                catch (Exception e) when (!(e is ITestFailureDetails))
+                catch (Exception e) when (e is not ITestFailureDetails)
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
@@ -482,7 +482,7 @@ namespace FlUnit
             // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                List<string> nonTypeNames = new List<string>();
+                List<string> nonTypeNames = new();
 
                 var tuple = prereqs as ITuple;
                 for (var i = 0; i < tuple.Length; i++)
@@ -547,7 +547,7 @@ namespace FlUnit
                 {
                     await assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.invocationOutcome);
                 }
-                catch (Exception e) when (!(e is ITestFailureDetails))
+                catch (Exception e) when (e is not ITestFailureDetails)
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
@@ -692,7 +692,7 @@ namespace FlUnit
             // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                List<string> nonTypeNames = new List<string>();
+                List<string> nonTypeNames = new();
 
                 var tuple = prereqs as ITuple;
                 for (var i = 0; i < tuple.Length; i++)
@@ -757,7 +757,7 @@ namespace FlUnit
                 {
                     await assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.invocationOutcome);
                 }
-                catch (Exception e) when (!(e is ITestFailureDetails))
+                catch (Exception e) when (e is not ITestFailureDetails)
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
@@ -905,7 +905,7 @@ namespace FlUnit
             // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                List<string> nonTypeNames = new List<string>();
+                List<string> nonTypeNames = new();
 
                 var tuple = prereqs as ITuple;
                 for (var i = 0; i < tuple.Length; i++)
@@ -970,7 +970,7 @@ namespace FlUnit
                 {
                     await assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.prereqs.Item4, testCase.invocationOutcome);
                 }
-                catch (Exception e) when (!(e is ITestFailureDetails))
+                catch (Exception e) when (e is not ITestFailureDetails)
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }
@@ -1121,7 +1121,7 @@ namespace FlUnit
             // i for "test case #", and (when there are multiple prereqs) an integer for the prequisite of that index.
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                List<string> nonTypeNames = new List<string>();
+                List<string> nonTypeNames = new();
 
                 var tuple = prereqs as ITuple;
                 for (var i = 0; i < tuple.Length; i++)
@@ -1186,7 +1186,7 @@ namespace FlUnit
                 {
                     await assert(testCase.prereqs.Item1, testCase.prereqs.Item2, testCase.prereqs.Item3, testCase.prereqs.Item4, testCase.prereqs.Item5, testCase.invocationOutcome);
                 }
-                catch (Exception e) when (!(e is ITestFailureDetails))
+                catch (Exception e) when (e is not ITestFailureDetails)
                 {
                     throw new TestFailureException(e.Message, e.StackTrace, e);
                 }

@@ -15,7 +15,7 @@ namespace FlUnit
         /// </summary>
         /// <param name="configurationOverride">The override to apply.</param>
         /// <returns>A builder for providing "Given" clauses or a "When" clause.</returns>
-        public static TestPrerequisitesBuilder UsingConfiguration(Action<ITestConfiguration> configurationOverride) => new TestPrerequisitesBuilder(new[] { configurationOverride });
+        public static TestPrerequisitesBuilder UsingConfiguration(Action<ITestConfiguration> configurationOverride) => new(new[] { configurationOverride });
 
         /// <summary>
         /// Starts building a test by providing a "Given" clause.

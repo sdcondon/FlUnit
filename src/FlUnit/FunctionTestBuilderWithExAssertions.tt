@@ -31,7 +31,7 @@ namespace FlUnit
         private readonly IEnumerable<Action<ITestConfiguration>> configurationOverrides;
 <# WriteLineIf(i > 0, $"private readonly {ArrangeFieldType_ValueTask(i)} arrange;", 2); #>
         private readonly Func<<#= TList(i, "", ", ") #>ValueTask<TResult>> testFunction;
-        private readonly List<AssertionImpl> assertions = new List<AssertionImpl>();
+        private readonly List<AssertionImpl> assertions = new();
 
         internal FunctionTestBuilderWithExAssertions(
             IEnumerable<Action<ITestConfiguration>> configurationOverrides,
