@@ -47,15 +47,22 @@ Other things on the to-do list:
   - Parallelisation:
     - in vstest adapter, look into uing its test parallelisation setting rather than one specific to flunit.
     - Expand on parallel partitioning control by allowing for by class name and namespace - whether thats treated as a special case or if we hook this into trait system is TBD.
-  - Of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations). Look at achieving greater accuracy in durations in the vstest adapter. Now that I realise you can record duration separately to start and end time. I could pause the the duration timing while doing framework-y things..
-  - Take a look at configurability of test execution strategy in general (should different cases be different "Tests" and so on).
-*NTS: What this'd look like, probably: TestDiscovery to get Test and `Arrange` it.
-Look at resulting (potentially overridden) test config for appropriate granularity setting.
-Then return testmetadata that now optionally include case/assertion index.
-This index info would need to be included in VSTest case serialization (see VSTest.TestDiscoverer and TestContainer).
-TestRun would need to then act accordingly (TBD whether it could/should execute once but split the results, or rerun) based on the metadata.
-Of course a gotcha here is that GivenEach.. doesn't have to return the same number of cases each time (which I maintain is good behaviour - allows for storage of cases in external media). Would need to handle that gracefully.
-Problems here: simply can't if e.g. target bitness differs. Test code execution on test discovery probably not something to pursue, all things considered*
+  - Of strategy for duration records (which currently makes a "sensible" decision which may not be appropriate in all situations).
+    Look at achieving greater accuracy in durations in the vstest adapter.
+	Now that I realise you can record duration separately to start and end time.
+	I could pause the the duration timing while doing framework-y things..
+  - Take a look at configurability of test execution strategy in general. Things like:
+    - Should the test action be re-run for each assertion (if e.g. they aren't isolated).  
+	  Would (need to re-run "given" clauses too, and there's no guarantee the same values are returned, so would) need to check pre-requisite equality.
+	  Something extra for test writers to think about, so prob best to leave default behaviour as NOT doing this.
+    - Should different cases be different "Tests".
+      *NTS: What this'd look like, probably: TestDiscovery to get Test and `Arrange` it.
+      Look at resulting (potentially overridden) test config for appropriate granularity setting.
+      Then return testmetadata that now optionally include case/assertion index.
+      This index info would need to be included in VSTest case serialization (see VSTest.TestDiscoverer and TestContainer).
+      TestRun would need to then act accordingly (TBD whether it could/should execute once but split the results, or rerun) based on the metadata.
+      As with re-runs for assertions (see above), also need to worry test cases not being the same. And in this case it's worse since there is serialisation involved.
+      Would need to allow different approaches (assume equality by position, leverage serialisable prereqs, etc).
 
 Not going to do:
 - QoL: Perhaps `Then/AndOfReturnValue(rv => rv.ShouldBe..)` and `Then/AndOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? No - Lambda discards work pretty well (to my eyes at least), and `OfGiven1`, `OfGiven2` is better dealt with via complex prereq objects
