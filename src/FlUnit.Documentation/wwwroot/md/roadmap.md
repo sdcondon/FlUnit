@@ -52,7 +52,7 @@ Other things on the to-do list:
 	Now that I realise you can record duration separately to start and end time.
 	I could pause the the duration timing while doing framework-y things..
   - Take a look at configurability of test execution strategy in general. Things like:
-    - Should the test action be re-run for each assertion (if e.g. they aren't isolated).  
+    - Should the test action be re-run for each assertion (if e.g. they aren't isolated).
 	  Would (need to re-run "given" clauses too, and there's no guarantee the same values are returned, so would) need to check pre-requisite equality.
 	  Something extra for test writers to think about, so prob best to leave default behaviour as NOT doing this.
     - Should different cases be different "Tests".
@@ -62,7 +62,7 @@ Other things on the to-do list:
       This index info would need to be included in VSTest case serialization (see VSTest.TestDiscoverer and TestContainer).
       TestRun would need to then act accordingly (TBD whether it could/should execute once but split the results, or rerun) based on the metadata.
       As with re-runs for assertions (see above), also need to worry test cases not being the same. And in this case it's worse since there is serialisation involved.
-      Would need to allow different approaches (assume equality by position, leverage serialisable prereqs, etc).
+      Would need to allow different approaches (assume equality by position, leverage serialisable prereqs, etc).*
 
 Not going to do:
 - QoL: Perhaps `Then/AndOfReturnValue(rv => rv.ShouldBe..)` and `Then/AndOfGiven1(g => g.Prop.ShouldBe..)` for succinctness? No - Lambda discards work pretty well (to my eyes at least), and `OfGiven1`, `OfGiven2` is better dealt with via complex prereq objects
