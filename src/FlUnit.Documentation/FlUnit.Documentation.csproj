@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Razor\Pages\Home.razor.md">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Razor\Pages\Roadmap.razor.md">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Razor\Pages\user-guide\AdvancedFunctionality.razor.md" />
+    <EmbeddedResource Include="Razor\Pages\user-guide\GettingStarted.razor.md" />
+    <EmbeddedResource Include="Razor\Pages\user-guide\OtherNotes.razor.md" />
+    <EmbeddedResource Include="Razor\Pages\user-guide\UsefulPatterns.razor.md" />
+  </ItemGroup>
+
+  <ItemGroup>
       <PackageReference Include="Blazorise.Bootstrap5" Version="1.7.5" />
       <PackageReference Include="Blazorise.Icons.Bootstrap" Version="1.7.5" />
       <PackageReference Include="Markdig" Version="0.37.0" />
