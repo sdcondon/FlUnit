@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <Layout Sider ElementId="page">
 
@@ -10,12 +11,12 @@
                         <Image Source="img/FlUnit-32.png" Text="FlUnit icon" /> FlUnit
                     </DropdownToggle>
                     <DropdownMenu>
-                        <NavDropdownItem TargetUri="https://sdcondon.net/SCClassicalPlanning" IconUri="https://sdcondon.net/SCClassicalPlanning/img/SCClassicalPlanning-32.png" Text="SCClassicalPlanning" />
-                        <NavDropdownItem TargetUri="https://sdcondon.net/SCFirstOrderLogic" IconUri="https://sdcondon.net/SCFirstOrderLogic/img/SCFirstOrderLogic-32.png" Text="SCFirstOrderLogic" />
-                        <NavDropdownItem TargetUri="https://sdcondon.net/SCGraphTheory" IconUri="https://sdcondon.net/SCGraphTheory/img/SCGraphTheoryIcon-32.png" Text="SCGraphTheory" />
-                        <NavDropdownItem TargetUri="https://sdcondon.net/SCSetTrie" IconUri="https://sdcondon.net/SCSetTrie/img/SCSetTrie-32.png" Text="SCSetTrie" />
+                        @SiteLink(new { TargetUri = "https://sdcondon.net/SCClassicalPlanning", IconUri = "https://sdcondon.net/SCClassicalPlanning/img/SCClassicalPlanning-32.png", Text = "SCClassicalPlanning" })
+                        @SiteLink(new { TargetUri = "https://sdcondon.net/SCFirstOrderLogic", IconUri = "https://sdcondon.net/SCFirstOrderLogic/img/SCFirstOrderLogic-32.png", Text = "SCFirstOrderLogic" })
+                        @SiteLink(new { TargetUri = "https://sdcondon.net/SCGraphTheory", IconUri = "https://sdcondon.net/SCGraphTheory/img/SCGraphTheoryIcon-32.png", Text = "SCGraphTheory" })
+                        @SiteLink(new { TargetUri = "https://sdcondon.net/SCSetTrie", IconUri = "https://sdcondon.net/SCSetTrie/img/SCSetTrie-32.png", Text = "SCSetTrie" })
                         <DropdownDivider />
-                        <NavDropdownItem TargetUri="https://sdcondon.net/" IconUri="https://sdcondon.net/favicon.ico" Text="Personal Homepage" />
+                        @SiteLink(new { TargetUri = "https://sdcondon.net/", IconUri = "https://sdcondon.net/favicon.ico", Text = "Personal Homepage" })
                     </DropdownMenu>
                 </Dropdown>
 
@@ -26,12 +27,12 @@
 
             <Div Class="@NavMenuCssClass" @onclick="ToggleNavMenu">
                 <nav class="flex-column">
-                    <NavItem Href="" IconClass="bi-house-door-fill" Text="Home" Match="NavLinkMatch.All" />
-                    <NavItem Href="user-guide/getting-started" IconClass="bi-info-circle" Text="Getting Started" />
-                    <NavItem Href="user-guide/useful-patterns" IconClass="bi-info-circle" Text="Useful Patterns" />
-                    <NavItem Href="user-guide/advanced-functionality" IconClass="bi-info-circle" Text="Advanced Functionality" />
-                    <NavItem Href="user-guide/other-notes" IconClass="bi-info-circle" Text="Other Notes" />
-                    <NavItem Href="roadmap" IconClass="bi-signpost-split-fill" Text="Roadmap" />
+                    @NavLink(new { Href = "", IconClass = "bi-house-door-fill", Text = "Home", Match = NavLinkMatch.All })
+                    @NavLink(new { Href = "user-guide/getting-started", IconClass = "bi-info-circle", Text = "Getting Started", Match = NavLinkMatch.Prefix })
+                    @NavLink(new { Href = "user-guide/useful-patterns", IconClass = "bi-info-circle", Text = "Useful Patterns", Match = NavLinkMatch.Prefix })
+                    @NavLink(new { Href = "user-guide/advanced-functionality", IconClass = "bi-info-circle", Text = "Advanced Functionality", Match = NavLinkMatch.Prefix })
+                    @NavLink(new { Href = "user-guide/other-notes", IconClass = "bi-info-circle", Text = "Other Notes", Match = NavLinkMatch.Prefix })
+                    @NavLink(new { Href = "roadmap", IconClass = "bi-house-door-fill", Text = "Roadmap", Match = NavLinkMatch.Prefix })
                 </nav>
             </Div>
         </LayoutSiderContent>
@@ -61,4 +62,22 @@
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+
+    private RenderFragment<dynamic> NavLink => item =>
+        @<div class="nav-item px-1">
+            <NavLink class="nav-link px-2" href="@item.Href" Match="@(item.Match ?? NavLinkMatch.Prefix)">
+                <span class="bi @item.IconClass" aria-hidden="true"></span> @item.Text
+            </NavLink>
+        </div>;
+
+    private RenderFragment<dynamic> SiteLink => item =>
+        @<DropdownItem @onclick="@(e => NavigateTo(@item.TargetUri))">
+            <img src="@item.IconUri" /> @item.Text
+        </DropdownItem>;
+
+    private object? NavigateTo(string TargetUri)
+    {
+        NavigationManager.NavigateTo(TargetUri);
+        return null;
+    }
 }
