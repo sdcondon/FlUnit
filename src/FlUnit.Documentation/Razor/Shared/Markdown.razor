@@ -31,7 +31,7 @@
 
   protected override void OnAfterRender(bool firstRender)
   {
-    JS.InvokeVoidAsync("PR.prettyPrint");
+    JS.InvokeVoidAsync("hljs.highlightAll");
   }
 
   public class Extension : IMarkdownExtension
@@ -74,7 +74,7 @@
       if (obj is FencedCodeBlock fencedCodeBlock)
       {
         var attr = obj.TryGetAttributes() ?? new();
-        attr.AddClass("prettyprint");
+        attr.AddClass("language-csharp");
         obj.SetAttributes(attr);
       }
 
